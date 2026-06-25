@@ -74,12 +74,13 @@ export async function fetchUsernamesFromSheet(): Promise<SheetEntry[]> {
 
     return lines
       .map((line) => {
-        const [username, addedAt, yearStudying, enrollmentNo] = line.split(",").map((v) => v.trim());
+        const [username, addedAt, yearStudying, enrollmentNo, password] = line.split(",").map((v) => v.trim());
         return { 
           username: username?.toLowerCase(), 
           addedAt: addedAt ?? "",
           yearStudying: yearStudying ?? "",
-          enrollmentNo: enrollmentNo ?? ""
+          enrollmentNo: enrollmentNo ?? "",
+          password: password ?? ""
         };
       })
       .filter((e) => e.username && e.username.length > 0);
@@ -96,7 +97,8 @@ export async function fetchUsernamesFromSheet(): Promise<SheetEntry[]> {
 export async function addUsernameToSheet(
   username: string,
   yearStudying: string,
-  enrollmentNo: string
+  enrollmentNo: string,
+  password?: string
 ): Promise<{ success: boolean; message: string }> {
   if (!SHEET_WRITE_URL) {
     return { success: false, message: "Sheet write URL not configured." };
@@ -108,7 +110,8 @@ export async function addUsernameToSheet(
       username: username.toLowerCase().trim(),
       addedAt: new Date().toISOString(),
       yearStudying,
-      enrollmentNo
+      enrollmentNo,
+      password: password || ""
     });
 
     if (!data) return { success: false, message: "No response from sheet." };
@@ -145,8 +148,16 @@ export async function setQuestionOfTheWeek(qotw_url: string): Promise<boolean> {
   return data?.status === "success";
 }
 
-export async function getQuestionOfTheWeek(): Promise<string> {
-  if (!SHEET_WRITE_URL) return "";
+export async function setFirstBlood(username: string): Promise<boolean> {
+  console.log("[setFirstBlood] Setting winner:", username);
+  const data = await postToGAS({ action: "set_first_blood", first_blood: username });
+  console.log("[setFirstBlood] Response:", data);
+  return data?.status === "success";
+}
+
+export async function getQuestionOfTheWeek(): Promise<{ qotw_url: string; qotw_timestamp: string; first_blood: string }> {
+  const empty = { qotw_url: "", qotw_timestamp: "", first_blood: "" };
+  if (!SHEET_WRITE_URL) return empty;
   try {
     // GET requests to GAS also redirect, handle the same way
     const res = await fetch(`${SHEET_WRITE_URL}?action=get_qotw`, {
@@ -161,23 +172,31 @@ export async function getQuestionOfTheWeek(): Promise<string> {
         const text = await followRes.text();
         try {
           const data = JSON.parse(text);
-          return data.qotw_url || "";
+          return {
+            qotw_url: data.qotw_url || "",
+            qotw_timestamp: data.qotw_timestamp || "",
+            first_blood: data.first_blood || ""
+          };
         } catch {
-          return "";
+          return empty;
         }
       }
-      return "";
+      return empty;
     }
 
     const text = await res.text();
     try {
       const data = JSON.parse(text);
-      return data.qotw_url || "";
+      return {
+        qotw_url: data.qotw_url || "",
+        qotw_timestamp: data.qotw_timestamp || "",
+        first_blood: data.first_blood || ""
+      };
     } catch {
-      return "";
+      return empty;
     }
   } catch {
-    return "";
+    return empty;
   }
 }
 

@@ -26,9 +26,21 @@ function doPost(e) {
       if (!settingsSheet) {
         settingsSheet = ss.insertSheet("settings");
       }
-      // Store QotW in A1
+      // Store QotW URL in A1, timestamp in B1, clear first_blood in C1
       settingsSheet.getRange(1, 1).setValue(body.qotw_url || "");
+      settingsSheet.getRange(1, 2).setValue(new Date().toISOString());
+      settingsSheet.getRange(1, 3).setValue(""); // Clear first blood
       return jsonResponse({ status: "success", message: "QOTW updated." });
+    }
+
+    if (action === "set_first_blood") {
+      let settingsSheet = ss.getSheetByName("settings");
+      if (!settingsSheet) {
+        settingsSheet = ss.insertSheet("settings");
+      }
+      // Store first_blood username in C1
+      settingsSheet.getRange(1, 3).setValue(body.first_blood || "");
+      return jsonResponse({ status: "success", message: "First blood updated." });
     }
 
     const username = (body.username || "").trim().toLowerCase();
@@ -42,7 +54,7 @@ function doPost(e) {
     // Create sheet with headers if it doesn't exist
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
-      sheet.getRange(1, 1, 1, 4).setValues([["username", "addedAt", "yearStudying", "enrollmentNo"]]);
+      sheet.getRange(1, 1, 1, 5).setValues([["username", "addedAt", "yearStudying", "enrollmentNo", "password"]]);
     }
 
     if (action === "delete") {
@@ -60,6 +72,7 @@ function doPost(e) {
     const addedAt = body.addedAt || new Date().toISOString();
     const yearStudying = body.yearStudying || "";
     const enrollmentNo = (body.enrollmentNo || "").trim().toUpperCase();
+    const password = body.password || "";
 
     // Check for duplicates
     const data = sheet.getDataRange().getValues();
@@ -73,7 +86,7 @@ function doPost(e) {
     }
 
     // Append new row
-    sheet.appendRow([username, addedAt, yearStudying, enrollmentNo]);
+    sheet.appendRow([username, addedAt, yearStudying, enrollmentNo, password]);
     return jsonResponse({ status: "success", message: "Added successfully." });
 
   } catch (err) {
@@ -86,9 +99,15 @@ function doGet(e) {
   
   if (e && e.parameter && e.parameter.action === "get_qotw") {
     let settingsSheet = ss.getSheetByName("settings");
-    if (!settingsSheet) return jsonResponse({ qotw_url: "" });
-    const val = settingsSheet.getRange(1, 1).getValue();
-    return jsonResponse({ qotw_url: val || "" });
+    if (!settingsSheet) return jsonResponse({ qotw_url: "", qotw_timestamp: "", first_blood: "" });
+    const url = settingsSheet.getRange(1, 1).getValue();
+    const timestamp = settingsSheet.getRange(1, 2).getValue();
+    const first_blood = settingsSheet.getRange(1, 3).getValue();
+    return jsonResponse({ 
+      qotw_url: url || "", 
+      qotw_timestamp: timestamp || "", 
+      first_blood: first_blood || "" 
+    });
   }
 
   return jsonResponse({ status: "ok", message: "BU LeetCode Sheet API running." });

@@ -14,7 +14,7 @@ export default function Heatmap({ data }: HeatmapProps) {
     const pastYear = new Date(today);
     pastYear.setDate(today.getDate() - 364); // 365 days total
 
-    const daysArray = [];
+    const daysArray: { date: Date; count: number }[] = [];
     let maxSub = 0;
 
     // Fill the array with the exact dates

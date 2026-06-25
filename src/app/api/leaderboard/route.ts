@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { fetchUsernamesFromSheet } from "@/lib/sheets";
+import { fetchUsernamesFromSheet, getQuestionOfTheWeek, setFirstBlood } from "@/lib/sheets";
 import { fetchLeetCodeUser } from "@/lib/leetcode";
 import { LeetCodeUser } from "@/types";
 
@@ -66,7 +66,42 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({ users: results });
+    // Check for First Blood if QOTW is active and no one has it yet
+    const qotw = await getQuestionOfTheWeek();
+    if (qotw.qotw_url && !qotw.first_blood) {
+      const match = qotw.qotw_url.match(/problems\/([^\/]+)/);
+      const titleSlug = match ? match[1] : null;
+      
+      if (titleSlug && qotw.qotw_timestamp) {
+        const qotwTime = new Date(qotw.qotw_timestamp).getTime() / 1000;
+        let earliestSolver: string | null = null;
+        let earliestTime = Infinity;
+
+        for (const user of results) {
+          if (user.recentSubmissions) {
+            for (const sub of user.recentSubmissions) {
+              if (sub.titleSlug === titleSlug) {
+                const subTime = parseInt(sub.timestamp, 10);
+                if (subTime >= qotwTime && subTime < earliestTime) {
+                  earliestTime = subTime;
+                  earliestSolver = user.username;
+                }
+              }
+            }
+          }
+        }
+
+        if (earliestSolver) {
+          // Fire and forget
+          setFirstBlood(earliestSolver).catch(console.error);
+        }
+      }
+    }
+
+    // Clean up recentSubmissions so we don't send massive payloads to the client
+    const cleanResults = results.map(({ recentSubmissions, ...rest }) => rest);
+
+    return NextResponse.json({ users: cleanResults });
   } catch (err) {
     console.error("/api/leaderboard error:", err);
     return NextResponse.json(

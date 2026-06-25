@@ -16,6 +16,8 @@ export interface LeetCodeUser {
   yearStudying?: string;
   enrollmentNo?: string;
   error?: boolean;
+  recentSubmissions?: { titleSlug: string; timestamp: string }[];
+  firstBlood?: boolean;
 }
 
 export interface SheetEntry {
@@ -23,6 +25,7 @@ export interface SheetEntry {
   addedAt: string;
   yearStudying: string;
   enrollmentNo: string;
+  password?: string;
 }
 
 export type SortKey =

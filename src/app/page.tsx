@@ -35,21 +35,27 @@ export default function LeaderboardPage() {
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const [qotw, setQotw] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("individuals");
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [firstBlood, setFirstBlood] = useState<string>("");
 
   const fetchLeaderboard = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const [res, qotwRes] = await Promise.all([
+      const [res, qotwRes, meRes] = await Promise.all([
         fetch("/api/leaderboard", { cache: "no-store" }),
-        fetch("/api/qotw", { cache: "no-store" })
+        fetch("/api/qotw", { cache: "no-store" }),
+        fetch("/api/auth/me", { cache: "no-store" })
       ]);
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       const qotwData = await qotwRes.json();
+      const meData = await meRes.json();
       
       setUsers(data.users ?? []);
       setQotw(qotwData.qotw_url || "");
+      setFirstBlood(qotwData.first_blood || "");
+      setCurrentUser(meData.username || null);
       setLastRefreshed(new Date());
     } catch {
       setError("Could not load leaderboard. Check your connection.");
@@ -61,6 +67,11 @@ export default function LeaderboardPage() {
   useEffect(() => {
     fetchLeaderboard();
   }, [fetchLeaderboard]);
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    setCurrentUser(null);
+  };
 
   // Sort + filter logic
   const processed = useMemo(() => {
@@ -195,13 +206,22 @@ export default function LeaderboardPage() {
               >
                 {loading ? "↻ Loading..." : "↻ Refresh"}
               </button>
-              <button
-                onClick={() => setShowModal(true)}
-                className="px-5 py-2 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-95"
-                style={{ background: "var(--bu-red)" }}
-              >
-                + Join Leaderboard
-              </button>
+              {currentUser ? (
+                <div className="flex items-center gap-3 bg-[var(--bu-card)] border border-[var(--bu-border)] rounded-xl px-4 py-2">
+                  <span className="text-sm font-medium text-white">{currentUser}</span>
+                  <button onClick={handleLogout} className="text-xs text-[var(--bu-red)] font-bold hover:underline">
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="px-5 py-2 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-95"
+                  style={{ background: "var(--bu-red)" }}
+                >
+                  + Login / Join
+                </button>
+              )}
             </div>
           </div>
         </header>
@@ -216,7 +236,14 @@ export default function LeaderboardPage() {
                   🔥
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white mb-1">Question of the Week</h2>
+                  <h2 className="text-xl font-bold text-white mb-1">
+                    Question of the Week
+                    {firstBlood && (
+                      <span className="ml-3 text-sm font-medium px-2 py-1 bg-red-500/20 text-red-400 rounded-md border border-red-500/30">
+                        🩸 First Blood: {firstBlood}
+                      </span>
+                    )}
+                  </h2>
                   <p className="text-sm" style={{ color: "var(--bu-sub)" }}>Solve this challenge to sharpen your skills!</p>
                 </div>
               </div>
@@ -451,12 +478,19 @@ export default function LeaderboardPage() {
                             </div>
                           )}
                           <div>
-                            <Link
-                              href={`/user/${user.username}`}
-                              className="font-medium text-white hover:underline transition-colors font-mono text-sm"
-                            >
-                              {user.username}
-                            </Link>
+                            <div className="flex items-center gap-2">
+                              <Link
+                                href={`/user/${user.username}`}
+                                className="font-medium text-white hover:underline transition-colors font-mono text-sm"
+                              >
+                                {user.username}
+                              </Link>
+                              {firstBlood === user.username && (
+                                <span title="First Blood (Question of the Week)" className="text-base cursor-help drop-shadow-md">
+                                  🩸
+                                </span>
+                              )}
+                            </div>
                             {user.realName && user.realName !== user.username && (
                               <p
                                 className="text-xs"

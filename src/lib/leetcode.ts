@@ -24,6 +24,10 @@ query getUserProfile($username: String!) {
     attendedContestsCount
     topPercentage
   }
+  recentAcSubmissionList(username: $username, limit: 15) {
+    titleSlug
+    timestamp
+  }
 }
 `;
 
@@ -46,6 +50,7 @@ interface GraphQLResponse {
       attendedContestsCount: number;
       topPercentage: number;
     };
+    recentAcSubmissionList?: Array<{ titleSlug: string; timestamp: string }>;
   };
   errors?: Array<{ message: string }>;
 }
@@ -94,6 +99,7 @@ export async function fetchLeetCodeUser(
       contestGlobalRanking: contest?.globalRanking ?? 0,
       attendedContestsCount: contest?.attendedContestsCount ?? 0,
       topPercentage: contest?.topPercentage ?? 100,
+      recentSubmissions: json.data.recentAcSubmissionList ?? [],
     };
   } catch {
     return null;
