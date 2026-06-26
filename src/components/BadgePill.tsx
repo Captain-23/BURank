@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Badge } from "@/lib/badges";
+import { Badge, TIER_STYLE } from "@/lib/badges";
 
 interface Props {
   badge: Badge;
@@ -12,10 +12,11 @@ export default function BadgePill({ badge, size = "md" }: Props) {
   const [hovered, setHovered] = useState(false);
 
   const isSmall = size === "sm";
+  const style = TIER_STYLE[badge.tier];
 
   return (
     <span
-      className={`badge-pill ${badge.colorClass}`}
+      className="badge-pill"
       style={{
         display: "inline-flex",
         alignItems: "center",
@@ -29,14 +30,27 @@ export default function BadgePill({ badge, size = "md" }: Props) {
         cursor: "default",
         userSelect: "none",
         whiteSpace: "nowrap",
+        background: style.bg,
+
+        color: style.text,
+
+        borderColor: style.border,
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <i
-        className={`ti ${badge.icon}`}
-        aria-hidden="true"
-        style={{ fontSize: isSmall ? 13 : 14 }}
+      <span
+        style={{
+          width: isSmall ? 6 : 8,
+
+          height: isSmall ? 6 : 8,
+
+          borderRadius: "50%",
+
+          background: style.dot,
+
+          flexShrink: 0,
+        }}
       />
       {badge.label}
 
