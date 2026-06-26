@@ -1,5 +1,6 @@
 "use client";
 
+import { BADGE_ICONS } from "@/lib/badge-icons";
 import { useState } from "react";
 import { Badge, TIER_STYLE } from "@/lib/badges";
 
@@ -13,6 +14,8 @@ export default function BadgePill({ badge, size = "md" }: Props) {
 
   const isSmall = size === "sm";
   const style = TIER_STYLE[badge.tier];
+  const Icon = BADGE_ICONS[badge.id as keyof typeof BADGE_ICONS];
+  
 
   return (
     <span
@@ -39,19 +42,19 @@ export default function BadgePill({ badge, size = "md" }: Props) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <span
-        style={{
-          width: isSmall ? 6 : 8,
-
-          height: isSmall ? 6 : 8,
-
-          borderRadius: "50%",
-
-          background: style.dot,
-
-          flexShrink: 0,
-        }}
-      />
+      {Icon ? (
+        <Icon size={isSmall ? 12 : 15} strokeWidth={2.2} color={style.dot} />
+      ) : (
+        <span
+          style={{
+            width: isSmall ? 6 : 8,
+            height: isSmall ? 6 : 8,
+            borderRadius: "50%",
+            background: style.dot,
+            flexShrink: 0,
+          }}
+        />
+      )}
       {badge.label}
 
       {/* Tooltip */}
