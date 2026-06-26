@@ -1,8 +1,8 @@
 "use client";
 
-import { computeBadges } from "@/lib/badges.ts";
-import BadgeList from "@/components/BadgeList.tsx";
-import UserProfileModal from "@/components/UserProfileModal.tsx";
+import { computeBadges } from "@/lib/badges";
+import BadgeList from "@/components/BadgeList";
+import UserProfileModal from "@/components/UserProfileModal";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";

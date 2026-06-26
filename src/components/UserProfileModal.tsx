@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { LeetCodeUser } from "@/types";
-import { computeBadges } from "@/lib/badges.ts";
+import { computeBadges } from "@/lib/badges";
 import BadgeList from "./BadgeList";
 
 interface Props {

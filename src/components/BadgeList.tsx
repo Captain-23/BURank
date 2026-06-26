@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Badge, TIER_STYLE } from "@/lib/badges.ts";
+import { Badge, TIER_STYLE } from "@/lib/badges";
 
 interface Props {
   badges: Badge[];
