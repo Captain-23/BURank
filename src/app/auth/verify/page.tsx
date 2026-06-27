@@ -1,0 +1,121 @@
+// src/app/auth/verify/page.tsx
+// NextAuth redirects here after sending the magic link.
+// Simple static page — just tells the user to check their email.
+
+export default function VerifyPage() {
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#0A0A0F",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+      }}
+    >
+      <div style={{ width: "100%", maxWidth: 400, textAlign: "center" }}>
+        <p
+          style={{
+            fontSize: 26,
+            fontWeight: 700,
+            fontFamily: "'JetBrains Mono', monospace",
+            color: "#E2E2F0",
+            margin: "0 0 32px",
+          }}
+        >
+          BU<span style={{ color: "#C8102E" }}>rge</span>
+        </p>
+
+        <div
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: "50%",
+            background: "rgba(0,184,163,0.12)",
+            border: "1px solid rgba(0,184,163,0.25)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "0 auto 20px",
+            fontSize: 26,
+            color: "#00B8A3",
+          }}
+        >
+          ✉
+        </div>
+
+        <h1
+          style={{
+            fontSize: 18,
+            fontWeight: 600,
+            color: "#E2E2F0",
+            margin: "0 0 10px",
+          }}
+        >
+          Check your Bennett inbox
+        </h1>
+        <p
+          style={{
+            fontSize: 13,
+            color: "#8888A8",
+            margin: "0 0 6px",
+            lineHeight: 1.7,
+          }}
+        >
+          A sign-in link has been sent to your
+          <br />
+          <strong style={{ color: "#E2E2F0" }}>@bennett.edu.in</strong> email
+          address.
+        </p>
+        <p
+          style={{
+            fontSize: 13,
+            color: "#8888A8",
+            margin: "0 0 24px",
+            lineHeight: 1.7,
+          }}
+        >
+          Open your Outlook inbox and click the link
+          <br />
+          to complete sign-in.
+        </p>
+
+        <div
+          style={{
+            background: "#111118",
+            border: "1px solid #1E1E2E",
+            borderRadius: 6,
+            padding: "12px 16px",
+            fontSize: 12,
+            color: "#555570",
+            lineHeight: 1.7,
+            textAlign: "left",
+          }}
+        >
+          <strong style={{ color: "#8888A8" }}>Didn't receive it?</strong>
+          <br />
+          · Check your Junk / Spam folder
+          <br />
+          · The link expires in 15 minutes
+          <br />· Go back and try again if needed
+        </div>
+
+        <a
+          href="/auth/signin"
+          style={{
+            display: "inline-block",
+            marginTop: 20,
+            fontSize: 13,
+            color: "#8888A8",
+            textDecoration: "none",
+            borderBottom: "1px solid #2A2A3E",
+            paddingBottom: 1,
+          }}
+        >
+          ← Back to sign in
+        </a>
+      </div>
+    </div>
+  );
+}

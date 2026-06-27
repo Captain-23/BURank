@@ -9,11 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/core": "^0.34.3",
+    "@auth/prisma-adapter": "^2.11.2",
+    "@prisma/client": "^6.19.3",
     "axios": "^1.7.2",
     "lucide-react": "^1.21.0",
     "next": "14.2.5",
+    "next-auth": "^4.24.14",
+    "nodemailer": "^7.0.13",
+    "prisma": "^6.19.3",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "resend": "^6.16.0"
   },
   "devDependencies": {
     "@types/node": "^20",

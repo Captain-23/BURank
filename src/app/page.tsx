@@ -10,6 +10,7 @@ import AddUserModal from "@/components/AddUserModal";
 import SkeletonRows from "@/components/SkeletonRows";
 import StatCard from "@/components/StatCard";
 import { LeetCodeUser, SortKey, SortDirection } from "@/types";
+import Navbar from "@/components/Navbar";
 
 const COLLEGE = process.env.NEXT_PUBLIC_COLLEGE_NAME ?? "Bennett University";
 
@@ -191,6 +192,7 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "var(--bu-dark)" }}>
+      <Navbar />
       {/* Top gradient accent */}
       <div
         className="h-1 w-full"

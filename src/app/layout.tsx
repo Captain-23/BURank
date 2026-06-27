@@ -1,13 +1,15 @@
+// src/app/layout.tsx — replace your existing layout with this
 import type { Metadata } from "next";
+import SessionProvider from "@/components/SessionProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "BURank",
+  title: "BUrge — Bennett University LeetCode Leaderboard",
   description:
-    "Bennett University's competitive programming leaderboard powered by LeetCode stats.",
+    "Compete, track progress, and rank among Bennett University coders.",
   openGraph: {
-    title: "BU LeetCode Leaderboard",
-    description: "See where you rank among Bennett University coders.",
+    title: "BUrge",
+    description: "Bennett University LeetCode Leaderboard",
     type: "website",
   },
 };
@@ -19,7 +21,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-bu-dark">{children}</body>
+      <body className="min-h-screen bg-bu-dark">
+        {/*
+          SessionProvider must wrap everything so useSession()
+          works in any client component.
+        */}
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }
