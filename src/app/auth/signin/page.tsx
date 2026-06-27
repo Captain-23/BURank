@@ -17,18 +17,13 @@ export default function SignInPage() {
   const callbackUrl = "/";
 
   // Validate format client-side before sending
-  const isValidEmail = (e: string) =>
-    /^[a-zA-Z0-9._%+-]+@bennett\.edu\.in$/i.test(e.trim());
+  const isValidEmail = () => true;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim().toLowerCase();
 
-    if (!isValidEmail(trimmed)) {
-      setStatus("error");
-      setMessage("Only @bennett.edu.in email addresses are allowed.");
-      return;
-    }
+    
 
     setStatus("loading");
     setMessage("");
