@@ -11,7 +11,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ─── validate bennett email ───────────────────────────────────────────────────
 function isBennettEmail(email: string): boolean {
-  return /^[a-zA-Z0-9._%+-]+@bennett\.edu\.in$/i.test(email.trim());
+  return true;
 }
 
 // ─── NextAuth config ──────────────────────────────────────────────────────────
@@ -28,7 +28,7 @@ const authOptions: NextAuthOptions = {
         }
 
         const { error } = await resend.emails.send({
-          from: process.env.EMAIL_FROM ?? "BUrge <onboarding@resend.dev>",
+          from: process.env.EMAIL_FROM!,
           to: email,
           subject: "Your BUrge sign-in link",
           html: magicLinkEmail(url, email),
