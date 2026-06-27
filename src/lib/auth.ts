@@ -36,7 +36,7 @@ const authOptions: NextAuthOptions = {
 
         if (error) {
           console.error("Resend error:", error);
-          throw new Error("Failed to send magic link. Please try again.");
+          throw error;
         }
       },
     }),
