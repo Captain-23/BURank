@@ -4,8 +4,6 @@
 // NextAuth redirects here when something goes wrong.
 // The error type is passed as a query param: ?error=AccessDenied etc.
 
-import { useSearchParams } from "next/navigation";
-
 const ERROR_MESSAGES: Record<string, string> = {
   AccessDenied: "Only @bennett.edu.in email addresses can sign in to BUrge.",
   Verification:
@@ -15,9 +13,12 @@ const ERROR_MESSAGES: Record<string, string> = {
   Default: "Something went wrong during sign-in. Please try again.",
 };
 
-export default function AuthErrorPage() {
-  const params = useSearchParams();
-  const errorCode = params.get("error") ?? "Default";
+export default function AuthErrorPage({
+  searchParams,
+}: {
+  searchParams?: { error?: string };
+}) {
+  const errorCode = searchParams?.error ?? "Default";
   const message = ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.Default;
 
   return (
