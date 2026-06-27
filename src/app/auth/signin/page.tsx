@@ -6,7 +6,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -14,8 +14,7 @@ export default function SignInPage() {
     "idle",
   );
   const [message, setMessage] = useState("");
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/";
+  const callbackUrl = "/";
 
   // Validate format client-side before sending
   const isValidEmail = (e: string) =>
