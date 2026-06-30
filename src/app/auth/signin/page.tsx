@@ -1,9 +1,5 @@
 "use client";
 
-// src/app/auth/signin/page.tsx
-// This replaces NextAuth's default sign-in page.
-// Students enter their @bennett.edu.in email here.
-
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 
@@ -69,7 +65,7 @@ export default function SignInPage() {
               margin: 0,
             }}
           >
-            BU<span style={{ color: "#C8102E" }}>rge</span>
+            BU<span style={{ color: "#C8102E" }}>Rank</span>
           </p>
           <p style={{ fontSize: 13, color: "#8888A8", margin: "6px 0 0" }}>
             Bennett University · LeetCode Leaderboard
@@ -100,7 +96,7 @@ export default function SignInPage() {
               Sign in
             </h1>
             <p style={{ fontSize: 13, color: "#8888A8", margin: "0 0 24px" }}>
-              Enter your Bennett email to receive a sign-in link. No password
+              Enter your Personal email to receive a sign-in link. No password
               needed.
             </p>
 
@@ -185,7 +181,7 @@ export default function SignInPage() {
                     setStatus("idle");
                     setMessage("");
                   }}
-                  placeholder="e22cse047@bennett.edu.in"
+                  placeholder="example@gmail.com"
                   disabled={status === "loading"}
                   autoFocus
                   style={{
@@ -235,7 +231,7 @@ export default function SignInPage() {
                       margin: "6px 0 0",
                     }}
                   >
-                    Must end with @bennett.edu.in
+                    Do not use @bennett.edu.in
                   </p>
                 )}
 
