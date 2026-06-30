@@ -1,155 +1,209 @@
-# 🏆 Bennett University — LeetCode Leaderboard
+<div align="center">
 
-A zero-cost, production-ready leaderboard for tracking LeetCode progress across your college.  
-Built with **Next.js 14**, **Tailwind CSS**, **Google Sheets** (as DB), and deployed free on **Vercel**.
+# 🏆 BUrank
+
+### The modern LeetCode leaderboard platform for universities.
+
+Track competitive programming progress, compare batches, discover top performers, and foster healthy coding competition — all in one place.
+
+[Live Demo](https://www.burank.app) • [Report Bug](https://github.com/Captain-23/burank/issues) • [Request Feature](https://github.com/Captain-23/burank/issues)
+
+</div>
+
+---
+
+## Overview
+
+BUrank is a production-ready platform that enables universities to build an engaging LeetCode leaderboard for their students.
+
+It automatically aggregates LeetCode statistics, provides department-wide rankings, tracks contest performance, and offers administrators an intuitive interface for managing users and weekly challenges.
+
+Built with a modern full-stack architecture, BUrank is fast, responsive, scalable, and completely free to deploy.
 
 ---
 
 ## ✨ Features
 
-- **Live Individual Leaderboard:** Track problems solved, E/M/H breakdown, contest rating, and global rank.
-- **Batch Wars:** A group competition view comparing batches (years of study) by average problems solved to encourage peer engagement.
-- **Question of the Week:** A dynamic, admin-curated LeetCode problem banner on the homepage to focus practice.
-- **Secure Registration:** Students add themselves via a modal. Enrollment Numbers prevent duplicates, and usernames are validated live against LeetCode before saving.
-- **Admin Dashboard:** A password-protected portal to manage users and set the Question of the Week.
-- **Zero-Maintenance Database:** Uses Google Sheets and Google Apps Script as a free backend.
-- **Server-Side APIs:** Custom API routes handle data aggregation and circumvent LeetCode CORS restrictions.
-- **Premium UI/UX:** Responsive, dark mode, skeleton loading states, and dynamic filtering (Top 10 / Contestants).
+### Live Leaderboard
+
+- Real-time LeetCode rankings
+- Easy / Medium / Hard problem breakdown
+- Contest rating and global ranking
+- Dynamic sorting and filtering
+
+### Batch Wars
+
+- Compare academic batches
+- Average solved problems
+- Competitive batch rankings
+- Encourage healthy peer competition
+
+### Student Profiles
+
+- Individual coding statistics
+- Contribution heatmaps
+- Contest history
+- Achievement overview
+
+### Passwordless Authentication
+
+- Secure email magic links
+- University email verification
+- Persistent authenticated sessions
+
+### Admin Dashboard
+
+- Student management
+- Question of the Week management
+- Secure administrator access
+- Moderation tools
+
+### Modern User Experience
+
+- Fully responsive
+- Dark theme
+- Smooth animations
+- Skeleton loading states
+- Optimized performance
 
 ---
 
-## 🗂 Project Structure
+# Tech Stack
 
-```
-src/
-├── app/
-│   ├── admin/                 # Secure Admin Dashboard UI
-│   ├── api/
-│   │   ├── admin/             # Auth and Action routes for Admin
-│   │   ├── leaderboard/       # GET all users with stats
-│   │   ├── qotw/              # GET Question of the week
-│   │   └── add-user/          # POST validate + add username
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx               # Main leaderboard UI (Individuals & Batch Wars)
-├── components/
-│   ├── AddUserModal.tsx       # Registration form
-│   ├── Heatmap.tsx            # Activity heatmap component
-│   ├── SkeletonRows.tsx
-│   └── StatCard.tsx
-├── lib/
-│   ├── leetcode.ts            # LeetCode GraphQL fetcher
-│   └── sheets.ts              # Google Sheets read/write functions
-└── types/index.ts
-```
+| Category | Technology |
+|-----------|------------|
+| Framework | Next.js 14 |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Authentication | NextAuth.js + Resend |
+| ORM | Prisma |
+| Database | Google Sheets |
+| Backend | Google Apps Script |
+| Deployment | Vercel |
 
 ---
 
-## 🚀 Setup Guide (Step by Step)
+# Screenshots
 
-### Step 1 — Create the Google Sheet
+> Screenshots coming soon.
 
-1. Go to [sheets.google.com](https://sheets.google.com) and create a new sheet.
-2. Rename the first tab to `users`.
-3. In Row 1, add these headers:
-   - `A1` → `username`
-   - `B1` → `addedAt`
-   - `C1` → `yearStudying`
-   - `D1` → `enrollmentNo`
-4. Add a second tab and name it `settings`.
-   - `A1` → `key`
-   - `B1` → `value`
+- Homepage
+- Leaderboard
+- Student Profile
+- Admin Dashboard
+- Batch Wars
 
-### Step 2 — Publish the Sheet as CSV (for reading)
+---
 
-1. File → Share → **Publish to web**
-2. Select the `users` tab.
-3. Format: **Comma-separated values (.csv)**
-4. Click **Publish**
-5. Copy the URL — it looks like:  
-   `https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/pub?gid=0&single=true&output=csv`
+# Roadmap
 
-### Step 3 — Deploy the Apps Script (for writing)
+## Completed
 
-1. In your Google Sheet, go to **Extensions → Apps Script**.
-2. Delete any existing code.
-3. Paste the complete contents of `google-apps-script.js` (included in this repository).
-4. Save (Ctrl+S), name it anything.
-5. Click **Deploy → New Deployment**.
-   - Type: **Web App**
-   - Execute as: **Me**
-   - Who has access: **Anyone**
-6. Click Deploy, authorize when prompted.
-7. Copy the **Web App URL**.
+- [x] Live Leaderboard
+- [x] Student Registration
+- [x] Magic Link Authentication
+- [x] Admin Dashboard
+- [x] Question of the Week
+- [x] Student Profiles
+- [x] Batch Rankings
+- [x] Responsive Design
 
-### Step 4 — Configure environment variables
+## In Progress
 
-Copy `.env.local.example` to `.env.local`:
+- 🚧 Complete UI Redesign (v2)
+- 🚧 Performance Optimizations
+- 🚧 Better Mobile Experience
+
+## Planned
+
+- Achievement System
+- University Analytics
+- Multi-University Support
+- Public API
+- Organization Accounts
+- Custom Themes
+- Advanced Search
+- Student Badges
+
+---
+
+# Project Status
+
+> 🚧 **BUrank v2 is currently under active development.**
+
+The current release is stable and production-ready.
+
+The next major milestone focuses on delivering a complete UI/UX redesign, improved performance, and a richer user experience.
+
+Feedback, ideas, and contributions are always welcome.
+
+---
+
+# Contributing
+
+Contributions are welcome.
+
+Whether you'd like to fix bugs, improve the UI, optimize performance, or suggest new features, we'd love your help.
+
+1. Fork the repository
+2. Create a feature branch
 
 ```bash
-cp .env.local.example .env.local
+git checkout -b feature/amazing-feature
 ```
 
-Fill in the required variables:
-
-```env
-NEXT_PUBLIC_SHEET_CSV_URL=<your CSV URL from Step 2>
-NEXT_PUBLIC_SHEET_WRITE_URL=<your Apps Script URL from Step 3>
-NEXT_PUBLIC_COLLEGE_NAME=Bennett University
-ADMIN_PASSWORD=<your_super_secret_admin_password>
-```
-
-### Step 5 — Run locally
+3. Commit your changes
 
 ```bash
-npm install
-npm run dev
+git commit -m "Add amazing feature"
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
-Access the Admin Dashboard at [http://localhost:3000/admin](http://localhost:3000/admin)
+4. Push your branch
+
+```bash
+git push origin feature/amazing-feature
+```
+
+5. Open a Pull Request
+
+For significant changes, please open an Issue first so we can discuss the proposed direction.
 
 ---
 
-## ☁️ Deploy to Vercel (Free)
+# Architecture
 
-1. Push this repo to GitHub.
-2. Go to [vercel.com](https://vercel.com) → **Add New Project** → import your repo.
-3. In **Environment Variables**, add:
-   - `NEXT_PUBLIC_SHEET_CSV_URL`
-   - `NEXT_PUBLIC_SHEET_WRITE_URL`
-   - `NEXT_PUBLIC_COLLEGE_NAME`
-   - `ADMIN_PASSWORD`
-4. Click **Deploy** — done! 🎉
-
-Your app will be live at `your-project.vercel.app` in ~1 minute.
-
----
-
-## 🔒 Notes on Trust & Security
-
-This leaderboard uses a **trust-based** model on the frontend, supplemented by enrollment verification.  
-- **Duplicate Prevention:** The system actively checks for duplicate usernames and enrollment numbers.
-- **Data Integrity:** Usernames are queried against LeetCode's API before insertion; if the user doesn't exist, the registration is rejected.
-- **Admin Moderation:** The secure `/admin` portal allows authorized personnel to delete problematic or fake entries instantly.
-
----
-
-## 🛠 Tech Stack
-
-| Tool | Purpose | Cost |
-|---|---|---|
-| Next.js 14 | Frontend + API routes | Free |
-| Tailwind CSS | Styling | Free |
-| LeetCode GraphQL API | Stats data | Free (public) |
-| Google Sheets | Database | Free |
-| Google Apps Script | Write endpoint | Free |
-| Vercel | Hosting | Free |
-
-**Total monthly cost: ₹0**
+```text
+                 LeetCode GraphQL
+                        │
+                        ▼
+              Next.js API Routes
+                        │
+        ┌───────────────┼───────────────┐
+        ▼                               ▼
+ Google Sheets                    Authentication
+ (Student Data)              NextAuth + Resend
+        │                               │
+        └───────────────┬───────────────┘
+                        ▼
+                 BUrank Frontend
+                  (Next.js + React)
+                        │
+                        ▼
+                     Vercel
+```
 
 ---
 
-## 🤝 Contributing
+# License
 
-Fork, improve, and share with your college! PRs welcome. For detailed product vision and requirements, see `PRD.md`.
+Distributed under the MIT License.
+
+---
+
+<div align="center">
+
+Made with ❤️ for the competitive programming community.
+
+If you found this project useful, consider giving it a ⭐.
+
+</div>
