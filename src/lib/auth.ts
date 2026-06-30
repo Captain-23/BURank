@@ -58,7 +58,7 @@ const authOptions: NextAuthOptions = {
     signIn: "/auth/signin", // our custom sign-in page
     verifyRequest: "/auth/verify", // "check your email" page
     error: "/auth/error", // error page
-    newUser: "/onboarding", // first-time users go here
+    newUser: "/auth/error", // first-time users go here
   },
 
   // ─── callbacks ───────────────────────────────────────────────────────────
