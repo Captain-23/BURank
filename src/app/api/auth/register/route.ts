@@ -1,27 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchLeetCodeUser } from "@/lib/leetcode";
 import { addUsernameToSheet, fetchUsernamesFromSheet } from "@/lib/sheets";
-import { createSessionCookie, hashPassword } from "@/lib/session";
+import { getSession } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getSession();
+
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        {
+          success: false,
+
+          message: "Please sign in before joining the leaderboard.",
+        },
+
+        { status: 401 },
+      );
+    }
     const body = await req.json();
     const username: string = (body.username ?? "").trim().toLowerCase();
     const yearStudying: string = (body.yearStudying ?? "").trim();
     const enrollmentNo: string = (body.enrollmentNo ?? "").trim().toUpperCase();
-    const password: string = (body.password ?? "").trim();
 
     if (!username || username.length < 2) {
-      return NextResponse.json({ success: false, message: "Invalid username." }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: "Invalid username." },
+        { status: 400 },
+      );
     }
     if (!yearStudying) {
-      return NextResponse.json({ success: false, message: "Year of study is required." }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: "Year of study is required." },
+        { status: 400 },
+      );
     }
     if (!enrollmentNo) {
-      return NextResponse.json({ success: false, message: "Enrollment number is required." }, { status: 400 });
-    }
-    if (!password || password.length < 4) {
-      return NextResponse.json({ success: false, message: "Password must be at least 4 characters." }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: "Enrollment number is required." },
+        { status: 400 },
+      );
     }
 
     // 1. Check for duplicates
@@ -50,19 +68,19 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Write to sheet with hashed password
-    const hashedPassword = hashPassword(password);
-    const result = await addUsernameToSheet(username, yearStudying, enrollmentNo, hashedPassword);
-    
-    if (result.success) {
-      createSessionCookie(username);
-    }
-    
+
+    const result = await addUsernameToSheet(
+      username,
+      yearStudying,
+      enrollmentNo,
+    );
+
     return NextResponse.json(result);
   } catch (err) {
     console.error("/api/auth/register error:", err);
     return NextResponse.json(
       { success: false, message: "Server error. Please try again." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

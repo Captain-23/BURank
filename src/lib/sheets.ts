@@ -74,13 +74,12 @@ export async function fetchUsernamesFromSheet(): Promise<SheetEntry[]> {
 
     return lines
       .map((line) => {
-        const [username, addedAt, yearStudying, enrollmentNo, password] = line.split(",").map((v) => v.trim());
+        const [username, addedAt, yearStudying, enrollmentNo] = line.split(",").map((v) => v.trim());
         return { 
           username: username?.toLowerCase(), 
           addedAt: addedAt ?? "",
           yearStudying: yearStudying ?? "",
-          enrollmentNo: enrollmentNo ?? "",
-          password: password ?? ""
+          enrollmentNo: enrollmentNo ?? ""
         };
       })
       .filter((e) => e.username && e.username.length > 0);
@@ -98,7 +97,6 @@ export async function addUsernameToSheet(
   username: string,
   yearStudying: string,
   enrollmentNo: string,
-  password?: string
 ): Promise<{ success: boolean; message: string }> {
   if (!SHEET_WRITE_URL) {
     return { success: false, message: "Sheet write URL not configured." };
@@ -111,7 +109,7 @@ export async function addUsernameToSheet(
       addedAt: new Date().toISOString(),
       yearStudying,
       enrollmentNo,
-      password: password || ""
+      
     });
 
     if (!data) return { success: false, message: "No response from sheet." };

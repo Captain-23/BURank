@@ -40,6 +40,7 @@ export default function LeaderboardPage() {
   const [qotw, setQotw] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("individuals");
   const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const isRegistered = users.some((u) => u.username === currentUser);
   const [firstBlood, setFirstBlood] = useState<string>("");
 
   const [selectedUser, setSelectedUser] = useState<{
@@ -241,24 +242,39 @@ export default function LeaderboardPage() {
                 {loading ? "↻ Loading..." : "↻ Refresh"}
               </button>
               {currentUser ? (
-                <div className="flex items-center gap-3 bg-[var(--bu-card)] border border-[var(--bu-border)] rounded-xl px-4 py-2">
-                  <span className="text-sm font-medium text-white">
-                    {currentUser}
-                  </span>
-                  <button
-                    onClick={handleLogout}
-                    className="text-xs text-[var(--bu-red)] font-bold hover:underline"
-                  >
-                    Logout
-                  </button>
+                <div className="flex items-center gap-3">
+                  {!isRegistered && (
+                    <button
+                      onClick={() => setShowModal(true)}
+                      className="px-5 py-2 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-95"
+                      style={{ background: "var(--bu-red)" }}
+                    >
+                      + Join Leaderboard
+                    </button>
+                  )}
+
+                  <div className="flex items-center gap-3 bg-[var(--bu-card)] border border-[var(--bu-border)] rounded-xl px-4 py-2">
+                    <span className="text-sm font-medium text-white">
+                      {currentUser}
+                    </span>
+
+                    <button
+                      onClick={handleLogout}
+                      className="text-xs text-[var(--bu-red)] font-bold hover:underline"
+                    >
+                      Logout
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <button
-                  onClick={() => setShowModal(true)}
+                  onClick={() => {
+                    window.location.href = "/auth/signin";
+                  }}
                   className="px-5 py-2 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-95"
                   style={{ background: "var(--bu-red)" }}
                 >
-                  + Login / Join
+                  Sign In
                 </button>
               )}
             </div>
