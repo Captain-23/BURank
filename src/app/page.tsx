@@ -11,7 +11,7 @@ import SkeletonRows from "@/components/SkeletonRows";
 import StatCard from "@/components/StatCard";
 import { LeetCodeUser, SortKey, SortDirection } from "@/types";
 import Navbar from "@/components/Navbar";
-
+import { useSession, signIn, signOut } from "next-auth/react";
 const COLLEGE = process.env.NEXT_PUBLIC_COLLEGE_NAME ?? "Bennett University";
 
 type Filter = "all" | "top10" | "contested";
@@ -39,9 +39,13 @@ export default function LeaderboardPage() {
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const [qotw, setQotw] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("individuals");
-  const [currentUser, setCurrentUser] = useState<string | null>(null);
-  const isRegistered = users.some((u) => u.username === currentUser);
   const [firstBlood, setFirstBlood] = useState<string>("");
+  const { data: session } = useSession();
+  const currentEmail = session?.user?.email ?? null;
+
+  const isRegistered = users.some(
+    (u: any) => u.email?.toLowerCase() === currentEmail?.toLowerCase(),
+  );
 
   const [selectedUser, setSelectedUser] = useState<{
     user: LeetCodeUser;
@@ -52,20 +56,18 @@ export default function LeaderboardPage() {
     setLoading(true);
     setError(null);
     try {
-      const [res, qotwRes, meRes] = await Promise.all([
+      const [res, qotwRes] = await Promise.all([
         fetch("/api/leaderboard", { cache: "no-store" }),
         fetch("/api/qotw", { cache: "no-store" }),
-        fetch("/api/auth/me", { cache: "no-store" }),
       ]);
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       const qotwData = await qotwRes.json();
-      const meData = await meRes.json();
 
       setUsers(data.users ?? []);
       setQotw(qotwData.qotw_url || "");
       setFirstBlood(qotwData.first_blood || "");
-      setCurrentUser(meData.username || null);
+
       setLastRefreshed(new Date());
     } catch {
       setError("Could not load leaderboard. Check your connection.");
@@ -79,8 +81,7 @@ export default function LeaderboardPage() {
   }, [fetchLeaderboard]);
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    setCurrentUser(null);
+    await signOut({ callbackUrl: "/" });
   };
 
   // Sort + filter logic
@@ -241,7 +242,7 @@ export default function LeaderboardPage() {
               >
                 {loading ? "↻ Loading..." : "↻ Refresh"}
               </button>
-              {currentUser ? (
+              {session ? (
                 <div className="flex items-center gap-3">
                   {!isRegistered && (
                     <button
@@ -255,7 +256,7 @@ export default function LeaderboardPage() {
 
                   <div className="flex items-center gap-3 bg-[var(--bu-card)] border border-[var(--bu-border)] rounded-xl px-4 py-2">
                     <span className="text-sm font-medium text-white">
-                      {currentUser}
+                      {session.user?.email}
                     </span>
 
                     <button
@@ -269,7 +270,7 @@ export default function LeaderboardPage() {
               ) : (
                 <button
                   onClick={() => {
-                    window.location.href = "/auth/signin";
+                    signIn(undefined, { callbackUrl: "/" });
                   }}
                   className="px-5 py-2 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-95"
                   style={{ background: "var(--bu-red)" }}

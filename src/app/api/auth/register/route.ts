@@ -7,14 +7,14 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getSession();
 
-    if (!session?.user?.email) {
+    const email = session?.user?.email;
+
+    if (!email) {
       return NextResponse.json(
         {
           success: false,
-
           message: "Please sign in before joining the leaderboard.",
         },
-
         { status: 401 },
       );
     }
@@ -58,6 +58,13 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    if (existing.some((e) => e.email === email)) {
+      return NextResponse.json({
+        success: false,
+        message: "This email has already joined the leaderboard.",
+      });
+    }
+
     // 2. Validate that the LeetCode user actually exists
     const user = await fetchLeetCodeUser(username);
     if (!user) {
@@ -71,6 +78,7 @@ export async function POST(req: NextRequest) {
 
     const result = await addUsernameToSheet(
       username,
+      email!,
       yearStudying,
       enrollmentNo,
     );

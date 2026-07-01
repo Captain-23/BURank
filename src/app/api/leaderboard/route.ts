@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { fetchUsernamesFromSheet, getQuestionOfTheWeek, setFirstBlood } from "@/lib/sheets";
+import {
+  fetchUsernamesFromSheet,
+  getQuestionOfTheWeek,
+  setFirstBlood,
+} from "@/lib/sheets";
 import { fetchLeetCodeUser } from "@/lib/leetcode";
 import { LeetCodeUser } from "@/types";
 
@@ -14,26 +18,29 @@ export async function GET() {
       return NextResponse.json({ users: [] });
     }
 
-    // Deduplicate in case the sheet has identical usernames
+    // Remove duplicate usernames
     const uniqueEntries = [];
     const seen = new Set<string>();
-    for (const e of entries) {
-      if (!seen.has(e.username)) {
-        seen.add(e.username);
-        uniqueEntries.push(e);
+
+    for (const entry of entries) {
+      if (!seen.has(entry.username)) {
+        seen.add(entry.username);
+        uniqueEntries.push(entry);
       }
     }
+
     entries = uniqueEntries;
 
-    // Fetch all users in parallel (with concurrency limit to avoid rate limiting)
     const CHUNK_SIZE = 5;
     const results: LeetCodeUser[] = [];
 
     for (let i = 0; i < entries.length; i += CHUNK_SIZE) {
       const chunk = entries.slice(i, i + CHUNK_SIZE);
+
       const chunkResults = await Promise.all(
         chunk.map(async (entry) => {
           const user = await fetchLeetCodeUser(entry.username);
+
           if (!user) {
             return {
               username: entry.username,
@@ -49,64 +56,97 @@ export async function GET() {
               contestGlobalRanking: 0,
               attendedContestsCount: 0,
               topPercentage: 100,
+
+              // Sheet data
+              email: entry.email,
               addedAt: entry.addedAt,
               yearStudying: entry.yearStudying,
               enrollmentNo: entry.enrollmentNo,
+
               error: true,
             } satisfies LeetCodeUser;
           }
-          return { ...user, addedAt: entry.addedAt, yearStudying: entry.yearStudying, enrollmentNo: entry.enrollmentNo };
+
+          return {
+            ...user,
+
+            // Sheet data
+            email: entry.email,
+            addedAt: entry.addedAt,
+            yearStudying: entry.yearStudying,
+            enrollmentNo: entry.enrollmentNo,
+          };
         })
       );
+
       results.push(...chunkResults);
 
-      // Small delay between chunks to be respectful of rate limits
       if (i + CHUNK_SIZE < entries.length) {
-        await new Promise((r) => setTimeout(r, 200));
+        await new Promise((resolve) => setTimeout(resolve, 200));
       }
     }
 
-    // Check for First Blood if QOTW is active and no one has it yet
+    // ----------------------------
+    // First Blood
+    // ----------------------------
+
     const qotw = await getQuestionOfTheWeek();
+
     if (qotw.qotw_url && !qotw.first_blood) {
-      const match = qotw.qotw_url.match(/problems\/([^\/]+)/);
+      const match = qotw.qotw_url.match(/problems\/([^/]+)/);
       const titleSlug = match ? match[1] : null;
-      
+
       if (titleSlug && qotw.qotw_timestamp) {
-        const qotwTime = new Date(qotw.qotw_timestamp).getTime() / 1000;
+        const qotwTime =
+          new Date(qotw.qotw_timestamp).getTime() / 1000;
+
         let earliestSolver: string | null = null;
         let earliestTime = Infinity;
 
         for (const user of results) {
-          if (user.recentSubmissions) {
-            for (const sub of user.recentSubmissions) {
-              if (sub.titleSlug === titleSlug) {
-                const subTime = parseInt(sub.timestamp, 10);
-                if (subTime >= qotwTime && subTime < earliestTime) {
-                  earliestTime = subTime;
-                  earliestSolver = user.username;
-                }
-              }
+          if (!user.recentSubmissions) continue;
+
+          for (const submission of user.recentSubmissions) {
+            if (submission.titleSlug !== titleSlug) continue;
+
+            const submissionTime = parseInt(
+              submission.timestamp,
+              10
+            );
+
+            if (
+              submissionTime >= qotwTime &&
+              submissionTime < earliestTime
+            ) {
+              earliestTime = submissionTime;
+              earliestSolver = user.username;
             }
           }
         }
 
         if (earliestSolver) {
-          // Fire and forget
           setFirstBlood(earliestSolver).catch(console.error);
         }
       }
     }
 
-    // Clean up recentSubmissions so we don't send massive payloads to the client
-    const cleanResults = results.map(({ recentSubmissions, ...rest }) => rest);
+    const cleanResults = results.map(
+      ({ recentSubmissions, ...rest }) => rest
+    );
 
-    return NextResponse.json({ users: cleanResults });
+    return NextResponse.json({
+      users: cleanResults,
+    });
   } catch (err) {
     console.error("/api/leaderboard error:", err);
+
     return NextResponse.json(
-      { error: "Failed to fetch leaderboard" },
-      { status: 500 }
+      {
+        error: "Failed to fetch leaderboard",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

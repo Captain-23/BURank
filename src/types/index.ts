@@ -12,6 +12,7 @@ export interface LeetCodeUser {
   topPercentage: number;
   avatar: string;
   realName: string;
+  email?: string;
   addedAt?: string;
   yearStudying?: string;
   enrollmentNo?: string;
@@ -22,10 +23,10 @@ export interface LeetCodeUser {
 
 export interface SheetEntry {
   username: string;
+  email: string;
   addedAt: string;
   yearStudying: string;
   enrollmentNo: string;
-  password?: string;
 }
 
 export type SortKey =
