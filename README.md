@@ -1,5 +1,18 @@
 <div align="center">
 
+## 🤝 Looking for Contributors
+
+We're actively looking for contributors to improve BURank.
+
+### Current Priorities
+
+- 🎨 Complete UI/UX Redesign
+- 📱 Mobile Responsiveness
+- ⚡ Performance Improvements
+
+👉 **Check the [Issues](https://github.com/Captain-23/BURank/issues) tab if you'd like to contribute.**
+
+
 # 🏆 BUrank
 
 ### The modern LeetCode leaderboard platform for universities.
