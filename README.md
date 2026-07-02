@@ -87,11 +87,11 @@ Built with a modern full-stack architecture, BUrank is fast, responsive, scalabl
 
 > Screenshots coming soon.
 
-- Homepage
 - Leaderboard
 - Student Profile
 - Admin Dashboard
 - Batch Wars
+- Personal Card
 
 ---
 
@@ -118,8 +118,6 @@ Built with a modern full-stack architecture, BUrank is fast, responsive, scalabl
 
 - Achievement System
 - University Analytics
-- Multi-University Support
-- Public API
 - Organization Accounts
 - Custom Themes
 - Advanced Search
