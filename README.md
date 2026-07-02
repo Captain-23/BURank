@@ -85,13 +85,53 @@ Built with a modern full-stack architecture, BUrank is fast, responsive, scalabl
 
 # Screenshots
 
-> Screenshots coming soon.
+## Leaderboard
 
-- Homepage
-- Leaderboard
-- Student Profile
-- Admin Dashboard
-- Batch Wars
+<p align="center">
+
+  <img src="./assets/screenshots/Dashboard.png" width="900">
+
+</p>
+
+---
+
+## Student Profile
+
+<p align="center">
+
+  <img src="./assets/screenshots/profile.png" width="900">
+
+</p>
+
+---
+
+## Batch Wars
+
+<p align="center">
+
+  <img src="./assets/screenshots/BatchWars.png" width="900">
+
+</p>
+
+---
+
+## Admin Dashboard
+
+<p align="center">
+
+  <img src="./assets/screenshots/admin.png" width="900">
+
+</p>
+
+---
+
+## Personal Card
+
+<p align="center">
+
+  <img src="./assets/screenshots/UserCard.png" width="900">
+
+</p>
 
 ---
 
