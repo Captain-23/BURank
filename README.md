@@ -85,8 +85,6 @@ Built with a modern full-stack architecture, BUrank is fast, responsive, scalabl
 
 # Screenshots
 
-> Screenshots coming soon.
-
 - Leaderboard
 - Student Profile
 - Admin Dashboard
