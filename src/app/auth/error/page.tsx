@@ -5,7 +5,7 @@
 // The error type is passed as a query param: ?error=AccessDenied etc.
 
 const ERROR_MESSAGES: Record<string, string> = {
-  AccessDenied: "Only @bennett.edu.in email addresses can sign in to BUrge.",
+  AccessDenied: "Only @bennett.edu.in email addresses can sign in to BURank.",
   Verification:
     "This sign-in link has expired or has already been used. Please request a new one.",
   Configuration:

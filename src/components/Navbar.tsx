@@ -2,7 +2,7 @@
 
 // src/components/Navbar.tsx
 // Add this to the top of your leaderboard page.
-// Shows: BUrge wordmark | signed-in email | sign out button
+// Shows: BUrank wordmark | signed-in email | sign out button
 
 import { useSession, signOut } from "next-auth/react";
 

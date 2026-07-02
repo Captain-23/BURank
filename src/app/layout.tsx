@@ -4,11 +4,11 @@ import SessionProvider from "@/components/SessionProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "BUrge — Bennett University LeetCode Leaderboard",
+  title: "BURank — Bennett University LeetCode Leaderboard",
   description:
     "Compete, track progress, and rank among Bennett University coders.",
   openGraph: {
-    title: "BUrge",
+    title: "BURank",
     description: "Bennett University LeetCode Leaderboard",
     type: "website",
   },

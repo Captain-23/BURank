@@ -65,7 +65,7 @@ export default function UserProfileModal({
   const copyGithubMarkdown = async () => {
     if (!user.enrollmentNo) return;
 
-    const markdown = `![My BUrge Rank](${window.location.origin}/card/${user.enrollmentNo})`;
+    const markdown = `![My BURank Rank](${window.location.origin}/card/${user.enrollmentNo})`;
 
     await navigator.clipboard.writeText(markdown);
 

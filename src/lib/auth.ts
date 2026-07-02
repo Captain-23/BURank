@@ -30,7 +30,7 @@ const authOptions: NextAuthOptions = {
         const { error } = await resend.emails.send({
           from: process.env.EMAIL_FROM!,
           to: email,
-          subject: "Your BUrge sign-in link",
+          subject: "Your BURank sign-in link",
           html: magicLinkEmail(url, email),
         });
 
@@ -122,10 +122,10 @@ function magicLinkEmail(url: string, email: string): string {
               </p>
 
               <p style="margin:0 0 8px;font-size:15px;font-weight:600;color:#E2E2F0;">
-                Sign in to BUrge
+                Sign in to BURank
               </p>
               <p style="margin:0 0 28px;font-size:13px;color:#8888A8;line-height:1.6;">
-                Click the button below to sign in to your BUrge account.
+                Click the button below to sign in to your BURank account.
                 This link expires in <strong style="color:#E2E2F0;">15 minutes</strong>
                 and can only be used once.
               </p>
@@ -135,7 +135,7 @@ function magicLinkEmail(url: string, email: string): string {
                 style="display:inline-block;padding:12px 28px;
                 background:#C8102E;color:#ffffff;font-size:14px;
                 font-weight:600;text-decoration:none;border-radius:6px;">
-                Sign in to BUrge
+                Sign in to BURank
               </a>
 
               <!-- Divider -->
