@@ -99,7 +99,7 @@ Built with a modern full-stack architecture, BUrank is fast, responsive, scalabl
 
 <p align="center">
 
-  <img src="./assets/screenshots/profile.png" width="900">
+  <img src="./assets/screenshots/Profile.png" width="900">
 
 </p>
 
@@ -119,7 +119,7 @@ Built with a modern full-stack architecture, BUrank is fast, responsive, scalabl
 
 <p align="center">
 
-  <img src="./assets/screenshots/admin.png" width="900">
+  <img src="./assets/screenshots/Admin.png" width="900">
 
 </p>
 
