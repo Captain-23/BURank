@@ -23,7 +23,7 @@ const Stat = ({
 }) => (
   <div
     style={{
-      background: "#0A0A0F",
+      background: "var(--bg-2)",
       borderRadius: 6,
       padding: "10px 14px",
     }}
@@ -31,7 +31,7 @@ const Stat = ({
     <p
       style={{
         fontSize: 11,
-        color: "#8888a8",
+        color: "var(--sub)",
         margin: "0 0 4px",
         textTransform: "uppercase",
         letterSpacing: "0.06em",
@@ -45,7 +45,7 @@ const Stat = ({
         fontWeight: 600,
         margin: 0,
         fontFamily: "JetBrains Mono, monospace",
-        color: color ?? "#E2E2F0",
+        color: color ?? "var(--ink)",
       }}
     >
       {value}
@@ -112,20 +112,20 @@ export default function UserProfileModal({
         style={{
           width: "100%",
           maxWidth: 520,
-          background: "#111118",
-          border: "1px solid #1E1E2E",
+          background: "var(--card)",
+          border: "1px solid var(--line)",
           borderRadius: 12,
           overflow: "hidden",
         }}
       >
         {/* Red accent top bar */}
-        <div style={{ height: 3, background: "#C8102E" }} />
+        <div style={{ height: 3, background: "var(--bu-red)" }} />
 
         {/* Header */}
         <div
           style={{
             padding: "20px 24px 16px",
-            borderBottom: "1px solid #1E1E2E",
+            borderBottom: "1px solid var(--line)",
           }}
         >
           <div
@@ -151,7 +151,7 @@ export default function UserProfileModal({
                     width: 48,
                     height: 48,
                     borderRadius: "50%",
-                    background: "#C8102E",
+                    background: "var(--bu-red)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -171,7 +171,7 @@ export default function UserProfileModal({
                   style={{
                     fontSize: 16,
                     fontWeight: 600,
-                    color: "#E2E2F0",
+                    color: "var(--ink)",
                     textDecoration: "none",
                     fontFamily: "JetBrains Mono, monospace",
                     display: "flex",
@@ -199,7 +199,7 @@ export default function UserProfileModal({
                   <p
                     style={{
                       fontSize: 13,
-                      color: "#8888a8",
+                      color: "var(--sub)",
                       margin: "2px 0 0",
                     }}
                   >
@@ -214,7 +214,7 @@ export default function UserProfileModal({
                 <p
                   style={{
                     fontSize: 11,
-                    color: "#8888a8",
+                    color: "var(--sub)",
                     margin: "0 0 2px",
                     textTransform: "uppercase",
                     letterSpacing: "0.06em",
@@ -228,7 +228,7 @@ export default function UserProfileModal({
                     fontWeight: 700,
                     margin: 0,
                     fontFamily: "JetBrains Mono, monospace",
-                    color: "#C8102E",
+                    color: "var(--bu-red)",
                   }}
                 >
                   #{collegeRank}
@@ -239,7 +239,7 @@ export default function UserProfileModal({
                 style={{
                   background: "none",
                   border: "none",
-                  color: "#8888a8",
+                  color: "var(--sub)",
                   fontSize: 22,
                   cursor: "pointer",
                   lineHeight: 1,
@@ -254,7 +254,7 @@ export default function UserProfileModal({
 
         {/* Stats grid */}
         <div
-          style={{ padding: "16px 24px", borderBottom: "1px solid #1E1E2E" }}
+          style={{ padding: "16px 24px", borderBottom: "1px solid var(--line)" }}
         >
           <div
             style={{
@@ -291,13 +291,13 @@ export default function UserProfileModal({
           <div
             style={{
               padding: "16px 24px",
-              borderBottom: "1px solid #1E1E2E",
+              borderBottom: "1px solid var(--line)",
             }}
           >
             <p
               style={{
                 fontSize: 11,
-                color: "#8888A8",
+                color: "var(--sub)",
                 margin: "0 0 10px",
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
@@ -315,7 +315,7 @@ export default function UserProfileModal({
             >
               <span
                 style={{
-                  color: "#E2E2F0",
+                  color: "var(--ink)",
                   fontWeight: 600,
                 }}
               >
@@ -324,7 +324,7 @@ export default function UserProfileModal({
 
               <span
                 style={{
-                  color: "#8888A8",
+                  color: "var(--sub)",
                   fontFamily: "JetBrains Mono, monospace",
                 }}
               >
@@ -336,7 +336,7 @@ export default function UserProfileModal({
               style={{
                 width: "100%",
                 height: 8,
-                background: "#1E1E2E",
+                background: "var(--track)",
                 borderRadius: 999,
                 overflow: "hidden",
               }}
@@ -345,7 +345,7 @@ export default function UserProfileModal({
                 style={{
                   width: `${nextBadge.progress}%`,
                   height: "100%",
-                  background: "#C8102E",
+                  background: "var(--bu-red)",
                   transition: "width 0.4s ease",
                 }}
               />
@@ -356,11 +356,11 @@ export default function UserProfileModal({
                 marginTop: 8,
                 marginBottom: 0,
                 fontSize: 12,
-                color: "#8888A8",
+                color: "var(--sub)",
               }}
             >
               {nextBadge.remaining} more {nextBadge.unit} to unlock{" "}
-              <strong style={{ color: "#E2E2F0" }}>{nextBadge.label}</strong>
+              <strong style={{ color: "var(--ink)" }}>{nextBadge.label}</strong>
             </p>
           </div>
         )}
@@ -372,7 +372,7 @@ export default function UserProfileModal({
               onClick={copyRankCard}
               style={{
                 width: "100%",
-                background: "#C8102E",
+                background: "var(--bu-red)",
                 color: "#fff",
                 border: "none",
                 borderRadius: 8,
@@ -388,9 +388,9 @@ export default function UserProfileModal({
               onClick={copyGithubMarkdown}
               style={{
                 width: "100%",
-                background: "#1E1E2E",
-                color: "#E2E2F0",
-                border: "1px solid #2A2A3E",
+                background: "var(--bg-2)",
+                color: "var(--ink)",
+                border: "1px solid var(--line)",
                 borderRadius: 8,
                 padding: "10px 14px",
                 fontWeight: 600,
@@ -407,7 +407,7 @@ export default function UserProfileModal({
               fontWeight: 500,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: "#8888a8",
+              color: "var(--sub)",
               margin: "0 0 12px",
             }}
           >

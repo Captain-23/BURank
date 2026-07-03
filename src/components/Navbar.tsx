@@ -17,7 +17,7 @@ export default function Navbar() {
       alignItems: "center",
       justifyContent: "space-between",
       padding: "0 0 20px",
-      borderBottom: "1px solid #1E1E2E",
+      borderBottom: "1px solid var(--line)",
       marginBottom: 24,
     }}>
       {/* Left: wordmark */}
@@ -25,10 +25,10 @@ export default function Navbar() {
         fontSize: 18,
         fontWeight: 700,
         fontFamily: "'JetBrains Mono', monospace",
-        color: "#E2E2F0",
+        color: "var(--ink)",
         margin: 0,
       }}>
-        BU<span style={{ color: "#C8102E" }}>rge</span>
+        BU<span style={{ color: "var(--bu-red)" }}>rank</span>
       </p>
 
       {/* Right: user info + sign out */}
@@ -38,12 +38,12 @@ export default function Navbar() {
             <p style={{
               fontSize: 12,
               fontFamily: "'JetBrains Mono', monospace",
-              color: "#E2E2F0",
+              color: "var(--ink)",
               margin: 0,
             }}>
               {enrollment}
             </p>
-            <p style={{ fontSize: 10, color: "#555570", margin: "1px 0 0" }}>
+            <p style={{ fontSize: 10, color: "var(--muted)", margin: "1px 0 0" }}>
               {email}
             </p>
           </div>
@@ -52,20 +52,20 @@ export default function Navbar() {
             style={{
               padding: "6px 12px",
               borderRadius: 6,
-              border: "1px solid #1E1E2E",
+              border: "1px solid var(--line)",
               background: "none",
-              color: "#8888A8",
+              color: "var(--sub)",
               fontSize: 12,
               cursor: "pointer",
               transition: "color 0.15s, border-color 0.15s",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = "#E2E2F0";
-              e.currentTarget.style.borderColor = "#2A2A3E";
+              e.currentTarget.style.color = "var(--ink)";
+              e.currentTarget.style.borderColor = "var(--muted)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = "#8888A8";
-              e.currentTarget.style.borderColor = "#1E1E2E";
+              e.currentTarget.style.color = "var(--sub)";
+              e.currentTarget.style.borderColor = "var(--line)";
             }}
           >
             Sign out

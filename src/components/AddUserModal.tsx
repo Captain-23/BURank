@@ -100,14 +100,14 @@ export default function AddUserModal({ onClose, onSuccess }: Props) {
         }}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-2xl font-bold text-[var(--ink)]">
             Join Leaderboard
           </h2>
 
           <button
             onClick={onClose}
             type="button"
-            className="text-2xl hover:text-white transition-colors"
+            className="text-2xl hover:text-[var(--ink)] transition-colors"
             style={{ color: "var(--bu-sub)" }}
           >
             ×
@@ -208,7 +208,7 @@ export default function AddUserModal({ onClose, onSuccess }: Props) {
                   status === "success"
                     ? "#00b8a3"
                     : status === "error"
-                    ? "#ff375f"
+                    ? "var(--hard)"
                     : "var(--bu-sub)",
               }}
             >

@@ -1,0 +1,183 @@
+<title>BURank — Profile</title>
+<style>
+  :root {
+    --card: #FFFFFF; --bg-2: #EEF0F4; --ink: #14141C; --ink-2: #3D3D4C;
+    --sub: #71718A; --muted: #A6A6B8; --line: #E7E8EE; --line-2: #EFF0F4;
+    --red: #1B2A4A; --gold: #E0A93B;
+    --easy: #00A98F; --medium: #E0972B; --hard: #E24A47;
+    --track: #EAECF1;
+    --shadow: 0 1px 2px rgba(20,20,28,.04), 0 8px 24px rgba(20,20,28,.06);
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Menlo", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased;
+    font-variant-numeric: tabular-nums;
+    background-color: #FFFFFF;
+    background-image: linear-gradient(180deg, #E3E6EC 0%, #EAEDF1 40%, #FFFFFF 100%);
+    background-repeat: no-repeat; background-size: 100% 420px;
+  }
+
+  /* navbar (matches leaderboard) */
+  .topbar { display: flex; align-items: center; padding: 20px 24px; max-width: 1180px; margin: 0 auto; }
+  .brand { font-weight: 800; font-size: 21px; letter-spacing: -.035em; color: var(--ink); white-space: nowrap; }
+  .brand span { color: var(--red); }
+  .search { flex: 1; max-width: 440px; margin: 0 28px; display: flex; align-items: center; gap: 10px;
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; padding: 0 14px; height: 42px; }
+  .search .s-ic { color: var(--muted); font-size: 15px; }
+  .search input { flex: 1; border: 0; background: transparent; outline: none; font-family: var(--sans); font-size: 14px; color: var(--ink); }
+  .search input::placeholder { color: var(--muted); }
+  .back { margin-left: auto; font-size: 13.5px; font-weight: 650; color: var(--sub); text-decoration: none;
+    border: 1px solid var(--line); background: var(--card); border-radius: 11px; padding: 9px 15px; box-shadow: var(--shadow); }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 14px 24px 70px; display: flex; flex-direction: column; gap: 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); }
+
+  /* header */
+  .header { padding: 28px 32px; display: flex; align-items: center; gap: 26px; }
+  .p-ava { width: 108px; height: 108px; border-radius: 24px; background: linear-gradient(135deg,#F1D6C7,#D9DEF0); flex: 0 0 auto; box-shadow: var(--shadow); }
+  .p-id { min-width: 0; }
+  .p-id h1 { margin: 0; font-size: 32px; letter-spacing: -.03em; }
+  .p-handle { margin: 4px 0 14px; font-size: 15px; font-weight: 700; width: fit-content;
+    background: linear-gradient(90deg,#2E9BF0,#C24BE0 92%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .p-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+  .pill { font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 10px; font-family: var(--mono); }
+  .pill.rank { background: #FBE9EC; color: #C0344B; border: 1px solid #F3CDD4; }
+  .pill.year { background: var(--bg-2); color: var(--ink-2); border: 1px solid var(--line); }
+  .p-side { margin-left: auto; text-align: right; display: flex; flex-direction: column; gap: 18px; }
+  .p-side .lbl { font-size: 13px; color: var(--sub); font-weight: 600; }
+  .p-side .val { font-size: 30px; font-weight: 800; letter-spacing: -.02em; font-family: var(--mono); margin-top: 2px; }
+
+  /* middle row */
+  .prow { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+  .solved { padding: 30px 32px; display: flex; flex-direction: column; justify-content: center; }
+  .solved .lbl { font-size: 14px; color: var(--sub); font-weight: 600; }
+  .solved .big { font-size: 60px; font-weight: 800; letter-spacing: -.04em; font-family: var(--mono); line-height: 1.05; margin-top: 8px; }
+
+  .diff { padding: 26px 32px; }
+  .diff h2 { margin: 0 0 22px; font-size: 15px; font-weight: 700; color: var(--ink-2); }
+  .bar-row { display: grid; grid-template-columns: 78px 1fr 54px; align-items: center; gap: 16px; margin-bottom: 18px; }
+  .bar-row:last-child { margin-bottom: 0; }
+  .bar-row .name { font-size: 14px; font-weight: 700; }
+  .bar-row .name.e { color: var(--easy); } .bar-row .name.m { color: var(--medium); } .bar-row .name.h { color: var(--hard); }
+  .track { height: 9px; border-radius: 6px; background: var(--track); overflow: hidden; }
+  .fill { height: 100%; border-radius: 6px; }
+  .fill.e { background: var(--easy); } .fill.m { background: var(--medium); } .fill.h { background: var(--hard); }
+  .bar-row .num { text-align: right; font-family: var(--mono); font-weight: 750; font-size: 15px; }
+
+  /* calendar */
+  .cal { padding: 26px 32px 30px; }
+  .cal-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
+  .cal-head h2 { margin: 0; font-size: 15px; font-weight: 700; color: var(--ink-2); }
+  .cal-head .sub { font-size: 13px; color: var(--sub); font-family: var(--mono); }
+  .heat-scroll { overflow-x: auto; padding-bottom: 4px; }
+  .heat { display: inline-grid; grid-auto-flow: column; grid-template-rows: repeat(7, 13px); gap: 3px; }
+  .cell { width: 13px; height: 13px; border-radius: 3px; }
+  .legend { display: flex; align-items: center; justify-content: flex-end; gap: 7px; margin-top: 14px; font-size: 12px; color: var(--sub); }
+  .legend .cell { width: 12px; height: 12px; }
+
+  @media (max-width: 760px){
+    .header { flex-direction: column; align-items: flex-start; }
+    .p-side { margin-left: 0; text-align: left; flex-direction: row; gap: 40px; }
+    .prow { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="topbar">
+  <div class="brand">BU<span>rank</span></div>
+  <div class="search">
+    <span class="s-ic">⌕</span>
+    <input placeholder="Search coders, usernames, batches…" />
+  </div>
+  <a class="back" href="#">← Leaderboard</a>
+</div>
+
+<div class="wrap">
+
+  <!-- header -->
+  <div class="card header">
+    <div class="p-ava"></div>
+    <div class="p-id">
+      <h1>shikkoustic</h1>
+      <p class="p-handle">@shikkoustic</p>
+      <div class="p-pills">
+        <span class="pill rank">Global Rank · #180,027</span>
+        <span class="pill year">Batch 2024–28</span>
+      </div>
+    </div>
+    <div class="p-side">
+      <div><div class="lbl">Contest Rating</div><div class="val">1544</div></div>
+      <div><div class="lbl">Contests Attended</div><div class="val">6</div></div>
+    </div>
+  </div>
+
+  <!-- total solved + difficulty -->
+  <div class="prow">
+    <div class="card solved">
+      <div class="lbl">Total Solved</div>
+      <div class="big">523</div>
+    </div>
+
+    <div class="card diff">
+      <h2>Difficulty Breakdown</h2>
+      <div class="bar-row">
+        <span class="name e">Easy</span>
+        <div class="track"><div class="fill e" style="width:84%"></div></div>
+        <span class="num">229</span>
+      </div>
+      <div class="bar-row">
+        <span class="name m">Medium</span>
+        <div class="track"><div class="fill m" style="width:100%"></div></div>
+        <span class="num">272</span>
+      </div>
+      <div class="bar-row">
+        <span class="name h">Hard</span>
+        <div class="track"><div class="fill h" style="width:9%"></div></div>
+        <span class="num">22</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- submission calendar -->
+  <div class="card cal">
+    <div class="cal-head">
+      <h2>Submission Calendar</h2>
+      <span class="sub">Past 12 Months</span>
+    </div>
+    <div class="heat-scroll"><div class="heat" id="heat"></div></div>
+    <div class="legend">
+      <span>Less</span>
+      <span class="cell" style="background:#EAECF1"></span>
+      <span class="cell" style="background:#BEE9DC"></span>
+      <span class="cell" style="background:#6FD3BC"></span>
+      <span class="cell" style="background:#22B79B"></span>
+      <span class="cell" style="background:#00A98F"></span>
+      <span>More</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    var levels = ["#EAECF1", "#BEE9DC", "#6FD3BC", "#22B79B", "#00A98F"];
+    var heat = document.getElementById("heat");
+    var weeks = 53;
+    for (var w = 0; w < weeks; w++) {
+      for (var d = 0; d < 7; d++) {
+        var i = w * 7 + d;
+        // deterministic pseudo-random 0..1
+        var r = Math.abs(Math.sin(i * 12.9898 + 4.1) * 43758.5453) % 1;
+        // more active in recent months (higher w) and weekdays
+        var bias = w > 28 ? 0.28 : 0;
+        var v = r + bias;
+        var lvl = v < 0.42 ? 0 : v < 0.60 ? 1 : v < 0.78 ? 2 : v < 0.92 ? 3 : 4;
+        var c = document.createElement("div");
+        c.className = "cell";
+        c.style.background = levels[lvl];
+        heat.appendChild(c);
+      }
+    }
+  })();
+</script>

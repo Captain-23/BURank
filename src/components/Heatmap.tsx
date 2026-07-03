@@ -55,11 +55,11 @@ export default function Heatmap({ data }: HeatmapProps) {
 
   // Color logic
   const getColor = (count: number) => {
-    if (count === 0) return "rgba(255,255,255,0.05)";
-    if (count === 1) return "rgba(0, 184, 163, 0.4)";
-    if (count <= 3) return "rgba(0, 184, 163, 0.6)";
-    if (count <= 6) return "rgba(0, 184, 163, 0.8)";
-    return "rgba(0, 184, 163, 1)";
+    if (count === 0) return "#EAECF1";
+    if (count === 1) return "#BEE9DC";
+    if (count <= 3) return "#6FD3BC";
+    if (count <= 6) return "#22B79B";
+    return "#00A98F";
   };
 
   const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -112,12 +112,12 @@ export default function Heatmap({ data }: HeatmapProps) {
           {days.map((day, i) => (
             <div 
               key={i} 
-              className="w-2.5 h-2.5 rounded-[2px] transition-colors hover:ring-1 hover:ring-white/50 relative group cursor-pointer"
+              className="w-2.5 h-2.5 rounded-[2px] transition-colors hover:ring-1 hover:ring-black/20 relative group cursor-pointer"
               style={{ background: getColor(day.count) }}
             >
               {/* Tooltip */}
-              <div 
-                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
+              <div
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[var(--ink)] text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
               >
                 {day.count} submissions on {day.date.toDateString()}
               </div>
