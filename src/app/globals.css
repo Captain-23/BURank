@@ -289,6 +289,8 @@ body {
 /* grey section dividers between identity / stats / badge */
 .inner > *:nth-child(5), .inner > *:nth-child(9) { border-left: 1px solid var(--line-2); padding-left: 18px; }
 .row:hover .inner { border-color: var(--muted); }
+.row:focus { outline: none; }
+.row:focus-visible .inner { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-soft); }
 .g1 .inner { border-color: var(--gold); }
 .g2 .inner { border-color: var(--silver); }
 .g3 .inner { border-color: var(--bronze); }

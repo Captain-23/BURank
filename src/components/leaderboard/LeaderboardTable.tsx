@@ -23,7 +23,20 @@ export default function LeaderboardTable({ users }: { users: LeetCodeUser[] }) {
             const g = rank <= 3 ? ` g${rank}` : "";
             const badges = computeBadges(u).slice(0, 2);
             return (
-              <div key={u.username} className={`row${g}`} onClick={() => router.push(`/user/${u.username}`)}>
+              <div
+                key={u.username}
+                className={`row${g}`}
+                role="button"
+                tabIndex={0}
+                aria-label={`View ${u.realName || u.username}'s profile`}
+                onClick={() => router.push(`/user/${u.username}`)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    router.push(`/user/${u.username}`);
+                  }
+                }}
+              >
                 <div className="inner">
                   <div className="rk">{rank}</div>
                   <div>

@@ -32,9 +32,11 @@ export default function LeaderboardPage() {
   const { data: session } = useSession();
   const currentEmail = session?.user?.email ?? null;
 
-  const isRegistered = users.some(
-    (u) => u.email?.toLowerCase() === currentEmail?.toLowerCase(),
-  );
+  const isRegistered =
+    !!currentEmail &&
+    users.some(
+      (u) => u.email?.toLowerCase() === currentEmail.toLowerCase(),
+    );
 
   const fetchLeaderboard = useCallback(async () => {
     setLoading(true);
