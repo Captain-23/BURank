@@ -46,7 +46,7 @@ export default function SignInPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0A0A0F",
+        background: "var(--bu-dark)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -61,13 +61,13 @@ export default function SignInPage() {
               fontSize: 28,
               fontWeight: 700,
               fontFamily: "'JetBrains Mono', monospace",
-              color: "#E2E2F0",
+              color: "var(--ink)",
               margin: 0,
             }}
           >
-            BU<span style={{ color: "#C8102E" }}>Rank</span>
+            BU<span style={{ color: "var(--bu-red)" }}>Rank</span>
           </p>
-          <p style={{ fontSize: 13, color: "#8888A8", margin: "6px 0 0" }}>
+          <p style={{ fontSize: 13, color: "var(--sub)", margin: "6px 0 0" }}>
             Bennett University · LeetCode Leaderboard
           </p>
         </div>
@@ -75,27 +75,27 @@ export default function SignInPage() {
         {/* Card */}
         <div
           style={{
-            background: "#111118",
-            border: "1px solid #1E1E2E",
+            background: "var(--card)",
+            border: "1px solid var(--line)",
             borderRadius: 8,
             overflow: "hidden",
           }}
         >
           {/* Red top bar */}
-          <div style={{ height: 3, background: "#C8102E" }} />
+          <div style={{ height: 3, background: "var(--bu-red)" }} />
 
           <div style={{ padding: "28px 28px 32px" }}>
             <h1
               style={{
                 fontSize: 16,
                 fontWeight: 600,
-                color: "#E2E2F0",
+                color: "var(--ink)",
                 margin: "0 0 6px",
               }}
             >
               Sign in
             </h1>
-            <p style={{ fontSize: 13, color: "#8888A8", margin: "0 0 24px" }}>
+            <p style={{ fontSize: 13, color: "var(--sub)", margin: "0 0 24px" }}>
               Enter your Personal email to receive a sign-in link. No password
               needed.
             </p>
@@ -137,21 +137,21 @@ export default function SignInPage() {
                 <p
                   style={{
                     fontSize: 13,
-                    color: "#8888A8",
+                    color: "var(--sub)",
                     margin: 0,
                     lineHeight: 1.6,
                   }}
                 >
                   We sent a sign-in link to
                   <br />
-                  <strong style={{ color: "#E2E2F0", fontFamily: "monospace" }}>
+                  <strong style={{ color: "var(--ink)", fontFamily: "monospace" }}>
                     {email.trim().toLowerCase()}
                   </strong>
                   <br />
                   Open your Bennett Outlook and click the link.
                 </p>
                 <p
-                  style={{ fontSize: 11, color: "#555570", margin: "16px 0 0" }}
+                  style={{ fontSize: 11, color: "var(--muted)", margin: "16px 0 0" }}
                 >
                   Link expires in 15 minutes · one-time use only
                 </p>
@@ -164,7 +164,7 @@ export default function SignInPage() {
                     display: "block",
                     fontSize: 11,
                     fontWeight: 500,
-                    color: "#8888A8",
+                    color: "var(--sub)",
                     textTransform: "uppercase",
                     letterSpacing: "0.06em",
                     marginBottom: 8,
@@ -188,9 +188,9 @@ export default function SignInPage() {
                     width: "100%",
                     padding: "10px 14px",
                     borderRadius: 6,
-                    border: `1px solid ${status === "error" ? "#FF375F" : "#1E1E2E"}`,
-                    background: "#0A0A0F",
-                    color: "#E2E2F0",
+                    border: `1px solid ${status === "error" ? "var(--hard)" : "var(--line)"}`,
+                    background: "var(--bg-2)",
+                    color: "var(--ink)",
                     fontSize: 13,
                     fontFamily: "'JetBrains Mono', monospace",
                     outline: "none",
@@ -199,12 +199,12 @@ export default function SignInPage() {
                   }}
                   onFocus={(e) => {
                     if (status !== "error") {
-                      e.target.style.borderColor = "#C8102E";
+                      e.target.style.borderColor = "var(--bu-red)";
                     }
                   }}
                   onBlur={(e) => {
                     if (status !== "error") {
-                      e.target.style.borderColor = "#1E1E2E";
+                      e.target.style.borderColor = "var(--line)";
                     }
                   }}
                 />
@@ -214,7 +214,7 @@ export default function SignInPage() {
                   <p
                     style={{
                       fontSize: 12,
-                      color: "#FF375F",
+                      color: "var(--hard)",
                       margin: "6px 0 0",
                     }}
                   >
@@ -227,7 +227,7 @@ export default function SignInPage() {
                   <p
                     style={{
                       fontSize: 11,
-                      color: "#555570",
+                      color: "var(--muted)",
                       margin: "6px 0 0",
                     }}
                   >
@@ -244,7 +244,7 @@ export default function SignInPage() {
                     padding: "11px",
                     borderRadius: 6,
                     border: "none",
-                    background: "#C8102E",
+                    background: "var(--bu-red)",
                     color: "#fff",
                     fontSize: 14,
                     fontWeight: 600,
@@ -265,7 +265,7 @@ export default function SignInPage() {
           style={{
             textAlign: "center",
             fontSize: 11,
-            color: "#2A2A3E",
+            color: "var(--muted)",
             marginTop: 20,
           }}
         >

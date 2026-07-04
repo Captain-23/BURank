@@ -7,7 +7,7 @@ export default function VerifyPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0A0A0F",
+        background: "var(--bu-dark)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -20,11 +20,11 @@ export default function VerifyPage() {
             fontSize: 26,
             fontWeight: 700,
             fontFamily: "'JetBrains Mono', monospace",
-            color: "#E2E2F0",
+            color: "var(--ink)",
             margin: "0 0 32px",
           }}
         >
-          BU<span style={{ color: "#C8102E" }}>rge</span>
+          BU<span style={{ color: "var(--bu-red)" }}>rge</span>
         </p>
 
         <div
@@ -49,7 +49,7 @@ export default function VerifyPage() {
           style={{
             fontSize: 18,
             fontWeight: 600,
-            color: "#E2E2F0",
+            color: "var(--ink)",
             margin: "0 0 10px",
           }}
         >
@@ -58,20 +58,20 @@ export default function VerifyPage() {
         <p
           style={{
             fontSize: 13,
-            color: "#8888A8",
+            color: "var(--sub)",
             margin: "0 0 6px",
             lineHeight: 1.7,
           }}
         >
           A sign-in link has been sent to your
           <br />
-          <strong style={{ color: "#E2E2F0" }}>@bennett.edu.in</strong> email
+          <strong style={{ color: "var(--ink)" }}>@bennett.edu.in</strong> email
           address.
         </p>
         <p
           style={{
             fontSize: 13,
-            color: "#8888A8",
+            color: "var(--sub)",
             margin: "0 0 24px",
             lineHeight: 1.7,
           }}
@@ -83,17 +83,17 @@ export default function VerifyPage() {
 
         <div
           style={{
-            background: "#111118",
-            border: "1px solid #1E1E2E",
+            background: "var(--card)",
+            border: "1px solid var(--line)",
             borderRadius: 6,
             padding: "12px 16px",
             fontSize: 12,
-            color: "#555570",
+            color: "var(--muted)",
             lineHeight: 1.7,
             textAlign: "left",
           }}
         >
-          <strong style={{ color: "#8888A8" }}>Didn't receive it?</strong>
+          <strong style={{ color: "var(--sub)" }}>Didn't receive it?</strong>
           <br />
           · Check your Junk / Spam folder
           <br />
@@ -107,9 +107,9 @@ export default function VerifyPage() {
             display: "inline-block",
             marginTop: 20,
             fontSize: 13,
-            color: "#8888A8",
+            color: "var(--sub)",
             textDecoration: "none",
-            borderBottom: "1px solid #2A2A3E",
+            borderBottom: "1px solid var(--muted)",
             paddingBottom: 1,
           }}
         >

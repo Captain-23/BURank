@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-bu-dark">
+      <body className="min-h-screen">
         {/*
           SessionProvider must wrap everything so useSession()
           works in any client component.

@@ -110,7 +110,7 @@ export default function AdminPage() {
       <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--bu-dark)" }}>
         <div className="w-full max-w-sm rounded-2xl p-8 border animate-slide-up" style={{ background: "var(--bu-card)", borderColor: "var(--bu-border)" }}>
           <div className="mb-8 text-center">
-            <h1 className="text-2xl font-bold text-white mb-2">Admin Login</h1>
+            <h1 className="text-2xl font-bold text-[var(--ink)] mb-2">Admin Login</h1>
             <p className="text-sm" style={{ color: "var(--bu-sub)" }}>Enter password to access dashboard</p>
           </div>
           
@@ -127,7 +127,7 @@ export default function AdminPage() {
               autoFocus
             />
             
-            {error && <p className="text-sm text-[#ff375f] font-medium">{error}</p>}
+            {error && <p className="text-sm text-[var(--hard)] font-medium">{error}</p>}
             
             <button
               type="submit"
@@ -154,17 +154,17 @@ export default function AdminPage() {
       <div className="max-w-4xl mx-auto animate-fade-in">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold text-[var(--ink)] mb-2">Admin Dashboard</h1>
             <p className="text-sm" style={{ color: "var(--bu-sub)" }}>Manage users and settings</p>
           </div>
-          <Link href="/" className="px-4 py-2 rounded-xl text-sm font-medium border hover:text-white transition-colors" style={{ borderColor: "var(--bu-border)", color: "var(--bu-sub)" }}>
+          <Link href="/" className="px-4 py-2 rounded-xl text-sm font-medium border hover:text-[var(--ink)] transition-colors" style={{ borderColor: "var(--bu-border)", color: "var(--bu-sub)" }}>
             View Site ↗
           </Link>
         </div>
 
         {/* Question of the Week Panel */}
         <div className="rounded-2xl border p-6 mb-8" style={{ background: "var(--bu-card)", borderColor: "var(--bu-border)" }}>
-          <h2 className="text-lg font-bold text-white mb-4">Question of the Week</h2>
+          <h2 className="text-lg font-bold text-[var(--ink)] mb-4">Question of the Week</h2>
           <form onSubmit={handleSetQotw} className="flex gap-3 items-start flex-col sm:flex-row">
             <div className="flex-1 w-full">
               <input
@@ -192,9 +192,9 @@ export default function AdminPage() {
 
         {/* User Management Panel */}
         <div className="rounded-2xl border overflow-hidden" style={{ background: "var(--bu-card)", borderColor: "var(--bu-border)" }}>
-          <div className="px-6 py-4 border-b flex justify-between items-center" style={{ borderColor: "var(--bu-border)", background: "rgba(255,255,255,0.02)" }}>
-            <h2 className="text-lg font-bold text-white">Registered Users ({users.length})</h2>
-            <button onClick={fetchDashboardData} className="text-sm hover:text-white" style={{ color: "var(--bu-sub)" }}>↻ Refresh</button>
+          <div className="px-6 py-4 border-b flex justify-between items-center" style={{ borderColor: "var(--bu-border)", background: "var(--bg-2)" }}>
+            <h2 className="text-lg font-bold text-[var(--ink)]">Registered Users ({users.length})</h2>
+            <button onClick={fetchDashboardData} className="text-sm hover:text-[var(--ink)]" style={{ color: "var(--bu-sub)" }}>↻ Refresh</button>
           </div>
           
           <div className="overflow-x-auto">
@@ -211,9 +211,9 @@ export default function AdminPage() {
                   <tr><td colSpan={3} className="px-6 py-8 text-center" style={{ color: "var(--bu-sub)" }}>No users found</td></tr>
                 ) : (
                   users.map(user => (
-                    <tr key={user.username} className="border-b hover:bg-white/5 transition-colors" style={{ borderColor: "var(--bu-border)" }}>
+                    <tr key={user.username} className="border-b hover:bg-[var(--bg-2)] transition-colors" style={{ borderColor: "var(--bu-border)" }}>
                       <td className="px-6 py-3">
-                        <a href={`https://leetcode.com/${user.username}`} target="_blank" rel="noopener noreferrer" className="font-mono text-white hover:underline">
+                        <a href={`https://leetcode.com/${user.username}`} target="_blank" rel="noopener noreferrer" className="font-mono text-[var(--ink)] hover:underline">
                           {user.username}
                         </a>
                       </td>
@@ -224,7 +224,7 @@ export default function AdminPage() {
                       <td className="px-6 py-3 text-right">
                         <button 
                           onClick={() => handleDeleteUser(user.username)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-500/20 text-[#ff375f] transition-colors"
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-500/20 text-[var(--hard)] transition-colors"
                         >
                           Delete
                         </button>

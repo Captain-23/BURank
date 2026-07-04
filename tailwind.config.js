@@ -9,13 +9,13 @@ module.exports = {
     extend: {
       colors: {
         bu: {
-          red: "#C8102E",
-          dark: "#0A0A0F",
-          card: "#111118",
-          border: "#1E1E2E",
-          muted: "#2A2A3E",
-          text: "#E2E2F0",
-          sub: "#8888A8",
+          red: "#1B2A4A",
+          dark: "#F5F6F8",
+          card: "#FFFFFF",
+          border: "#E7E8EE",
+          muted: "#A6A6B8",
+          text: "#14141C",
+          sub: "#71718A",
         },
       },
       fontFamily: {

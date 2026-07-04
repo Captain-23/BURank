@@ -25,7 +25,7 @@ export default function AuthErrorPage({
     <div
       style={{
         minHeight: "100vh",
-        background: "#0A0A0F",
+        background: "var(--bu-dark)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -38,11 +38,11 @@ export default function AuthErrorPage({
             fontSize: 26,
             fontWeight: 700,
             fontFamily: "'JetBrains Mono', monospace",
-            color: "#E2E2F0",
+            color: "var(--ink)",
             margin: "0 0 32px",
           }}
         >
-          BU<span style={{ color: "#C8102E" }}>rge</span>
+          BU<span style={{ color: "var(--bu-red)" }}>rge</span>
         </p>
 
         <div
@@ -57,7 +57,7 @@ export default function AuthErrorPage({
             justifyContent: "center",
             margin: "0 auto 20px",
             fontSize: 22,
-            color: "#FF375F",
+            color: "var(--hard)",
           }}
         >
           ✕
@@ -67,7 +67,7 @@ export default function AuthErrorPage({
           style={{
             fontSize: 18,
             fontWeight: 600,
-            color: "#E2E2F0",
+            color: "var(--ink)",
             margin: "0 0 10px",
           }}
         >
@@ -77,7 +77,7 @@ export default function AuthErrorPage({
         <p
           style={{
             fontSize: 13,
-            color: "#8888A8",
+            color: "var(--sub)",
             margin: "0 0 28px",
             lineHeight: 1.7,
           }}
@@ -90,7 +90,7 @@ export default function AuthErrorPage({
           style={{
             display: "inline-block",
             padding: "10px 24px",
-            background: "#C8102E",
+            background: "var(--bu-red)",
             color: "#fff",
             fontSize: 13,
             fontWeight: 600,
