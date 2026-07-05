@@ -95,192 +95,76 @@ export default function UserProfileModal({
 
   return (
     <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 16,
-        background: "rgba(0,0,0,0.75)",
-        backdropFilter: "blur(3px)",
-      }}
+      className="modal-overlay"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 520,
-          background: "var(--card)",
-          border: "1px solid var(--line)",
-          borderRadius: 12,
-          overflow: "hidden",
-        }}
-      >
+      <div className="modal-card">
         {/* Red accent top bar */}
         <div style={{ height: 3, background: "var(--bu-red)" }} />
 
         {/* Header */}
-        <div
-          style={{
-            padding: "20px 24px 16px",
-            borderBottom: "1px solid var(--line)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              {user.avatar ? (
-                <Image
-                  src={user.avatar}
-                  alt={user.username}
-                  width={48}
-                  height={48}
-                  style={{ borderRadius: "50%" }}
-                  unoptimized
-                />
-              ) : (
-                <div
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: "50%",
-                    background: "var(--bu-red)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 18,
-                    fontWeight: 700,
-                    color: "#fff",
-                  }}
-                >
-                  {user.username[0]?.toUpperCase()}
-                </div>
-              )}
-              <div>
-                <a
-                  href={`https://leetcode.com/${user.username}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "var(--ink)",
-                    textDecoration: "none",
-                    fontFamily: "JetBrains Mono, monospace",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                  }}
-                >
-                  {user.username}
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    style={{ opacity: 0.4 }}
-                  >
-                    <path
-                      d="M2.5 1.5H10.5V9.5M10.5 1.5L1.5 10.5"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </a>
-                {user.realName && user.realName !== user.username && (
-                  <p
-                    style={{
-                      fontSize: 13,
-                      color: "var(--sub)",
-                      margin: "2px 0 0",
-                    }}
-                  >
-                    {user.realName}
-                  </p>
-                )}
+        <div className="modal-header">
+          <div className="modal-header-left">
+            {user.avatar ? (
+              <Image
+                src={user.avatar}
+                alt={user.username}
+                width={48}
+                height={48}
+                style={{ borderRadius: "50%", flexShrink: 0 }}
+                unoptimized
+              />
+            ) : (
+              <div className="modal-avatar-fallback">
+                {user.username[0]?.toUpperCase()}
               </div>
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ textAlign: "right" }}>
-                <p
-                  style={{
-                    fontSize: 11,
-                    color: "var(--sub)",
-                    margin: "0 0 2px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.06em",
-                  }}
-                >
-                  College rank
-                </p>
-                <p
-                  style={{
-                    fontSize: 22,
-                    fontWeight: 700,
-                    margin: 0,
-                    fontFamily: "JetBrains Mono, monospace",
-                    color: "var(--bu-red)",
-                  }}
-                >
-                  #{collegeRank}
-                </p>
-              </div>
-              <button
-                onClick={onClose}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "var(--sub)",
-                  fontSize: 22,
-                  cursor: "pointer",
-                  lineHeight: 1,
-                  padding: 4,
-                }}
+            )}
+            <div style={{ minWidth: 0 }}>
+              <a
+                href={`https://leetcode.com/${user.username}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="modal-username-link"
               >
-                ×
-              </button>
+                {user.username}
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  style={{ opacity: 0.4, flexShrink: 0 }}
+                >
+                  <path
+                    d="M2.5 1.5H10.5V9.5M10.5 1.5L1.5 10.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </a>
+              {user.realName && user.realName !== user.username && (
+                <p className="modal-realname">{user.realName}</p>
+              )}
             </div>
+          </div>
+
+          <div className="modal-header-right">
+            <div style={{ textAlign: "right" }}>
+              <p className="modal-rank-label">College rank</p>
+              <p className="modal-rank-value">#{collegeRank}</p>
+            </div>
+            <button className="modal-close-btn" onClick={onClose}>×</button>
           </div>
         </div>
 
         {/* Stats grid */}
-        <div
-          style={{ padding: "16px 24px", borderBottom: "1px solid var(--line)" }}
-        >
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 8,
-              marginBottom: 8,
-            }}
-          >
+        <div className="modal-section">
+          <div className="modal-stats-grid" style={{ marginBottom: 8 }}>
             <Stat label="Total solved" value={user.totalSolved} />
-            <Stat
-              label="Global rank"
-              value={`#${user.ranking?.toLocaleString()}`}
-            />
-            <Stat
-              label="Contest rating"
-              value={user.contestRating > 0 ? user.contestRating : "—"}
-            />
+            <Stat label="Global rank" value={`#${user.ranking?.toLocaleString()}`} />
+            <Stat label="Contest rating" value={user.contestRating > 0 ? user.contestRating : "—"} />
           </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 8,
-            }}
-          >
+          <div className="modal-stats-grid">
             <Stat label="Easy" value={user.easySolved} color="#00B8A3" />
             <Stat label="Medium" value={user.mediumSolved} color="#FFC01E" />
             <Stat label="Hard" value={user.hardSolved} color="#FF375F" />
@@ -288,59 +172,15 @@ export default function UserProfileModal({
         </div>
 
         {nextBadge && (
-          <div
-            style={{
-              padding: "16px 24px",
-              borderBottom: "1px solid var(--line)",
-            }}
-          >
-            <p
-              style={{
-                fontSize: 11,
-                color: "var(--sub)",
-                margin: "0 0 10px",
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-              }}
-            >
-              Next Badge
-            </p>
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: 8,
-              }}
-            >
-              <span
-                style={{
-                  color: "var(--ink)",
-                  fontWeight: 600,
-                }}
-              >
-                {nextBadge.label}
-              </span>
-
-              <span
-                style={{
-                  color: "var(--sub)",
-                  fontFamily: "JetBrains Mono, monospace",
-                }}
-              >
+          <div className="modal-section">
+            <p className="modal-section-label">Next Badge</p>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+              <span style={{ color: "var(--ink)", fontWeight: 600 }}>{nextBadge.label}</span>
+              <span style={{ color: "var(--sub)", fontFamily: "JetBrains Mono, monospace" }}>
                 {nextBadge.current} / {nextBadge.target}
               </span>
             </div>
-
-            <div
-              style={{
-                width: "100%",
-                height: 8,
-                background: "var(--track)",
-                borderRadius: 999,
-                overflow: "hidden",
-              }}
-            >
+            <div style={{ width: "100%", height: 8, background: "var(--track)", borderRadius: 999, overflow: "hidden" }}>
               <div
                 style={{
                   width: `${nextBadge.progress}%`,
@@ -350,15 +190,7 @@ export default function UserProfileModal({
                 }}
               />
             </div>
-
-            <p
-              style={{
-                marginTop: 8,
-                marginBottom: 0,
-                fontSize: 12,
-                color: "var(--sub)",
-              }}
-            >
+            <p style={{ marginTop: 8, marginBottom: 0, fontSize: 12, color: "var(--sub)" }}>
               {nextBadge.remaining} more {nextBadge.unit} to unlock{" "}
               <strong style={{ color: "var(--ink)" }}>{nextBadge.label}</strong>
             </p>
@@ -366,51 +198,16 @@ export default function UserProfileModal({
         )}
 
         {/* Badges */}
-        <div style={{ padding: "16px 24px 24px" }}>
+        <div className="modal-footer">
           <div style={{ marginBottom: 16 }}>
-            <button
-              onClick={copyRankCard}
-              style={{
-                width: "100%",
-                background: "var(--bu-red)",
-                color: "#fff",
-                border: "none",
-                borderRadius: 8,
-                padding: "10px 14px",
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
+            <button className="modal-action-btn primary" onClick={copyRankCard}>
               {copied ? "✅ Copied!" : "📋 Copy Rank Card Link"}
             </button>
-
-            <button
-              onClick={copyGithubMarkdown}
-              style={{
-                width: "100%",
-                background: "var(--bg-2)",
-                color: "var(--ink)",
-                border: "1px solid var(--line)",
-                borderRadius: 8,
-                padding: "10px 14px",
-                fontWeight: 600,
-                cursor: "pointer",
-                marginTop: 8,
-              }}
-            >
+            <button className="modal-action-btn secondary" onClick={copyGithubMarkdown}>
               📄 Copy GitHub README
             </button>
           </div>
-          <p
-            style={{
-              fontSize: 11,
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--sub)",
-              margin: "0 0 12px",
-            }}
-          >
+          <p className="modal-section-label" style={{ marginBottom: 12 }}>
             Badges · {badges.length} earned
           </p>
           <BadgeList badges={badges} variant="full" />

@@ -578,3 +578,209 @@ body {
   .cal-head h2 { font-size: 14px; }
   .cal-head .sub { font-size: 12px; }
 }
+
+/* ═══════════════════════════════════════════
+   USER PROFILE MODAL CLASSES
+   ═══════════════════════════════════════════ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(3px);
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.modal-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+
+.modal-avatar-fallback {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--bu-red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+
+.modal-username-link {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  font-family: var(--mono);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-realname {
+  font-size: 13px;
+  color: var(--sub);
+  margin: 2px 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.modal-rank-label {
+  font-size: 11px;
+  color: var(--sub);
+  margin: 0 0 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.modal-rank-value {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  font-family: var(--mono);
+  color: var(--bu-red);
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: var(--sub);
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+}
+
+.modal-section {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal-section-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sub);
+  margin: 0 0 10px;
+}
+
+.modal-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.modal-footer {
+  padding: 16px 24px 24px;
+}
+
+.modal-action-btn {
+  width: 100%;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: var(--sans);
+  cursor: pointer;
+  display: block;
+}
+.modal-action-btn.primary {
+  background: var(--bu-red);
+  color: #fff;
+  border: none;
+}
+.modal-action-btn.secondary {
+  background: var(--bg-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  margin-top: 8px;
+}
+
+/* Modal responsive: ≤480px */
+@media (max-width: 480px) {
+  .modal-overlay { padding: 10px; align-items: flex-end; }
+  .modal-card {
+    max-width: 100%;
+    max-height: 88vh;
+    border-radius: 16px 16px 0 0;
+    overflow-y: auto;
+  }
+  .modal-header { padding: 16px 16px 14px; flex-wrap: wrap; gap: 10px; }
+  .modal-header-left { gap: 10px; }
+  .modal-avatar-fallback { width: 40px; height: 40px; font-size: 15px; }
+  .modal-username-link { font-size: 14px; }
+  .modal-rank-value { font-size: 18px; }
+  .modal-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .modal-section { padding: 12px 16px; }
+  .modal-footer { padding: 12px 16px 20px; }
+  .modal-action-btn { font-size: 13px; padding: 9px 12px; }
+}
+
+/* ═══════════════════════════════════════════
+   LEADERBOARD TABLE — SCROLL SHADOW HINT
+   ═══════════════════════════════════════════ */
+
+/* Fade hint on the right side to indicate horizontal scroll */
+.list-scroll {
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════
+   TOPBAR — ENSURE FULL-WIDTH ON MOBILE
+   ═══════════════════════════════════════════ */
+@media (max-width: 640px) {
+  /* Remove max-width constraint so topbar fills screen on mobile */
+  .topbar { max-width: 100%; }
+
+  /* Board columns slightly tighter to reduce horizontal scroll range */
+  .board {
+    --cols: 36px minmax(130px,1.3fr) 130px 56px 56px 100px 90px 72px 110px 34px;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   ADMIN PAGE — TABLE RESPONSIVE
+   ═══════════════════════════════════════════ */
+/* Admin page uses Tailwind but some overrides needed */
+@media (max-width: 480px) {
+  .admin-table-cell-hide { display: none; }
+}
