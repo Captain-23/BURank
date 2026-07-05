@@ -38,7 +38,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
 
 body {
   color: var(--ink);
@@ -49,6 +49,8 @@ body {
   background-image: linear-gradient(180deg, #e3e6ec 0%, #eaedf1 34%, #f5f6f8 66%, #ffffff 100%);
   background-repeat: no-repeat;
   background-size: 100% 720px;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 /* Scrollbar */
@@ -272,7 +274,6 @@ body {
 .board-head { display:flex; align-items:center; justify-content: space-between; margin-bottom: 16px; padding: 0 6px;}
 .board-head h2 { margin: 0; font-size: 17px; letter-spacing: -.01em; }
 .board-head .re { font-size: 13px; color: var(--sub); cursor:pointer; }
-.list-scroll { overflow-x: auto; padding: 6px 8px 6px; }
 .rows { display: flex; flex-direction: column; gap: 14px; min-width: 1060px; }
 
 .rows-head { display: grid; grid-template-columns: var(--cols); column-gap: 14px; padding: 0 28px 14px; font-size: 11.5px; font-weight: 650; color: var(--sub); }
@@ -759,9 +760,19 @@ body {
    LEADERBOARD TABLE — SCROLL SHADOW HINT
    ═══════════════════════════════════════════ */
 
-/* Fade hint on the right side to indicate horizontal scroll */
 .list-scroll {
   position: relative;
+  overflow-x: auto;
+  padding: 6px 8px 6px;
+  /* Scroll shadows for Webkit browsers */
+  background:
+    linear-gradient(to right, var(--bg-2) 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(to right, rgba(255, 255, 255, 0), var(--bg-2) 70%) 100% 0,
+    radial-gradient(farthest-side at 0 50%, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)) 100% 0;
+  background-repeat: no-repeat;
+  background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+  background-attachment: local, local, scroll, scroll;
 }
 
 /* ═══════════════════════════════════════════

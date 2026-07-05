@@ -88,45 +88,46 @@ export default function Heatmap({ data }: HeatmapProps) {
   };
 
   return (
-    <div className="w-full relative flex flex-col pt-6">
-      <div className="relative h-4 w-full mb-2">
-        {getMonthLabels()}
-      </div>
-      
+    <div className="w-full relative flex flex-col pt-6 overflow-hidden">
       <div className="flex gap-2">
-        <div className="flex flex-col justify-between text-xs py-1" style={{ color: "var(--bu-sub)" }}>
+        <div className="flex flex-col justify-between text-xs py-1 mt-6" style={{ color: "var(--bu-sub)", flexShrink: 0 }}>
           <span>Mon</span>
           <span>Wed</span>
           <span>Fri</span>
         </div>
         
-        <div 
-          className="grid grid-rows-7 gap-1"
-          style={{ gridAutoFlow: "column", gridAutoColumns: "10px" }}
-        >
-          {/* Add empty placeholder blocks for the start if the first day is not Sunday */}
-          {Array.from({ length: days[0].date.getDay() }).map((_, i) => (
-            <div key={`empty-${i}`} className="w-2.5 h-2.5 rounded-[2px]" style={{ background: "transparent" }} />
-          ))}
+        <div className="flex-1 overflow-x-auto pb-4">
+          <div className="relative h-4 min-w-max mb-2">
+            {getMonthLabels()}
+          </div>
+          <div 
+            className="grid grid-rows-7 gap-1 min-w-max"
+            style={{ gridAutoFlow: "column", gridAutoColumns: "10px" }}
+          >
+            {/* Add empty placeholder blocks for the start if the first day is not Sunday */}
+            {Array.from({ length: days[0].date.getDay() }).map((_, i) => (
+              <div key={`empty-${i}`} className="w-2.5 h-2.5 rounded-[2px]" style={{ background: "transparent" }} />
+            ))}
 
-          {days.map((day, i) => (
-            <div 
-              key={i} 
-              className="w-2.5 h-2.5 rounded-[2px] transition-colors hover:ring-1 hover:ring-black/20 relative group cursor-pointer"
-              style={{ background: getColor(day.count) }}
-            >
-              {/* Tooltip */}
-              <div
-                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[var(--ink)] text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
+            {days.map((day, i) => (
+              <div 
+                key={i} 
+                className="w-2.5 h-2.5 rounded-[2px] transition-colors hover:ring-1 hover:ring-black/20 relative group cursor-pointer"
+                style={{ background: getColor(day.count) }}
               >
-                {day.count} submissions on {day.date.toDateString()}
+                {/* Tooltip */}
+                <div
+                  className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[var(--ink)] text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
+                >
+                  {day.count} submissions on {day.date.toDateString()}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
       
-      <div className="mt-4 flex items-center justify-end gap-2 text-xs" style={{ color: "var(--bu-sub)" }}>
+      <div className="mt-2 flex items-center justify-end gap-2 text-xs" style={{ color: "var(--bu-sub)" }}>
         <span>Less</span>
         <div className="flex gap-1">
           <div className="w-2.5 h-2.5 rounded-[2px]" style={{ background: getColor(0) }} />
