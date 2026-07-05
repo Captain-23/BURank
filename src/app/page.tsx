@@ -7,6 +7,7 @@ import AddUserModal from "@/components/AddUserModal";
 import ChampionsPodium from "@/components/leaderboard/ChampionsPodium";
 import HighlightCards from "@/components/leaderboard/HighlightCards";
 import LeaderboardTable from "@/components/leaderboard/LeaderboardTable";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type ViewMode = "individuals" | "batches";
 
@@ -136,6 +137,7 @@ export default function LeaderboardPage() {
           />
         </div>
         <div className="nav-actions">
+          <ThemeToggle />
           <button className="chip-btn" onClick={fetchLeaderboard} disabled={loading}>
             ↻ {loading ? "Loading…" : "Refresh"}
           </button>
