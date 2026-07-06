@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { fetchLeetCodeUser } from "@/lib/leetcode";
 import { addUsernameToSheet, fetchUsernamesFromSheet } from "@/lib/sheets";
 import { getSession } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { revalidateTag } from "next/cache";
 
 export async function POST(req: NextRequest) {
   try {
@@ -74,14 +76,66 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 3. Write to sheet with hashed password
-
+    // 3. Write to sheet
     const result = await addUsernameToSheet(
       username,
       email!,
       yearStudying,
       enrollmentNo,
     );
+
+    // 4. Instant appearance: upsert the just-fetched stats into the cache
+    //    so the user shows up without waiting for the next cron run.
+    if (result.success) {
+      try {
+        await prisma.userStat.upsert({
+          where: { username },
+          update: {
+            realName: user.realName,
+            avatar: user.avatar,
+            ranking: user.ranking,
+            totalSolved: user.totalSolved,
+            easySolved: user.easySolved,
+            mediumSolved: user.mediumSolved,
+            hardSolved: user.hardSolved,
+            contestRating: user.contestRating,
+            contestGlobalRanking: user.contestGlobalRanking,
+            attendedContestsCount: user.attendedContestsCount,
+            topPercentage: user.topPercentage,
+            email,
+            enrollmentNo,
+            yearStudying,
+            addedAt: new Date().toISOString(),
+            fetchError: false,
+            lastFetchedAt: new Date(),
+          },
+          create: {
+            username,
+            realName: user.realName,
+            avatar: user.avatar,
+            ranking: user.ranking,
+            totalSolved: user.totalSolved,
+            easySolved: user.easySolved,
+            mediumSolved: user.mediumSolved,
+            hardSolved: user.hardSolved,
+            contestRating: user.contestRating,
+            contestGlobalRanking: user.contestGlobalRanking,
+            attendedContestsCount: user.attendedContestsCount,
+            topPercentage: user.topPercentage,
+            email,
+            enrollmentNo,
+            yearStudying,
+            addedAt: new Date().toISOString(),
+            fetchError: false,
+            lastFetchedAt: new Date(),
+          },
+        });
+        // New user is in the cache — drop the cached leaderboard so they appear now.
+        revalidateTag("leaderboard");
+      } catch (e) {
+        console.error("register: UserStat upsert failed (non-fatal):", e);
+      }
+    }
 
     return NextResponse.json(result);
   } catch (err) {

@@ -1,11 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchUsernamesFromSheet } from "@/lib/sheets";
-import { fetchLeetCodeUser } from "@/lib/leetcode";
+import { unstable_cache } from "next/cache";
+import { prisma } from "@/lib/prisma";
 
+// Cached, ranked read shared with the leaderboard; dropped on revalidateTag("leaderboard").
+const getRankedUsers = unstable_cache(
+  async () =>
+    prisma.userStat.findMany({
+      where: { fetchError: false },
+      orderBy: { totalSolved: "desc" },
+    }),
+  ["card-ranked-users"],
+  { tags: ["leaderboard"], revalidate: 300 },
+);
+
+// Runs on-demand; the DB read is Data-Cached (unstable_cache above) and the SVG
+// is CDN-cached via the response's Cache-Control header below.
 export const dynamic = "force-dynamic";
-
-// Cache the SVG for 10 minutes per enrollment number
-export const revalidate = 600;
 
 const COLLEGE = process.env.NEXT_PUBLIC_COLLEGE_NAME ?? "Bennett University";
 
@@ -268,15 +278,14 @@ export async function GET(
   }
 
   try {
-    // 1. Load all sheet entries
-    const entries = await fetchUsernamesFromSheet();
+    // Rank everyone by totalSolved (successful fetches only).
+    const rows = await getRankedUsers();
 
-    // 2. Find the entry matching this enrollment number
-    const entry = entries.find(
-      (e) => e.enrollmentNo?.toLowerCase() === enrollment,
+    const idx = rows.findIndex(
+      (r) => (r.enrollmentNo ?? "").toLowerCase() === enrollment,
     );
 
-    if (!entry) {
+    if (idx === -1) {
       return new NextResponse(
         errorCard(`Enrollment number "${enrollment.toUpperCase()}" not found.`),
         {
@@ -289,58 +298,24 @@ export async function GET(
       );
     }
 
-    // 3. Fetch all users' stats to compute college rank
-    const allUsers = await Promise.all(
-      entries.map((e) => fetchLeetCodeUser(e.username)),
-    );
-
-    // Filter out failed fetches and sort by totalSolved descending
-    const validUsers = allUsers
-      .filter((u): u is NonNullable<typeof u> => u !== null)
-      .sort((a, b) => b.totalSolved - a.totalSolved);
-
-    // 4. Find rank of this specific user
-    const thisUser = validUsers.find(
-      (u) => u.username.toLowerCase() === entry.username.toLowerCase(),
-    );
-
-    if (!thisUser) {
-      return new NextResponse(
-        errorCard("Could not fetch LeetCode data. Try again later."),
-        {
-          status: 502,
-          headers: {
-            "Content-Type": "image/svg+xml",
-            "Cache-Control": "no-store",
-          },
-        },
-      );
-    }
-
-    const collegeRank =
-      validUsers.findIndex(
-        (u) => u.username.toLowerCase() === thisUser.username.toLowerCase(),
-      ) + 1;
-
-    // 5. Build and return the SVG
+    const me = rows[idx];
     const svg = buildCard({
-      username: thisUser.username,
-      realName: thisUser.realName,
+      username: me.username,
+      realName: me.realName || me.username,
       enrollmentNo: enrollment,
-      collegeRank,
-      totalSolved: thisUser.totalSolved,
-      easySolved: thisUser.easySolved,
-      mediumSolved: thisUser.mediumSolved,
-      hardSolved: thisUser.hardSolved,
-      contestRating: thisUser.contestRating,
-      totalUsers: validUsers.length,
+      collegeRank: idx + 1,
+      totalSolved: me.totalSolved,
+      easySolved: me.easySolved,
+      mediumSolved: me.mediumSolved,
+      hardSolved: me.hardSolved,
+      contestRating: me.contestRating,
+      totalUsers: rows.length,
     });
 
     return new NextResponse(svg, {
       status: 200,
       headers: {
         "Content-Type": "image/svg+xml",
-        // GitHub CDN caches for 5 min; revalidate after 10 min
         "Cache-Control": "public, max-age=600, stale-while-revalidate=300",
       },
     });

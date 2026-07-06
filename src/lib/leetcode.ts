@@ -1,4 +1,4 @@
-import { LeetCodeUser } from "@/types";
+import type { LeetCodeUser } from "@/types";
 
 const LEETCODE_API = "https://leetcode.com/graphql";
 

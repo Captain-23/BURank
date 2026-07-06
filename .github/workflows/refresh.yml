@@ -1,0 +1,27 @@
+name: Refresh leaderboard cache
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run refresh
+        env:
+          NEXT_PUBLIC_SHEET_CSV_URL: ${{ secrets.NEXT_PUBLIC_SHEET_CSV_URL }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   NEXT_PUBLIC_SHEET_CSV_URL  - published Google Sheet CSV export URL
+#   SITE_URL                   - deployed base URL, e.g. https://burank.vercel.app
+#   CRON_SECRET                - shared secret, must match the app's CRON_SECRET env var

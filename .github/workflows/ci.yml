@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+        env:
+          DATABASE_URL: "postgresql://x:x@localhost:5432/x"
+          NEXTAUTH_SECRET: "ci-secret"
+          NEXTAUTH_URL: "http://localhost:3000"
+          RESEND_API_KEY: "ci-key"
+          EMAIL_FROM: "ci@example.com"
+          CRON_SECRET: "ci-cron"
