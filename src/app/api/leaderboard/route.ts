@@ -1,152 +1,54 @@
 import { NextResponse } from "next/server";
-import {
-  fetchUsernamesFromSheet,
-  getQuestionOfTheWeek,
-  setFirstBlood,
-} from "@/lib/sheets";
-import { fetchLeetCodeUser } from "@/lib/leetcode";
+import { unstable_cache } from "next/cache";
+import { prisma } from "@/lib/prisma";
 import { LeetCodeUser } from "@/types";
 
+// Run on-demand (never prerendered at build), but the DB read below is served
+// from the Data Cache, so most requests don't touch Postgres.
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
+
+// Cache the DB read and reuse it across requests. The cache is dropped whenever
+// data changes via revalidateTag("leaderboard") (cron ingest / register / delete),
+// with a 5-minute safety-net revalidate. Between refreshes this route serves
+// from the cache and never touches Postgres.
+const getLeaderboard = unstable_cache(
+  async () =>
+    prisma.userStat.findMany({ orderBy: { totalSolved: "desc" } }),
+  ["leaderboard-rows"],
+  { tags: ["leaderboard"], revalidate: 300 },
+);
 
 export async function GET() {
   try {
-    let entries = await fetchUsernamesFromSheet();
+    const rows = await getLeaderboard();
 
-    if (entries.length === 0) {
-      return NextResponse.json({ users: [] });
-    }
+    const users: LeetCodeUser[] = rows.map((r) => ({
+      username: r.username,
+      realName: r.realName || r.username,
+      avatar: r.avatar || "",
+      ranking: r.ranking ?? 0,
+      totalSolved: r.totalSolved,
+      easySolved: r.easySolved,
+      mediumSolved: r.mediumSolved,
+      hardSolved: r.hardSolved,
+      acceptanceRate: 0,
+      contestRating: r.contestRating,
+      contestGlobalRanking: r.contestGlobalRanking,
+      attendedContestsCount: r.attendedContestsCount,
+      topPercentage: r.topPercentage,
+      email: r.email ?? "",
+      addedAt: r.addedAt ?? "",
+      yearStudying: r.yearStudying ?? "",
+      enrollmentNo: r.enrollmentNo ?? "",
+      error: r.fetchError,
+    }));
 
-    // Remove duplicate usernames
-    const uniqueEntries = [];
-    const seen = new Set<string>();
-
-    for (const entry of entries) {
-      if (!seen.has(entry.username)) {
-        seen.add(entry.username);
-        uniqueEntries.push(entry);
-      }
-    }
-
-    entries = uniqueEntries;
-
-    const CHUNK_SIZE = 5;
-    const results: LeetCodeUser[] = [];
-
-    for (let i = 0; i < entries.length; i += CHUNK_SIZE) {
-      const chunk = entries.slice(i, i + CHUNK_SIZE);
-
-      const chunkResults = await Promise.all(
-        chunk.map(async (entry) => {
-          const user = await fetchLeetCodeUser(entry.username);
-
-          if (!user) {
-            return {
-              username: entry.username,
-              realName: entry.username,
-              avatar: "",
-              ranking: 999999999,
-              totalSolved: 0,
-              easySolved: 0,
-              mediumSolved: 0,
-              hardSolved: 0,
-              acceptanceRate: 0,
-              contestRating: 0,
-              contestGlobalRanking: 0,
-              attendedContestsCount: 0,
-              topPercentage: 100,
-
-              // Sheet data
-              email: entry.email,
-              addedAt: entry.addedAt,
-              yearStudying: entry.yearStudying,
-              enrollmentNo: entry.enrollmentNo,
-
-              error: true,
-            } satisfies LeetCodeUser;
-          }
-
-          return {
-            ...user,
-
-            // Sheet data
-            email: entry.email,
-            addedAt: entry.addedAt,
-            yearStudying: entry.yearStudying,
-            enrollmentNo: entry.enrollmentNo,
-          };
-        })
-      );
-
-      results.push(...chunkResults);
-
-      if (i + CHUNK_SIZE < entries.length) {
-        await new Promise((resolve) => setTimeout(resolve, 200));
-      }
-    }
-
-    // ----------------------------
-    // First Blood
-    // ----------------------------
-
-    const qotw = await getQuestionOfTheWeek();
-
-    if (qotw.qotw_url && !qotw.first_blood) {
-      const match = qotw.qotw_url.match(/problems\/([^/]+)/);
-      const titleSlug = match ? match[1] : null;
-
-      if (titleSlug && qotw.qotw_timestamp) {
-        const qotwTime =
-          new Date(qotw.qotw_timestamp).getTime() / 1000;
-
-        let earliestSolver: string | null = null;
-        let earliestTime = Infinity;
-
-        for (const user of results) {
-          if (!user.recentSubmissions) continue;
-
-          for (const submission of user.recentSubmissions) {
-            if (submission.titleSlug !== titleSlug) continue;
-
-            const submissionTime = parseInt(
-              submission.timestamp,
-              10
-            );
-
-            if (
-              submissionTime >= qotwTime &&
-              submissionTime < earliestTime
-            ) {
-              earliestTime = submissionTime;
-              earliestSolver = user.username;
-            }
-          }
-        }
-
-        if (earliestSolver) {
-          setFirstBlood(earliestSolver).catch(console.error);
-        }
-      }
-    }
-
-    const cleanResults = results.map(
-      ({ recentSubmissions, ...rest }) => rest
-    );
-
-    return NextResponse.json({
-      users: cleanResults,
-    });
+    return NextResponse.json({ users });
   } catch (err) {
     console.error("/api/leaderboard error:", err);
-
     return NextResponse.json(
-      {
-        error: "Failed to fetch leaderboard",
-      },
-      {
-        status: 500,
-      }
+      { error: "Failed to fetch leaderboard" },
+      { status: 500 },
     );
   }
 }

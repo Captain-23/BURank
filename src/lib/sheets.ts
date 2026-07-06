@@ -1,7 +1,14 @@
 import { SheetEntry } from "@/types";
+import { parseRosterCsv } from "./roster";
 
 const SHEET_CSV_URL = process.env.NEXT_PUBLIC_SHEET_CSV_URL ?? "";
-const SHEET_WRITE_URL = process.env.NEXT_PUBLIC_SHEET_WRITE_URL ?? "";
+// Server-only write endpoint. Prefer the non-public var so the Apps Script URL
+// is never shipped to the browser; fall back to the legacy public name so
+// existing deployments keep working until the env var is renamed.
+const SHEET_WRITE_URL =
+  process.env.SHEET_WRITE_URL ?? process.env.NEXT_PUBLIC_SHEET_WRITE_URL ?? "";
+// Optional shared secret; when set it must match the Apps Script's SHEET_WRITE_SECRET.
+const SHEET_WRITE_SECRET = process.env.SHEET_WRITE_SECRET ?? "";
 
 /**
  * Helper to POST to Google Apps Script and handle its redirect correctly.
@@ -18,7 +25,7 @@ async function postToGAS(
     const res = await fetch(SHEET_WRITE_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ ...payload, secret: SHEET_WRITE_SECRET }),
       redirect: "manual", // Don't auto-follow the 302
     });
 
@@ -69,25 +76,7 @@ export async function fetchUsernamesFromSheet(): Promise<SheetEntry[]> {
       cache: "no-store",
     });
     if (!res.ok) throw new Error(`Sheet fetch failed: ${res.status}`);
-
-    const csv = await res.text();
-    const lines = csv.trim().split("\n").slice(1); // skip header row
-
-    return lines
-      .map((line) => {
-        const [username, email, addedAt, yearStudying, enrollmentNo] = line
-          .split(",")
-          .map((v) => v.trim());
-
-        return {
-          username: username?.toLowerCase(),
-          email: email?.toLowerCase() ?? "",
-          addedAt: addedAt ?? "",
-          yearStudying: yearStudying ?? "",
-          enrollmentNo: enrollmentNo ?? "",
-        };
-      })
-      .filter((e) => e.username && e.username.length > 0);
+    return parseRosterCsv(await res.text());
   } catch (err) {
     console.error("fetchUsernamesFromSheet error:", err);
     return [];
@@ -150,68 +139,3 @@ export async function deleteUserFromSheet(username: string): Promise<boolean> {
   return data?.status === "success";
 }
 
-export async function setQuestionOfTheWeek(qotw_url: string): Promise<boolean> {
-  console.log("[setQOTW] Setting:", qotw_url);
-  const data = await postToGAS({ action: "set_qotw", qotw_url });
-  console.log("[setQOTW] Response:", data);
-  return data?.status === "success";
-}
-
-export async function setFirstBlood(username: string): Promise<boolean> {
-  console.log("[setFirstBlood] Setting winner:", username);
-  const data = await postToGAS({
-    action: "set_first_blood",
-    first_blood: username,
-  });
-  console.log("[setFirstBlood] Response:", data);
-  return data?.status === "success";
-}
-
-export async function getQuestionOfTheWeek(): Promise<{
-  qotw_url: string;
-  qotw_timestamp: string;
-  first_blood: string;
-}> {
-  const empty = { qotw_url: "", qotw_timestamp: "", first_blood: "" };
-  if (!SHEET_WRITE_URL) return empty;
-  try {
-    // GET requests to GAS also redirect, handle the same way
-    const res = await fetch(`${SHEET_WRITE_URL}?action=get_qotw`, {
-      cache: "no-store",
-      redirect: "manual",
-    });
-
-    if (res.status === 302 || res.status === 301) {
-      const redirectUrl = res.headers.get("location");
-      if (redirectUrl) {
-        const followRes = await fetch(redirectUrl, { method: "GET" });
-        const text = await followRes.text();
-        try {
-          const data = JSON.parse(text);
-          return {
-            qotw_url: data.qotw_url || "",
-            qotw_timestamp: data.qotw_timestamp || "",
-            first_blood: data.first_blood || "",
-          };
-        } catch {
-          return empty;
-        }
-      }
-      return empty;
-    }
-
-    const text = await res.text();
-    try {
-      const data = JSON.parse(text);
-      return {
-        qotw_url: data.qotw_url || "",
-        qotw_timestamp: data.qotw_timestamp || "",
-        first_blood: data.first_blood || "",
-      };
-    } catch {
-      return empty;
-    }
-  } catch {
-    return empty;
-  }
-}

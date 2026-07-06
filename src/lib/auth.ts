@@ -11,6 +11,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ─── validate bennett email ───────────────────────────────────────────────────
 function isBennettEmail(email: string): boolean {
+  // Domain restriction intentionally disabled for now — any email may sign in.
+  // To re-enable Bennett-only sign-in, restore:
+  //   return email.trim().toLowerCase().endsWith("@bennett.edu.in");
   return true;
 }
 

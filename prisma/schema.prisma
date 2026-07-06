@@ -57,3 +57,36 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model UserStat {
+  username              String    @id
+  realName              String?
+  avatar                String?
+  ranking               Int?
+  totalSolved           Int       @default(0)
+  easySolved            Int       @default(0)
+  mediumSolved          Int       @default(0)
+  hardSolved            Int       @default(0)
+  contestRating         Int       @default(0)
+  contestGlobalRanking  Int       @default(0)
+  attendedContestsCount Int       @default(0)
+  topPercentage         Float     @default(100)
+
+  // roster metadata mirrored from the sheet
+  email                 String?
+  enrollmentNo          String?
+  yearStudying          String?
+  addedAt               String?
+
+  // health
+  fetchError            Boolean   @default(false)
+  lastFetchedAt         DateTime?
+  updatedAt             DateTime  @updatedAt
+
+  @@index([totalSolved])
+}
+
+model Setting {
+  key   String @id
+  value String
+}

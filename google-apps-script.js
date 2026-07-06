@@ -10,14 +10,31 @@
  *     - Execute as: Me
  *     - Who has access: Anyone
  *  5. Copy the Web App URL → paste into .env.local as NEXT_PUBLIC_SHEET_WRITE_URL
+ *
+ *  IMPORTANT — migrating an existing sheet:
+ *  If your "users" tab already has data in the OLD layout
+ *  [username, addedAt, yearStudying, enrollmentNo, password],
+ *  insert a new blank column B titled "email" (Right-click column B → Insert 1 left)
+ *  BEFORE deploying this version, so existing rows line up with the new
+ *  [username, email, addedAt, yearStudying, enrollmentNo, password] schema.
  */
 
 const SHEET_NAME = "users"; // Name of the sheet tab
+
+// Optional shared secret guarding write access. Set this to a long random string
+// and set the SAME value as the app's SHEET_WRITE_SECRET env var. Leave "" to
+// disable the check (NOT recommended — the endpoint is otherwise world-writable).
+const SHEET_WRITE_SECRET = "";
 
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
     const action = body.action || "add"; // add, delete, set_qotw
+
+    // Reject writes that don't carry the shared secret (when one is configured).
+    if (SHEET_WRITE_SECRET && body.secret !== SHEET_WRITE_SECRET) {
+      return jsonResponse({ status: "error", message: "Unauthorized." });
+    }
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
 
@@ -54,7 +71,7 @@ function doPost(e) {
     // Create sheet with headers if it doesn't exist
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
-      sheet.getRange(1, 1, 1, 5).setValues([["username", "addedAt", "yearStudying", "enrollmentNo", "password"]]);
+      sheet.getRange(1, 1, 1, 6).setValues([["username", "email", "addedAt", "yearStudying", "enrollmentNo", "password"]]);
     }
 
     if (action === "delete") {
@@ -69,6 +86,7 @@ function doPost(e) {
     }
 
     // Default 'add' logic below
+    const email = (body.email || "").trim().toLowerCase();
     const addedAt = body.addedAt || new Date().toISOString();
     const yearStudying = body.yearStudying || "";
     const enrollmentNo = (body.enrollmentNo || "").trim().toUpperCase();
@@ -80,13 +98,13 @@ function doPost(e) {
       if (String(data[i][0]).toLowerCase() === username) {
         return jsonResponse({ status: "duplicate", message: "LeetCode username already exists." });
       }
-      if (data[i][3] && String(data[i][3]).toUpperCase() === enrollmentNo) {
+      if (data[i][4] && String(data[i][4]).toUpperCase() === enrollmentNo) {
         return jsonResponse({ status: "duplicate", message: "Enrollment number already registered." });
       }
     }
 
-    // Append new row
-    sheet.appendRow([username, addedAt, yearStudying, enrollmentNo, password]);
+    // Append new row: [username, email, addedAt, yearStudying, enrollmentNo, password]
+    sheet.appendRow([username, email, addedAt, yearStudying, enrollmentNo, password]);
     return jsonResponse({ status: "success", message: "Added successfully." });
 
   } catch (err) {
