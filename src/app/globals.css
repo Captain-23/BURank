@@ -1757,9 +1757,37 @@ body {
     padding: 18px 16px;
   }
 
-  .solved .lbl {
-    font-size: 13px;
-  }
+/* header */
+.header { padding: 28px 32px; display: flex; align-items: center; gap: 26px; }
+.p-ava { width: 108px; height: 108px; border-radius: 24px; background: linear-gradient(135deg,#F1D6C7,#D9DEF0); flex: 0 0 auto; box-shadow: var(--shadow); }
+.p-id { min-width: 0; }
+.p-id h1 { margin: 0; font-size: 32px; letter-spacing: -.03em; }
+.p-handle { margin: 4px 0 14px; font-size: 15px; font-weight: 700; width: fit-content;
+  background: linear-gradient(90deg,#2E9BF0,#C24BE0 92%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.p-handle-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.p-handle-link:hover { opacity: 0.8; }
+.p-handle-link svg { flex-shrink: 0; opacity: 0.55; }
+.p-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+.pill { font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 10px; font-family: var(--mono); }
+.pill.rank { background: #FBE9EC; color: #C0344B; border: 1px solid #F3CDD4; }
+.pill.year { background: var(--bg-2); color: var(--ink-2); border: 1px solid var(--line); }
+.pill.leetcode {
+  background: #FFF4E5;
+  color: #B45309;
+  border: 1px solid #F5D9A8;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.pill.leetcode:hover { background: #FFEDD5; }
+.p-side { margin-left: auto; text-align: right; display: flex; flex-direction: column; gap: 18px; }
+.p-side .lbl { font-size: 13px; color: var(--sub); font-weight: 600; }
+.p-side .val { font-size: 30px; font-weight: 800; letter-spacing: -.02em; font-family: var(--mono); margin-top: 2px; }
 
   .solved .big {
     font-size: 40px;
@@ -1769,10 +1797,162 @@ body {
     padding: 16px 16px;
   }
 
-  .diff h2 {
-    font-size: 14px;
-    margin-bottom: 16px;
-  }
+/* profile badges + readme */
+.profile-badges { padding: 24px 32px; }
+.profile-badges-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; }
+.profile-badges-head h2 { margin: 0; font-size: 15px; font-weight: 700; color: var(--ink-2); }
+.profile-badges-count { font-size: 13px; color: var(--sub); font-family: var(--mono); }
+
+.profile-readme { padding: 24px 32px; }
+.profile-readme-head h2 { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: var(--ink-2); }
+.profile-readme-sub { margin: 0; font-size: 13px; color: var(--sub); line-height: 1.5; max-width: 560px; }
+.profile-readme-code {
+  margin: 16px 0 0;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.profile-readme-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.profile-readme-btn {
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--sans);
+  cursor: pointer;
+  border: none;
+}
+.profile-readme-btn.primary { background: var(--bu-red); color: #fff; }
+.profile-readme-btn.secondary {
+  background: var(--bg-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.profile-readme-unavailable {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--sub);
+  line-height: 1.5;
+}
+
+/* next badge popup */
+.next-badge-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+}
+.next-badge-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+  border-radius: 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.next-badge-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: var(--bg-2);
+  color: var(--sub);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.next-badge-header { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px; padding-right: 24px; }
+.next-badge-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.next-badge-eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sub);
+}
+.next-badge-title { margin: 0 0 4px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.next-badge-desc { margin: 0; font-size: 13px; color: var(--sub); }
+.next-badge-progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.next-badge-progress-label { color: var(--sub); font-weight: 600; }
+.next-badge-progress-value { font-family: var(--mono); font-weight: 700; color: var(--ink); }
+.next-badge-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--track);
+  overflow: hidden;
+}
+.next-badge-fill { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
+.next-badge-remaining { margin: 12px 0 18px; font-size: 13px; color: var(--sub); line-height: 1.5; }
+.next-badge-dismiss-btn {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 16px;
+  background: var(--bu-red);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .profile-badges, .profile-readme { padding: 20px 20px; }
+}
+
+@media (max-width: 480px) {
+  .profile-badges, .profile-readme { padding: 16px 16px; }
+  .profile-readme-actions { flex-direction: column; }
+  .profile-readme-btn { width: 100%; }
+  .next-badge-card { padding: 20px 18px; border-radius: 16px 16px 0 0; }
+  .next-badge-overlay { align-items: flex-end; padding: 0; }
+  .next-badge-title { font-size: 20px; }
+}
+
+@media (max-width: 760px) {
+  .header { flex-direction: column; align-items: flex-start; gap: 16px; padding: 20px 20px; }
+  .p-ava { width: 88px; height: 88px; border-radius: 20px; }
+  .p-id h1 { font-size: 26px; }
+  .p-side { margin-left: 0; text-align: left; flex-direction: row; gap: 32px; }
+  .p-side .val { font-size: 24px; }
+  .prow { grid-template-columns: 1fr; }
+  .solved { padding: 22px 24px; }
+  .solved .big { font-size: 48px; }
+  .diff { padding: 20px 24px; }
+  .cal { padding: 20px 24px 24px; }
+}
 
   .bar-row {
     grid-template-columns: 64px 1fr 44px;
