@@ -1,32 +1,47 @@
+import type { IconType } from "react-icons";
 import {
-  Baby,
-  Medal,
-  Trophy,
-  Crown,
-  Shield,
-  Swords,
-  Flame,
-  Flag,
-  BadgeCheck,
-  Star,
-  Gem,
-  Scale,
-} from "lucide-react";
+  LuBaby,
+  LuMedal,
+  LuTrophy,
+  LuCrown,
+  LuShield,
+  LuSwords,
+  LuFlame,
+  LuFlag,
+  LuBadgeCheck,
+  LuStar,
+  LuGem,
+  LuScale,
+} from "react-icons/lu";
 
 export const BADGE_ICONS = {
-  rookie: Baby,
-  century: Medal,
-  grinder: Trophy,
-  legend: Crown,
+  rookie: LuBaby,
+  century: LuMedal,
+  grinder: LuTrophy,
+  legend: LuCrown,
 
-  brave: Shield,
-  savage: Swords,
-  "hard-enjoyer": Flame,
+  brave: LuShield,
+  savage: LuSwords,
+  "hard-enjoyer": LuFlame,
 
-  contestant: Flag,
-  rated: BadgeCheck,
-  expert: Star,
-  master: Gem,
+  contestant: LuFlag,
+  rated: LuBadgeCheck,
+  expert: LuStar,
+  master: LuGem,
 
-  balanced: Scale,
-} as const;
+  balanced: LuScale,
+} as const satisfies Record<string, IconType>;
+
+export type BadgeId = keyof typeof BADGE_ICONS;
+
+interface BadgeIconProps {
+  id: string;
+  size?: number;
+  color?: string;
+}
+
+export function BadgeIcon({ id, size = 14, color }: BadgeIconProps) {
+  const Icon = BADGE_ICONS[id as BadgeId];
+  if (!Icon) return null;
+  return <Icon size={size} color={color} aria-hidden />;
+}

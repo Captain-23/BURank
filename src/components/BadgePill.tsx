@@ -43,7 +43,7 @@ export default function BadgePill({ badge, size = "md" }: Props) {
       onMouseLeave={() => setHovered(false)}
     >
       {Icon ? (
-        <Icon size={isSmall ? 12 : 15} strokeWidth={2.2} color={style.dot} />
+        <Icon size={isSmall ? 12 : 15} color={style.dot} aria-hidden />
       ) : (
         <span
           style={{

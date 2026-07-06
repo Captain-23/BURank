@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { BadgeIcon } from "@/lib/badge-icons";
 import { Badge, TIER_STYLE } from "@/lib/badges";
 
 interface Props {
@@ -49,15 +50,7 @@ export default function BadgeList({ badges, variant = "compact" }: Props) {
                 transition: "opacity 0.15s",
               }}
             >
-              <span
-                style={{
-                  width: 5,
-                  height: 5,
-                  borderRadius: "50%",
-                  background: s.dot,
-                  flexShrink: 0,
-                }}
-              />
+              <BadgeIcon id={badge.id} size={11} color={s.dot} />
               {badge.label}
 
               {tooltip === badge.id && (
@@ -141,15 +134,7 @@ export default function BadgeList({ badges, variant = "compact" }: Props) {
                       marginBottom: 4,
                     }}
                   >
-                    <span
-                      style={{
-                        width: 6,
-                        height: 6,
-                        borderRadius: "50%",
-                        background: s.dot,
-                        flexShrink: 0,
-                      }}
-                    />
+                    <BadgeIcon id={badge.id} size={14} color={s.dot} />
                     <span
                       style={{
                         fontSize: 13,

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { LeetCodeUser } from "@/types";
 import { computeBadges } from "@/lib/badges";
+import { BadgeIcon } from "@/lib/badge-icons";
 import BestBadgeTag from "./BestBadgeTag";
 
 export default function LeaderboardTable({ users }: { users: LeetCodeUser[] }) {
@@ -55,7 +56,10 @@ export default function LeaderboardTable({ users }: { users: LeetCodeUser[] }) {
                   <div>
                     <div className="badges">
                       {badges.map((b) => (
-                        <span key={b.id} className="bdg grind">{b.label}</span>
+                        <span key={b.id} className="bdg grind">
+                          <BadgeIcon id={b.id} size={11} />
+                          {b.label}
+                        </span>
                       ))}
                     </div>
                   </div>

@@ -25,8 +25,9 @@ describe("getBestBadge", () => {
     expect(b?.label).toBe("Rookie");
     expect(b?.tone).toBe("default");
   });
-  it("provides an icon string", () => {
+  it("provides a badge id for the icon", () => {
     const u = { ...base, totalSolved: 250 };
-    expect(typeof getBestBadge(u)?.icon).toBe("string");
+    expect(typeof getBestBadge(u)?.id).toBe("string");
+    expect(getBestBadge(u)?.id).toBe("grinder");
   });
 });
