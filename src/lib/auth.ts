@@ -61,7 +61,8 @@ const authOptions: NextAuthOptions = {
     signIn: "/auth/signin", // our custom sign-in page
     verifyRequest: "/auth/verify", // "check your email" page
     error: "/auth/error", // error page
-    newUser: "/auth/error", // first-time users go here
+    // first-time users go here
+    newUser: "/",
   },
 
   // ─── callbacks ───────────────────────────────────────────────────────────
@@ -121,7 +122,7 @@ function magicLinkEmail(url: string, email: string): string {
               <p style="margin:0 0 32px;font-size:20px;font-weight:700;
                 color:#E2E2F0;font-family:'JetBrains Mono',monospace;
                 border-bottom:1px solid #1E1E2E;padding-bottom:20px;">
-                BU<span style="color:#C8102E;">rge</span>
+                BU<span style="color:#C8102E;">Rank</span>
               </p>
 
               <p style="margin:0 0 8px;font-size:15px;font-weight:600;color:#E2E2F0;">
