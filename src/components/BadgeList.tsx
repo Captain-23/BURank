@@ -15,11 +15,7 @@ export default function BadgeList({ badges, variant = "compact" }: Props) {
   const [tooltip, setTooltip] = useState<string | null>(null);
 
   if (badges.length === 0) {
-    return (
-      <span style={{ fontSize: 12, color: "var(--bu-sub, #8888a8)" }}>
-        No badges yet
-      </span>
-    );
+    return <span className="badge-list-empty">No badges yet</span>;
   }
 
   if (variant === "compact") {
@@ -89,7 +85,7 @@ export default function BadgeList({ badges, variant = "compact" }: Props) {
   }, {});
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div className="badge-list-full">
       {tierOrder.map((tier) => {
         const group = grouped[tier];
         if (!group || group.length === 0) return null;
@@ -97,64 +93,26 @@ export default function BadgeList({ badges, variant = "compact" }: Props) {
 
         return (
           <div key={tier}>
-            <p
-              style={{
-                fontSize: 11,
-                fontWeight: 500,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: s.text,
-                marginBottom: 8,
-              }}
-            >
+            <p className="badge-tier-label" style={{ color: s.text }}>
               {tier}
             </p>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-                gap: 8,
-              }}
-            >
+            <div className="badge-tier-grid">
               {group.map((badge) => (
                 <div
                   key={badge.id}
+                  className="badge-card"
                   style={{
-                    padding: "10px 12px",
-                    borderRadius: 6,
                     background: s.bg,
                     border: `1px solid ${s.border}`,
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 6,
-                      marginBottom: 4,
-                    }}
-                  >
+                  <div className="badge-card-head">
                     <BadgeIcon id={badge.id} size={14} color={s.dot} />
-                    <span
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 500,
-                        color: s.text,
-                      }}
-                    >
+                    <span className="badge-card-label" style={{ color: s.text }}>
                       {badge.label}
                     </span>
                   </div>
-                  <p
-                    style={{
-                      fontSize: 11,
-                      color: "#8888a8",
-                      margin: 0,
-                      paddingLeft: 12,
-                    }}
-                  >
-                    {badge.description}
-                  </p>
+                  <p className="badge-card-desc">{badge.description}</p>
                 </div>
               ))}
             </div>

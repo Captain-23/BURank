@@ -34,9 +34,15 @@ export default function ProfileActions({ username, enrollmentNo, siteOrigin }: P
         </div>
       </div>
 
-      {readmeMarkdown ? (
+      {readmeMarkdown && cardUrl ? (
         <>
-          <pre className="profile-readme-code">{readmeMarkdown}</pre>
+          <div className="profile-readme-body">
+            <div className="profile-readme-preview">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={cardUrl} alt={`${username}'s BURank card preview`} />
+            </div>
+            <pre className="profile-readme-code">{readmeMarkdown}</pre>
+          </div>
           <div className="profile-readme-actions">
             <button
               className="profile-readme-btn primary"
@@ -46,7 +52,7 @@ export default function ProfileActions({ username, enrollmentNo, siteOrigin }: P
             </button>
             <button
               className="profile-readme-btn secondary"
-              onClick={() => cardUrl && copy(cardUrl, "link")}
+              onClick={() => copy(cardUrl, "link")}
             >
               {copied === "link" ? "Copied!" : "Copy card link"}
             </button>
