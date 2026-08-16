@@ -81,6 +81,30 @@
   --body-grad-start: #18181b;
   --body-grad-mid: #09090b;
   --body-grad-end: #09090b;
+
+  /* Champion card band backgrounds — dark mode */
+  --band-c1: linear-gradient(105deg, rgba(253,185,100,0.18), rgba(220,130,200,0.18) 45%, rgba(100,180,240,0.18) 78%, rgba(100,220,160,0.18));
+  --band-c2: linear-gradient(105deg, rgba(180,140,240,0.16), rgba(120,170,240,0.16) 60%, rgba(140,180,240,0.16));
+  --band-c3: linear-gradient(105deg, rgba(240,160,110,0.16), rgba(235,180,130,0.16) 55%, rgba(245,190,150,0.16));
+
+  /* Champion place number — visible on dark */
+  --place-color: rgba(255,255,255,0.20);
+
+  /* Avatar hex shell */
+  --avatar-shell: #27272a;
+  --avatar-inner: #3f3f46;
+
+  /* Score/xp pill on dark cards */
+  --pill-bg: #e4e4e7;
+  --pill-text: #09090b;
+
+  /* Badge pills — dark mode */
+  --bdg-streak-bg: rgba(234,88,12,0.18);
+  --bdg-streak-text: #fb923c;
+  --bdg-contest-bg: rgba(59,130,246,0.18);
+  --bdg-contest-text: #60a5fa;
+  --bdg-grind-bg: rgba(16,185,129,0.18);
+  --bdg-grind-text: #34d399;
 }
 
 * {
@@ -396,12 +420,24 @@ body {
   background: linear-gradient(105deg, #FDE9C8, #F7D9EE 45%, #CFE7F5 78%, #D6F1E4);
 }
 
+[data-theme='dark'] .c1 .band {
+  background: var(--band-c1);
+}
+
 .c2 .band {
   background: linear-gradient(105deg, #EFE7FA, #DDE7F7 60%, #E7F0F9);
 }
 
+[data-theme='dark'] .c2 .band {
+  background: var(--band-c2);
+}
+
 .c3 .band {
   background: linear-gradient(105deg, #FBE6D9, #F6E9D6 55%, #FBEEE2);
+}
+
+[data-theme='dark'] .c3 .band {
+  background: var(--band-c3);
 }
 
 .place {
@@ -414,6 +450,10 @@ body {
   font-size: 64px;
   font-style: italic;
   line-height: 1;
+}
+
+[data-theme='dark'] .place {
+  color: var(--place-color);
 }
 
 .place sup {
@@ -438,11 +478,20 @@ body {
   filter: drop-shadow(0 4px 10px rgba(20, 20, 28, .14));
 }
 
+[data-theme='dark'] .avatar {
+  background: var(--avatar-shell);
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+}
+
 .avatar-in {
   width: 100px;
   height: 88px;
   background: #E9EAF0;
   clip-path: polygon(26% 4%, 74% 4%, 100% 50%, 74% 96%, 26% 96%, 0 50%);
+}
+
+[data-theme='dark'] .avatar-in {
+  background: var(--avatar-inner);
 }
 
 /* score + icon pills on the right */
@@ -482,6 +531,11 @@ body {
   gap: 5px;
   align-items: center;
   box-shadow: var(--shadow);
+}
+
+[data-theme='dark'] .xpill {
+  background: var(--pill-bg);
+  color: var(--pill-text);
 }
 
 .xpill .x {
@@ -549,6 +603,11 @@ body {
   gap: 5px;
   align-items: center;
   box-shadow: var(--shadow);
+}
+
+[data-theme='dark'] .score-pill {
+  background: var(--pill-bg);
+  color: var(--pill-text);
 }
 
 .score-pill b {
@@ -849,6 +908,10 @@ body {
   color: var(--red);
 }
 
+[data-theme='dark'] .coder .ava2 {
+  background: var(--avatar-inner);
+}
+
 .coder .nm {
   font-weight: 750;
   font-size: 14.5px;
@@ -912,6 +975,21 @@ body {
 .bdg.grind {
   background: #E9F7F1;
   color: #12A594;
+}
+
+[data-theme='dark'] .bdg.streak {
+  background: var(--bdg-streak-bg);
+  color: var(--bdg-streak-text);
+}
+
+[data-theme='dark'] .bdg.contest {
+  background: var(--bdg-contest-bg);
+  color: var(--bdg-contest-text);
+}
+
+[data-theme='dark'] .bdg.grind {
+  background: var(--bdg-grind-bg);
+  color: var(--bdg-grind-text);
 }
 
 .num-cell {
@@ -979,6 +1057,11 @@ body {
   background: var(--gold-soft);
   border-color: #EAD6A0;
   color: #96700F;
+}
+
+[data-theme='dark'] .best-tag.gold {
+  border-color: rgba(251, 191, 36, 0.3);
+  color: #fbbf24;
 }
 
 .acts {
