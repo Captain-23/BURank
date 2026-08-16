@@ -1294,13 +1294,110 @@ body {
     font-size: 11.5px;
   }
 
-  /* List scroll horizontal scroll hint */
+  /* List scroll — remove horizontal scroll, let rows stack */
   .list-scroll {
+    overflow-x: visible;
     padding: 4px 0 8px;
   }
 
   .rows {
-    min-width: 820px;
+    min-width: 0;
+    gap: 10px;
+  }
+
+  /* Hide the column header on mobile */
+  .rows-head {
+    display: none;
+  }
+
+  /* Card layout: remove grid, remove skew, single row per entry */
+  .inner {
+    transform: none;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 14px;
+    border-radius: 14px;
+  }
+
+  .inner > * {
+    transform: none;
+  }
+
+  /* Remove section dividers */
+  .inner > *:nth-child(5),
+  .inner > *:nth-child(9) {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  /* Hide: badges, batch, E/M/H, global rank, best-tag, chevron */
+  .inner > *:nth-child(3),
+  .inner > *:nth-child(4),
+  .inner > *:nth-child(6),
+  .inner > *:nth-child(8),
+  .inner > *:nth-child(9),
+  .inner > *:nth-child(10) {
+    display: none;
+  }
+
+  /* Rank — tight fixed width */
+  .inner > *:nth-child(1) {
+    flex-shrink: 0;
+    width: 28px;
+  }
+
+  /* Coder block — grows to fill space */
+  .inner > *:nth-child(2) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Solved count — right side, auto margin pushes it right */
+  .inner > *:nth-child(5) {
+    margin-left: auto;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  /* Contest rating — muted, right-aligned */
+  .inner > *:nth-child(7) {
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  /* rank size */
+  .inner .rk {
+    font-size: 15px;
+    text-align: center;
+  }
+
+  /* solved number */
+  .inner .num-cell {
+    font-size: 15px;
+  }
+
+  /* contest cell */
+  .contest-cell b {
+    font-size: 12px;
+  }
+  .contest-cell span {
+    font-size: 11px;
+    color: var(--sub);
+  }
+
+  /* coder avatar + name */
+  .inner .coder .ava2 {
+    width: 36px;
+    height: 36px;
+  }
+  .inner .coder .nm {
+    font-size: 14px;
+  }
+  .inner .coder .un {
+    font-size: 11.5px;
   }
 
   /* Batch cards stack nicely */
@@ -1408,15 +1505,11 @@ body {
     padding: 8px 10px 40px;
   }
 
-  /* Rows table: allow horizontal scroll, reduce min-width slightly */
-  .rows {
-    min-width: 740px;
-  }
-
+  /* Rows table: card layout — just tweak inner padding at this size */
   .inner {
-    padding: 12px 18px;
+    padding: 11px 14px;
     border-radius: 12px;
-    column-gap: 10px;
+    gap: 8px;
   }
 
   .rk {
@@ -2483,16 +2576,12 @@ body {
 /* ═══════════════════════════════════════════
    TOPBAR — ENSURE FULL-WIDTH ON MOBILE
    ═══════════════════════════════════════════ */
+
 @media (max-width: 640px) {
 
   /* Remove max-width constraint so topbar fills screen on mobile */
   .topbar {
     max-width: 100%;
-  }
-
-  /* Board columns slightly tighter to reduce horizontal scroll range */
-  .board {
-    --cols: 36px minmax(130px, 1.3fr) 130px 56px 56px 100px 90px 72px 110px 34px;
   }
 }
 
