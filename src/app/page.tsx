@@ -39,8 +39,8 @@ export default function LeaderboardPage() {
       (u) => u.email?.toLowerCase() === currentEmail.toLowerCase(),
     );
 
-  const fetchLeaderboard = useCallback(async () => {
-    setLoading(true);
+  const doFetch = useCallback(async (isRetry = false) => {
+    if (!isRetry) setLoading(true);
     setError(null);
     try {
       const [res, qotwRes] = await Promise.all([
@@ -54,12 +54,18 @@ export default function LeaderboardPage() {
       setUsers(data.users ?? []);
       setFirstBlood(qotwData.first_blood || "");
       setLastRefreshed(new Date());
-    } catch {
-      setError("Could not load leaderboard. Check your connection.");
-    } finally {
       setLoading(false);
+    } catch {
+      if (!isRetry) {
+        setTimeout(() => doFetch(true), 1200);
+      } else {
+        setError("Could not load leaderboard. Check your connection.");
+        setLoading(false);
+      }
     }
   }, []);
+
+  const fetchLeaderboard = useCallback(() => doFetch(false), [doFetch]);
 
   useEffect(() => {
     fetchLeaderboard();
@@ -237,16 +243,28 @@ export default function LeaderboardPage() {
               style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}
             >
               {batchStats.map((batch) => (
-                <div key={batch.year} className="hl" style={{ display: "block", padding: 20 }}>
-                  <div className="lab">
-                    Batch {batch.year === "Unknown" ? "Unassigned" : batch.year} ·{" "}
-                    {batch.totalStudents} coders
+                <div key={batch.year} className="batch-card">
+                  <div className="batch-year">
+                    <span>Batch {batch.year === "Unknown" ? "N/A" : batch.year}</span>
+                    <span className="batch-students">{batch.totalStudents} coders</span>
                   </div>
-                  <div className="num" style={{ marginTop: 6 }}>
-                    {batch.avgSolved}
+                  <div className="batch-avg-solved">
+                    <div className="val">{batch.avgSolved}</div>
+                    <div className="lbl">Average Solved</div>
                   </div>
-                  <div className="lab" style={{ marginTop: 4 }}>
-                    avg solved · {batch.totalEasy}E / {batch.totalMedium}M / {batch.totalHard}H
+                  <div className="batch-emh">
+                    <div>
+                      <span className="val" style={{ color: "var(--easy)" }}>{batch.totalEasy}</span>
+                      <span className="lbl">Easy</span>
+                    </div>
+                    <div>
+                      <span className="val" style={{ color: "var(--medium)" }}>{batch.totalMedium}</span>
+                      <span className="lbl">Medium</span>
+                    </div>
+                    <div>
+                      <span className="val" style={{ color: "var(--hard)" }}>{batch.totalHard}</span>
+                      <span className="lbl">Hard</span>
+                    </div>
                   </div>
                 </div>
               ))}
