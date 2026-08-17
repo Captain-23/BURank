@@ -112,12 +112,17 @@ export default function Heatmap({ data }: HeatmapProps) {
             {days.map((day, i) => (
               <div 
                 key={i} 
-                className="w-2.5 h-2.5 rounded-[2px] transition-colors hover:ring-1 hover:ring-black/20 relative group cursor-pointer"
+                className="w-2.5 h-2.5 rounded-[2px] transition-colors hover:ring-1 hover:ring-[var(--sub)] relative group cursor-pointer"
                 style={{ background: getColor(day.count) }}
               >
                 {/* Tooltip */}
                 <div
-                  className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[var(--ink)] text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
+                  className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border"
+                  style={{
+                    background: "var(--ink)",
+                    color: "var(--body-bg)",
+                    borderColor: "var(--line)",
+                  }}
                 >
                   {day.count} submissions on {day.date.toDateString()}
                 </div>
