@@ -102,66 +102,41 @@ function magicLinkEmail(url: string, email: string): string {
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
 </head>
-<body style="margin:0;padding:0;background:#0A0A0F;font-family:Inter,system-ui,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 20px;">
+<body style="margin:0;padding:0;background:#f9fafb;font-family:system-ui,-apple-system,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:48px 20px;">
     <tr>
       <td align="center">
-        <table width="480" cellpadding="0" cellspacing="0"
-          style="background:#111118;border:1px solid #1E1E2E;border-radius:8px;overflow:hidden;">
+        <table width="100%" cellpadding="0" cellspacing="0"
+          style="max-width:420px;background:#ffffff;border:1px solid #e5e7eb;border-radius:8px;">
 
-          <!-- Red top bar -->
           <tr>
-            <td style="height:3px;background:#C8102E;"></td>
-          </tr>
+            <td style="padding:40px 36px;">
 
-          <!-- Body -->
-          <tr>
-            <td style="padding:36px 40px;">
-
-              <!-- Wordmark -->
-              <p style="margin:0 0 32px;font-size:20px;font-weight:700;
-                color:#E2E2F0;font-family:'JetBrains Mono',monospace;
-                border-bottom:1px solid #1E1E2E;padding-bottom:20px;">
-                BU<span style="color:#C8102E;">Rank</span>
+              <p style="margin:0 0 28px;font-size:11px;font-weight:500;
+                color:#9ca3af;letter-spacing:0.12em;">
+                BURANK
               </p>
 
-              <p style="margin:0 0 8px;font-size:15px;font-weight:600;color:#E2E2F0;">
-                Sign in to BURank
+              <p style="margin:0 0 10px;font-size:20px;font-weight:600;color:#111827;line-height:1.3;">
+                Sign in
               </p>
-              <p style="margin:0 0 28px;font-size:13px;color:#8888A8;line-height:1.6;">
-                Click the button below to sign in to your BURank account.
-                This link expires in <strong style="color:#E2E2F0;">15 minutes</strong>
-                and can only be used once.
+              <p style="margin:0 0 32px;font-size:14px;color:#6b7280;line-height:1.6;">
+                Click the button to continue. This link expires in 15 minutes
+                and works once.
               </p>
 
-              <!-- CTA button -->
               <a href="${url}"
-                style="display:inline-block;padding:12px 28px;
-                background:#C8102E;color:#ffffff;font-size:14px;
-                font-weight:600;text-decoration:none;border-radius:6px;">
-                Sign in to BURank
+                style="display:inline-block;padding:10px 22px;
+                border:1px solid #111827;color:#111827;font-size:14px;
+                font-weight:500;text-decoration:none;border-radius:6px;">
+                Continue to BURank
               </a>
 
-              <!-- Divider -->
-              <p style="margin:28px 0 0;padding-top:20px;
-                border-top:1px solid #1E1E2E;
-                font-size:11px;color:#555570;line-height:1.6;">
-                Signing in as <strong style="color:#8888A8;">${email}</strong><br/>
-                If you didn't request this, ignore this email — nothing will happen.<br/>
-                This link works only once and expires in 15 minutes.
+              <p style="margin:36px 0 0;font-size:12px;color:#9ca3af;line-height:1.6;">
+                ${email}<br/>
+                If you didn't request this, you can ignore this email.
               </p>
 
-            </td>
-          </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td style="padding:16px 40px;border-top:1px solid #1E1E2E;
-              background:rgba(255,255,255,0.01);">
-              <p style="margin:0;font-size:11px;color:#2A2A3E;
-                font-family:'JetBrains Mono',monospace;">
-                Bennett University · LeetCode Leaderboard
-              </p>
             </td>
           </tr>
 
