@@ -73,7 +73,7 @@ export default function LeaderboardPage() {
 
   // Sorted + searched list for the table
   const processed = useMemo(() => {
-    let list = [...users].filter((u) => !u.error);
+    let list = [...users];
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(
@@ -99,7 +99,6 @@ export default function LeaderboardPage() {
   const batchStats = useMemo(() => {
     const batches: Record<string, BatchData> = {};
     users
-      .filter((u) => !u.error)
       .forEach((u) => {
         const year = u.yearStudying || "Unknown";
         if (!batches[year]) {
@@ -127,8 +126,7 @@ export default function LeaderboardPage() {
       })
       .sort((a, b) => b.avgSolved - a.avgSolved);
   }, [users]);
-
-  const registeredCount = users.filter((u) => !u.error).length;
+  const registeredCount = users.length;
 
   return (
     <div style={{ minHeight: "100vh" }}>
