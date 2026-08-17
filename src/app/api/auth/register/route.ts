@@ -4,6 +4,7 @@ import { addUsernameToSheet, fetchUsernamesFromSheet } from "@/lib/sheets";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
+import { normalizeEnrollmentNo } from "@/lib/enrollment";
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const username: string = (body.username ?? "").trim().toLowerCase();
     const yearStudying: string = (body.yearStudying ?? "").trim();
-    const enrollmentNo: string = (body.enrollmentNo ?? "").trim().toUpperCase();
+    const enrollmentNo = normalizeEnrollmentNo(body.enrollmentNo ?? "");
 
     if (!username || username.length < 2) {
       return NextResponse.json(

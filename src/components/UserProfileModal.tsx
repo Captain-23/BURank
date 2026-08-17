@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { LeetCodeUser } from "@/types";
 import { computeBadges, getNextBadgeProgress } from "@/lib/badges";
+import { normalizeEnrollmentNo } from "@/lib/enrollment";
 import BadgeList from "./BadgeList";
 
 interface Props {
@@ -62,10 +63,14 @@ export default function UserProfileModal({
   const nextBadge = getNextBadgeProgress(user);
   const [copied, setCopied] = useState(false);
 
-  const copyGithubMarkdown = async () => {
-    if (!user.enrollmentNo) return;
+  const normalizedEnrollment = user.enrollmentNo
+    ? normalizeEnrollmentNo(user.enrollmentNo)
+    : "";
 
-    const markdown = `![My BURank Rank](${window.location.origin}/card/${user.enrollmentNo})`;
+  const copyGithubMarkdown = async () => {
+    if (!normalizedEnrollment) return;
+
+    const markdown = `![My BURank Rank](${window.location.origin}/card/${encodeURIComponent(normalizedEnrollment)})`;
 
     await navigator.clipboard.writeText(markdown);
 
@@ -76,13 +81,13 @@ export default function UserProfileModal({
     }, 2000);
   };
   const copyRankCard = async () => {
-    if (!user.enrollmentNo) {
+    if (!normalizedEnrollment) {
       console.warn("Enrollment number not available.");
 
       return;
     }
 
-    const url = `${window.location.origin}/card/${user.enrollmentNo}`;
+    const url = `${window.location.origin}/card/${encodeURIComponent(normalizedEnrollment)}`;
 
     await navigator.clipboard.writeText(url);
 

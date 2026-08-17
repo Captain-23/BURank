@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { computeStaleUsernames } from "@/lib/ingest-reconcile";
+import { normalizeEnrollmentNo } from "@/lib/enrollment";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,44 @@ interface IngestBody {
   settings?: Record<string, string | null | undefined>;
 }
 
+/** Only apply roster metadata when the incoming value is non-empty. */
+function rosterMetadata(u: IngestUser) {
+  const meta: {
+    realName?: string;
+    avatar?: string;
+    ranking?: number;
+    email?: string;
+    enrollmentNo?: string;
+    yearStudying?: string;
+    addedAt?: string;
+  } = {};
+
+  if (u.realName?.trim()) meta.realName = u.realName.trim();
+  if (u.avatar?.trim()) meta.avatar = u.avatar.trim();
+  if (u.ranking != null) meta.ranking = u.ranking;
+  if (u.email?.trim()) meta.email = u.email.trim().toLowerCase();
+  if (u.enrollmentNo?.trim()) {
+    meta.enrollmentNo = normalizeEnrollmentNo(u.enrollmentNo);
+  }
+  if (u.yearStudying?.trim()) meta.yearStudying = u.yearStudying.trim();
+  if (u.addedAt?.trim()) meta.addedAt = u.addedAt.trim();
+
+  return meta;
+}
+
+function createMetadata(u: IngestUser) {
+  const meta = rosterMetadata(u);
+  return {
+    realName: meta.realName ?? null,
+    avatar: meta.avatar ?? null,
+    ranking: meta.ranking ?? null,
+    email: meta.email ?? null,
+    enrollmentNo: meta.enrollmentNo ?? null,
+    yearStudying: meta.yearStudying ?? null,
+    addedAt: meta.addedAt ?? null,
+  };
+}
+
 export async function POST(req: NextRequest) {
   const secret = process.env.CRON_SECRET;
   const auth = req.headers.get("authorization");
@@ -55,15 +94,8 @@ export async function POST(req: NextRequest) {
   // one round-trip / atomic apply instead of N sequential awaits.
   const upserts = users.map((u) => {
     const username = u.username.toLowerCase();
-    const meta = {
-      realName: u.realName ?? null,
-      avatar: u.avatar ?? null,
-      ranking: u.ranking ?? null,
-      email: u.email ?? null,
-      enrollmentNo: u.enrollmentNo ?? null,
-      yearStudying: u.yearStudying ?? null,
-      addedAt: u.addedAt ?? null,
-    };
+    const meta = rosterMetadata(u);
+    const createMeta = createMetadata(u);
 
     if (u.fetchError) {
       // Preserve last-good stats: update only metadata + the error flag.
@@ -72,7 +104,7 @@ export async function POST(req: NextRequest) {
         update: { ...meta, fetchError: true, lastFetchedAt: now },
         create: {
           username,
-          ...meta,
+          ...createMeta,
           fetchError: true,
           totalSolved: 0,
           easySolved: 0,
@@ -100,7 +132,7 @@ export async function POST(req: NextRequest) {
     return prisma.userStat.upsert({
       where: { username },
       update: { ...meta, ...stats, fetchError: false, lastFetchedAt: now },
-      create: { username, ...meta, ...stats, fetchError: false, lastFetchedAt: now },
+      create: { username, ...createMeta, ...stats, fetchError: false, lastFetchedAt: now },
     });
   });
 

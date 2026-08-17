@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { enrollmentMatches, normalizeEnrollmentNo } from "@/lib/enrollment";
 
-// Cached, ranked read shared with the leaderboard; dropped on revalidateTag("leaderboard").
+// Cached leaderboard rows; dropped on revalidateTag("leaderboard").
 const getRankedUsers = unstable_cache(
   async () =>
     prisma.userStat.findMany({
-      where: { fetchError: false },
       orderBy: { totalSolved: "desc" },
     }),
   ["card-ranked-users"],
@@ -268,7 +268,9 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: { enrollment: string } },
 ) {
-  const enrollment = (params.enrollment ?? "").trim().toLowerCase();
+  const enrollment = normalizeEnrollmentNo(
+    decodeURIComponent(params.enrollment ?? ""),
+  );
 
   if (!enrollment) {
     return new NextResponse(errorCard("No enrollment number provided."), {
@@ -278,11 +280,11 @@ export async function GET(
   }
 
   try {
-    // Rank everyone by totalSolved (successful fetches only).
+    // Rank everyone by totalSolved (same pool as the public leaderboard).
     const rows = await getRankedUsers();
 
     const idx = rows.findIndex(
-      (r) => (r.enrollmentNo ?? "").toLowerCase() === enrollment,
+      (r) => r.enrollmentNo && enrollmentMatches(r.enrollmentNo, enrollment),
     );
 
     if (idx === -1) {

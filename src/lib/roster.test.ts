@@ -1,5 +1,19 @@
 import { describe, it, expect } from "vitest";
-import { parseRosterCsv } from "./roster";
+import { parseCsvLine, parseRosterCsv } from "./roster";
+
+describe("parseCsvLine", () => {
+  it("parses quoted fields that contain commas", () => {
+    expect(
+      parseCsvLine('nealwu,"last, first@bennett.edu.in",2026-01-01,3rd,E21CSE001'),
+    ).toEqual([
+      "nealwu",
+      "last, first@bennett.edu.in",
+      "2026-01-01",
+      "3rd",
+      "E21CSE001",
+    ]);
+  });
+});
 
 describe("parseRosterCsv", () => {
   it("parses rows and lowercases username/email", () => {
@@ -16,6 +30,28 @@ describe("parseRosterCsv", () => {
         enrollmentNo: "E21CSE001",
       },
     ]);
+  });
+
+  it("normalizes enrollment numbers", () => {
+    const csv =
+      "username,email,addedAt,yearStudying,enrollmentNo\n" +
+      "bob,b@x.com,2026-01-01,2nd,a23 0521026\n";
+    const rows = parseRosterCsv(csv);
+    expect(rows[0]?.enrollmentNo).toBe("A230521026");
+  });
+
+  it("handles quoted email fields without shifting columns", () => {
+    const csv =
+      "username,email,addedAt,yearStudying,enrollmentNo\n" +
+      'alice,"last, first@bennett.edu.in",2026-01-01,4th,A230521026\n';
+    const rows = parseRosterCsv(csv);
+    expect(rows[0]).toEqual({
+      username: "alice",
+      email: "last, first@bennett.edu.in",
+      addedAt: "2026-01-01",
+      yearStudying: "4th",
+      enrollmentNo: "A230521026",
+    });
   });
 
   it("skips the header and blank/empty-username rows", () => {

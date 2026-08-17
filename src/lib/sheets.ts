@@ -1,5 +1,6 @@
 import { SheetEntry } from "@/types";
 import { parseRosterCsv } from "./roster";
+import { normalizeEnrollmentNo } from "./enrollment";
 
 const SHEET_CSV_URL = process.env.NEXT_PUBLIC_SHEET_CSV_URL ?? "";
 // Server-only write endpoint. Prefer the non-public var so the Apps Script URL
@@ -107,7 +108,7 @@ export async function addUsernameToSheet(
       email: email.toLowerCase().trim(),
       addedAt: new Date().toISOString(),
       yearStudying,
-      enrollmentNo,
+      enrollmentNo: normalizeEnrollmentNo(enrollmentNo),
     });
 
     if (!data) return { success: false, message: "No response from sheet." };

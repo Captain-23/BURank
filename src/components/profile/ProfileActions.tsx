@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { normalizeEnrollmentNo } from "@/lib/enrollment";
 
 interface Props {
   username: string;
@@ -11,7 +12,12 @@ interface Props {
 export default function ProfileActions({ username, enrollmentNo, siteOrigin }: Props) {
   const [copied, setCopied] = useState<"readme" | "link" | null>(null);
 
-  const cardUrl = enrollmentNo ? `${siteOrigin}/card/${enrollmentNo}` : null;
+  const normalizedEnrollment = enrollmentNo
+    ? normalizeEnrollmentNo(enrollmentNo)
+    : "";
+  const cardUrl = normalizedEnrollment
+    ? `${siteOrigin}/card/${encodeURIComponent(normalizedEnrollment)}`
+    : null;
 
   const readmeMarkdown = cardUrl
     ? `![${username}'s BURank Card](${cardUrl})`
