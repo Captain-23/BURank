@@ -10,6 +10,26 @@ const SHEET_WRITE_URL =
 // Optional shared secret; when set it must match the Apps Script's SHEET_WRITE_SECRET.
 const SHEET_WRITE_SECRET = process.env.SHEET_WRITE_SECRET ?? "";
 
+const GAS_REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
+
+function parseGasJson(text: string): Record<string, unknown> | null {
+  try {
+    return JSON.parse(text);
+  } catch {
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) return null;
+    try {
+      return JSON.parse(match[0]);
+    } catch {
+      return null;
+    }
+  }
+}
+
+async function readGasResponse(res: Response): Promise<Record<string, unknown> | null> {
+  return parseGasJson(await res.text());
+}
+
 /**
  * Helper to POST to Google Apps Script and handle its redirect correctly.
  * GAS returns a 302 redirect; the redirect target only accepts GET.
@@ -29,32 +49,15 @@ async function postToGAS(
       redirect: "manual", // Don't auto-follow the 302
     });
 
-    // GAS returns 302 with Location header pointing to the response
-    if (res.status === 302 || res.status === 301) {
-      const redirectUrl = res.headers.get("location");
-      if (redirectUrl) {
-        const followRes = await fetch(redirectUrl, { method: "GET" });
-        const text = await followRes.text();
-        try {
-          return JSON.parse(text);
-        } catch {
-          // Try to extract JSON from potential HTML wrapper
-          const match = text.match(/\{[^}]+\}/);
-          if (match) return JSON.parse(match[0]);
-        }
-      }
-      return null;
+    if (GAS_REDIRECT_STATUSES.has(res.status)) {
+      const location = res.headers.get("location");
+      if (!location) return null;
+      const redirectUrl = new URL(location, SHEET_WRITE_URL).toString();
+      const followRes = await fetch(redirectUrl, { method: "GET" });
+      return readGasResponse(followRes);
     }
 
-    // If no redirect (shouldn't happen normally, but handle it)
-    const text = await res.text();
-    try {
-      return JSON.parse(text);
-    } catch {
-      const match = text.match(/\{[^}]+\}/);
-      if (match) return JSON.parse(match[0]);
-      return null;
-    }
+    return readGasResponse(res);
   } catch (err) {
     console.error("[postToGAS] Error:", err);
     return null;
@@ -132,10 +135,23 @@ export async function addUsernameToSheet(
   }
 }
 
-export async function deleteUserFromSheet(username: string): Promise<boolean> {
-  console.log("[deleteUser] Sending delete request for:", username);
+export async function deleteUserFromSheet(
+  username: string,
+): Promise<{ success: boolean; message: string }> {
+  if (!SHEET_WRITE_URL) {
+    return { success: false, message: "Sheet write URL not configured." };
+  }
+
   const data = await postToGAS({ action: "delete", username });
-  console.log("[deleteUser] Response:", data);
-  return data?.status === "success";
+  if (!data) {
+    return { success: false, message: "No response from sheet." };
+  }
+  if (data.status === "success") {
+    return { success: true, message: "User deleted from roster." };
+  }
+  return {
+    success: false,
+    message: (data.message as string) ?? "Failed to delete user from roster.",
+  };
 }
 

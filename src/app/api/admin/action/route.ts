@@ -18,13 +18,28 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: false, message: "Username required" }, { status: 400 });
       }
       const username = String(body.username).toLowerCase();
-      const success = await deleteUserFromSheet(username);
+      const sheetResult = await deleteUserFromSheet(username);
       // Remove from the cache immediately so the leaderboard updates now.
-      await prisma.userStat.deleteMany({ where: { username } });
+      const { count } = await prisma.userStat.deleteMany({ where: { username } });
       revalidateTag("leaderboard");
+
+      const removedFromCache = count > 0;
+      const removedFromSheet = sheetResult.success;
+
+      if (removedFromSheet || removedFromCache) {
+        let message = "User deleted.";
+        if (removedFromCache && !removedFromSheet) {
+          message =
+            "User removed from leaderboard. Warning: could not remove from the roster sheet — they may reappear after the next refresh.";
+        } else if (removedFromSheet && !removedFromCache) {
+          message = "User removed from roster sheet (was not in cache).";
+        }
+        return NextResponse.json({ success: true, message });
+      }
+
       return NextResponse.json({
-        success,
-        message: success ? "User deleted" : "Failed to delete user",
+        success: false,
+        message: sheetResult.message || "User not found.",
       });
     }
 

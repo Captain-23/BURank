@@ -15,6 +15,7 @@ export default function AdminPage() {
   const [qotw, setQotw] = useState("");
   const [qotwLoading, setQotwLoading] = useState(false);
   const [qotwSuccess, setQotwSuccess] = useState("");
+  const [deletingUser, setDeletingUser] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,23 +61,40 @@ export default function AdminPage() {
 
   const handleDeleteUser = async (username: string) => {
     if (!confirm(`Are you sure you want to delete ${username}?`)) return;
-    
+
+    const normalized = username.toLowerCase();
+    setDeletingUser(normalized);
+
     try {
       const res = await fetch("/api/admin/action", {
         method: "POST",
+        credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "delete", username }),
       });
       const data = await res.json();
-      console.log("Delete response:", data);
+
+      if (res.status === 401) {
+        setIsLoggedIn(false);
+        alert("Session expired. Please log in again.");
+        return;
+      }
+
       if (data.success) {
-        setUsers(users.filter(u => u.username !== username));
+        setUsers((prev) =>
+          prev.filter((u) => u.username.toLowerCase() !== normalized),
+        );
+        if (typeof data.message === "string" && data.message.includes("Warning")) {
+          alert(data.message);
+        }
       } else {
-        alert(data.message || "Failed to delete user. Check console for details.");
+        alert(data.message || "Failed to delete user.");
       }
     } catch (err) {
       console.error("Delete error:", err);
       alert("Network error while deleting user");
+    } finally {
+      setDeletingUser(null);
     }
   };
 
@@ -222,11 +240,13 @@ export default function AdminPage() {
                         {user.enrollmentNo || "—"}
                       </td>
                       <td className="px-6 py-3 text-right">
-                        <button 
+                        <button
+                          type="button"
+                          disabled={deletingUser === user.username.toLowerCase()}
                           onClick={() => handleDeleteUser(user.username)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-500/20 text-[var(--hard)] transition-colors"
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-500/20 text-[var(--hard)] transition-colors disabled:opacity-50"
                         >
-                          Delete
+                          {deletingUser === user.username.toLowerCase() ? "Deleting..." : "Delete"}
                         </button>
                       </td>
                     </tr>
