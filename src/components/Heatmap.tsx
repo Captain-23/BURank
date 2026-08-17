@@ -53,13 +53,13 @@ export default function Heatmap({ data }: HeatmapProps) {
     return { days: daysArray, maxSubmissions: maxSub };
   }, [data]);
 
-  // Color logic
+  // Color logic — uses theme-aware CSS variables from globals.css
   const getColor = (count: number) => {
-    if (count === 0) return "#EAECF1";
-    if (count === 1) return "#BEE9DC";
-    if (count <= 3) return "#6FD3BC";
-    if (count <= 6) return "#22B79B";
-    return "#00A98F";
+    if (count === 0) return "var(--heat-0)";
+    if (count === 1) return "var(--heat-1)";
+    if (count <= 3) return "var(--heat-2)";
+    if (count <= 6) return "var(--heat-3)";
+    return "var(--heat-4)";
   };
 
   const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

@@ -40,6 +40,13 @@
   --body-grad-start: #e3e6ec;
   --body-grad-mid: #eaedf1;
   --body-grad-end: #f5f6f8;
+
+  /* submission heatmap */
+  --heat-0: #eaecf1;
+  --heat-1: #bee9dc;
+  --heat-2: #6fd3bc;
+  --heat-3: #22b79b;
+  --heat-4: #00a98f;
 }
 
 [data-theme='dark'] {
@@ -81,6 +88,13 @@
   --body-grad-start: #18181b;
   --body-grad-mid: #09090b;
   --body-grad-end: #09090b;
+
+  /* submission heatmap — muted greens for dark backgrounds */
+  --heat-0: #27272a;
+  --heat-1: #14532d;
+  --heat-2: #166534;
+  --heat-3: #15803d;
+  --heat-4: #22c55e;
 
   /* Champion card band backgrounds — dark mode */
   --band-c1: linear-gradient(105deg, rgba(253,185,100,0.18), rgba(220,130,200,0.18) 45%, rgba(100,180,240,0.18) 78%, rgba(100,220,160,0.18));
