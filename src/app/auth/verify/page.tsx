@@ -93,7 +93,7 @@ export default function VerifyPage() {
             textAlign: "left",
           }}
         >
-          <strong style={{ color: "var(--sub)" }}>Didn't receive it?</strong>
+          <strong style={{ color: "var(--sub)" }}>Didn&apos;t receive it?</strong>
           <br />
           · Check your Junk / Spam folder
           <br />
