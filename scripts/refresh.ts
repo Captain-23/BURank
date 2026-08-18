@@ -1,6 +1,7 @@
 import { parseRosterCsv } from "../src/lib/roster";
 import { computeFirstBlood } from "../src/lib/first-blood";
 import { fetchLeetCodeUser } from "../src/lib/leetcode";
+import { withCacheBust } from "../src/lib/csv-url";
 
 const SHEET_CSV_URL = process.env.NEXT_PUBLIC_SHEET_CSV_URL;
 const SITE_URL = process.env.SITE_URL;
@@ -17,7 +18,7 @@ async function main() {
   }
 
   // 1. Roster
-  const csvRes = await fetch(`${SHEET_CSV_URL}&cachebust=${Date.now()}`, {
+  const csvRes = await fetch(withCacheBust(SHEET_CSV_URL), {
     cache: "no-store",
   });
   if (!csvRes.ok) throw new Error(`Sheet fetch failed: ${csvRes.status}`);
