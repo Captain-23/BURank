@@ -1,6 +1,7 @@
 import { SheetEntry } from "@/types";
 import { parseRosterCsv } from "./roster";
 import { normalizeEnrollmentNo } from "./enrollment";
+import { withCacheBust } from "./csv-url";
 
 const SHEET_CSV_URL = process.env.NEXT_PUBLIC_SHEET_CSV_URL ?? "";
 // Server-only write endpoint. Prefer the non-public var so the Apps Script URL
@@ -76,7 +77,7 @@ export async function fetchUsernamesFromSheet(): Promise<SheetEntry[]> {
   }
 
   try {
-    const res = await fetch(`${SHEET_CSV_URL}&cachebust=${Date.now()}`, {
+    const res = await fetch(withCacheBust(SHEET_CSV_URL), {
       cache: "no-store",
     });
     if (!res.ok) throw new Error(`Sheet fetch failed: ${res.status}`);
@@ -155,4 +156,3 @@ export async function deleteUserFromSheet(
     message: (data.message as string) ?? "Failed to delete user from roster.",
   };
 }
-
