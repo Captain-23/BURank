@@ -1,6 +1,9 @@
 import { fetchLeetCodeUser, fetchLeetCodeCalendar } from "@/lib/leetcode";
 import { fetchUsernamesFromSheet } from "@/lib/sheets";
 import { computeBadges, getNextBadgeProgress } from "@/lib/badges";
+import { resolveEnrollmentNo } from "@/lib/enrollment";
+import { backfillEnrollmentIfMissing } from "@/lib/enrollment-sync";
+import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Image from "next/image";
@@ -16,18 +19,28 @@ interface Props {
 
 export default async function UserProfilePage({ params }: Props) {
   const { username } = params;
+  const normalizedUsername = username.toLowerCase();
 
-  const [user, calendar, sheetUsers] = await Promise.all([
+  const [user, calendar, sheetUsers, cachedUser] = await Promise.all([
     fetchLeetCodeUser(username),
     fetchLeetCodeCalendar(username),
     fetchUsernamesFromSheet(),
+    prisma.userStat.findUnique({ where: { username: normalizedUsername } }),
   ]);
 
   if (!user) notFound();
 
   const sheetEntry = sheetUsers.find((u) => u.username === user.username);
-  const yearStudying = sheetEntry?.yearStudying || "";
-  const enrollmentNo = sheetEntry?.enrollmentNo || user.enrollmentNo;
+  const enrollmentNo = resolveEnrollmentNo([
+    cachedUser?.enrollmentNo,
+    sheetEntry?.enrollmentNo,
+  ]);
+
+  if (enrollmentNo && enrollmentNo !== cachedUser?.enrollmentNo) {
+    await backfillEnrollmentIfMissing(user.username, enrollmentNo);
+  }
+
+  const yearStudying = sheetEntry?.yearStudying || cachedUser?.yearStudying || "";
   const badges = computeBadges(user);
   const nextBadge = getNextBadgeProgress(user);
 

@@ -1,7 +1,7 @@
+import { unstable_cache } from "next/cache";
 import { SheetEntry } from "@/types";
 import { parseRosterCsv } from "./roster";
 import { normalizeEnrollmentNo } from "./enrollment";
-import { withCacheBust } from "./csv-url";
 
 const SHEET_CSV_URL = process.env.NEXT_PUBLIC_SHEET_CSV_URL ?? "";
 // Server-only write endpoint. Prefer the non-public var so the Apps Script URL
@@ -66,16 +66,39 @@ async function postToGAS(
   }
 }
 
-/**
- * Reads all usernames from the published Google Sheet CSV.
- * The sheet must have columns: username, addedAt
- */
-export async function fetchUsernamesFromSheet(): Promise<SheetEntry[]> {
+async function fetchRosterFromCsv(): Promise<SheetEntry[]> {
   if (!SHEET_CSV_URL) {
     console.warn("NEXT_PUBLIC_SHEET_CSV_URL not set");
     return [];
   }
 
+  const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Sheet fetch failed: ${res.status}`);
+  return parseRosterCsv(await res.text());
+}
+
+/**
+ * Cached roster read for server routes (leaderboard merge, card fallback).
+ * Invalidated via revalidateTag("leaderboard").
+ */
+export const getCachedRoster = unstable_cache(
+  async () => {
+    try {
+      return await fetchRosterFromCsv();
+    } catch (err) {
+      console.error("getCachedRoster error:", err);
+      return [];
+    }
+  },
+  ["sheet-roster"],
+  { tags: ["leaderboard"], revalidate: 300 },
+);
+
+/**
+ * Reads all usernames from the published Google Sheet CSV.
+ * The sheet must have columns: username, addedAt
+ */
+export async function fetchUsernamesFromSheet(): Promise<SheetEntry[]> {
   try {
     const res = await fetch(withCacheBust(SHEET_CSV_URL), {
       cache: "no-store",

@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { enrollmentMatches, normalizeEnrollmentNo } from "@/lib/enrollment";
+import { normalizeEnrollmentNo } from "@/lib/enrollment";
+import {
+  backfillEnrollmentIfMissing,
+  findRankedUserByEnrollment,
+} from "@/lib/enrollment-sync";
+import { getCachedRoster } from "@/lib/sheets";
 
 // Cached leaderboard rows; dropped on revalidateTag("leaderboard").
 const getRankedUsers = unstable_cache(
@@ -185,14 +190,11 @@ export async function GET(
   }
 
   try {
-    // Rank everyone by totalSolved (same pool as the public leaderboard).
-    const rows = await getRankedUsers();
+    const [rows, roster] = await Promise.all([getRankedUsers(), getCachedRoster()]);
 
-    const idx = rows.findIndex(
-      (r) => r.enrollmentNo && enrollmentMatches(r.enrollmentNo, enrollment),
-    );
+    const match = findRankedUserByEnrollment(rows, roster, enrollment);
 
-    if (idx === -1) {
+    if (!match) {
       return new NextResponse(
         errorCard(`Enrollment number "${enrollment.toUpperCase()}" not found.`),
         {
@@ -205,11 +207,18 @@ export async function GET(
       );
     }
 
+    const { idx, enrollmentNo: resolvedEnrollment } = match;
     const me = rows[idx];
+
+    // Self-heal: persist enrollment from the roster when the cache row is missing it.
+    if (!me.enrollmentNo) {
+      await backfillEnrollmentIfMissing(me.username, resolvedEnrollment);
+    }
+
     const svg = buildCard({
       username: me.username,
       realName: me.realName || me.username,
-      enrollmentNo: enrollment,
+      enrollmentNo: resolvedEnrollment,
       collegeRank: idx + 1,
       totalSolved: me.totalSolved,
       easySolved: me.easySolved,

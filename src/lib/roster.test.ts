@@ -54,6 +54,34 @@ describe("parseRosterCsv", () => {
     });
   });
 
+  it("parses legacy rows without an email column", () => {
+    const csv =
+      "username,addedAt,yearStudying,enrollmentNo,password\n" +
+      "bob,2024-01-01,3rd,A230521026,secret\n";
+    const rows = parseRosterCsv(csv);
+    expect(rows[0]).toEqual({
+      username: "bob",
+      email: "",
+      addedAt: "2024-01-01",
+      yearStudying: "3rd",
+      enrollmentNo: "A230521026",
+    });
+  });
+
+  it("parses legacy rows when addedAt was stored in the email column", () => {
+    const csv =
+      "username,email,addedAt,yearStudying,enrollmentNo\n" +
+      "carol,2024-01-01,3rd,A230521027\n";
+    const rows = parseRosterCsv(csv);
+    expect(rows[0]).toEqual({
+      username: "carol",
+      email: "",
+      addedAt: "2024-01-01",
+      yearStudying: "3rd",
+      enrollmentNo: "A230521027",
+    });
+  });
+
   it("skips the header and blank/empty-username rows", () => {
     const csv = "username,email,addedAt,yearStudying,enrollmentNo\n,,,,\nbob,b@x.com,,,\n";
     const rows = parseRosterCsv(csv);

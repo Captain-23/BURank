@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { resolveEnrollmentNo } from "@/lib/enrollment";
+import { getCachedRoster } from "@/lib/sheets";
 import { LeetCodeUser } from "@/types";
 
 // Run on-demand (never prerendered at build), but the DB read below is served
@@ -20,7 +22,8 @@ const getLeaderboard = unstable_cache(
 
 export async function GET() {
   try {
-    const rows = await getLeaderboard();
+    const [rows, roster] = await Promise.all([getLeaderboard(), getCachedRoster()]);
+    const rosterByUser = new Map(roster.map((entry) => [entry.username, entry]));
 
     const users: LeetCodeUser[] = rows.map((r) => ({
       username: r.username,
@@ -39,7 +42,10 @@ export async function GET() {
       email: r.email ?? "",
       addedAt: r.addedAt ?? "",
       yearStudying: r.yearStudying ?? "",
-      enrollmentNo: r.enrollmentNo ?? "",
+      enrollmentNo: resolveEnrollmentNo([
+        r.enrollmentNo,
+        rosterByUser.get(r.username)?.enrollmentNo,
+      ]),
       error: r.fetchError,
     }));
 

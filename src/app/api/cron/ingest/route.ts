@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { computeStaleUsernames } from "@/lib/ingest-reconcile";
-import { normalizeEnrollmentNo } from "@/lib/enrollment";
+import { normalizeEnrollmentNo, isPlausibleEnrollmentNo } from "@/lib/enrollment";
 
 export const dynamic = "force-dynamic";
 
@@ -48,7 +48,10 @@ function rosterMetadata(u: IngestUser) {
   if (u.ranking != null) meta.ranking = u.ranking;
   if (u.email?.trim()) meta.email = u.email.trim().toLowerCase();
   if (u.enrollmentNo?.trim()) {
-    meta.enrollmentNo = normalizeEnrollmentNo(u.enrollmentNo);
+    const normalized = normalizeEnrollmentNo(u.enrollmentNo);
+    if (isPlausibleEnrollmentNo(normalized)) {
+      meta.enrollmentNo = normalized;
+    }
   }
   if (u.yearStudying?.trim()) meta.yearStudying = u.yearStudying.trim();
   if (u.addedAt?.trim()) meta.addedAt = u.addedAt.trim();
