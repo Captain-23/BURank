@@ -98,7 +98,16 @@ export const getCachedRoster = unstable_cache(
  * Reads all usernames from the published Google Sheet CSV.
  * The sheet must have columns: username, addedAt
  */
+function withCacheBust(url: string): string {
+
+  const separator = url.includes("?") ? "&" : "?";
+
+  return `${url}${separator}_cb=${Date.now()}`;
+
+}
+
 export async function fetchUsernamesFromSheet(): Promise<SheetEntry[]> {
+
   try {
     const res = await fetch(withCacheBust(SHEET_CSV_URL), {
       cache: "no-store",
