@@ -45,9 +45,9 @@ function truncate(str: string, max: number): string {
 function errorCard(message: string): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="440" height="72"
     viewBox="0 0 440 72" role="img" aria-label="Error">
-    <rect width="440" height="72" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
-    <text x="20" y="32" font-family="system-ui, sans-serif" font-size="11" fill="#9ca3af" letter-spacing="0.08em">BURANK</text>
-    <text x="20" y="52" font-family="system-ui, sans-serif" font-size="13" fill="#dc2626">${escapeXml(message)}</text>
+    <rect width="440" height="72" rx="6" fill="#18181b" stroke="#3f3f46" stroke-width="1"/>
+    <text x="20" y="32" font-family="system-ui, sans-serif" font-size="11" fill="#71717a" letter-spacing="0.08em">BURANK</text>
+    <text x="20" y="52" font-family="system-ui, sans-serif" font-size="13" fill="#f87171">${escapeXml(message)}</text>
   </svg>`;
 }
 
@@ -97,17 +97,17 @@ function buildCard(opts: {
     College rank: ${collegeRank} of ${totalUsers}. Total solved: ${totalSolved}.
   </desc>
 
-  <rect width="440" height="96" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+  <rect width="440" height="96" rx="6" fill="#18181b" stroke="#3f3f46" stroke-width="1"/>
 
   <text x="20" y="24"
     font-family="system-ui, -apple-system, sans-serif"
-    font-size="10" fill="#9ca3af" letter-spacing="0.1em">
+    font-size="10" fill="#71717a" letter-spacing="0.1em">
     BURANK
   </text>
 
   <text x="420" y="24"
     font-family="system-ui, -apple-system, sans-serif"
-    font-size="10" fill="#d1d5db"
+    font-size="10" fill="#52525b"
     text-anchor="end">
     burank.app
   </text>
@@ -115,19 +115,19 @@ function buildCard(opts: {
   <text x="20" y="50"
     font-family="system-ui, -apple-system, sans-serif"
     font-size="15" font-weight="600"
-    fill="#111827">
+    fill="#f4f4f5">
     ${escapeXml(displayName)}
   </text>
 
   <text x="20" y="70"
     font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
-    font-size="11" fill="#6b7280">
+    font-size="11" fill="#a1a1aa">
     @${escapeXml(displayUsername)}
   </text>
 
   <text x="420" y="50"
     font-family="system-ui, -apple-system, sans-serif"
-    font-size="10" fill="#9ca3af"
+    font-size="10" fill="#71717a"
     text-anchor="end" letter-spacing="0.06em">
     RANK
   </text>
@@ -135,14 +135,14 @@ function buildCard(opts: {
   <text x="420" y="70"
     font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
     font-size="15" font-weight="600"
-    fill="#111827"
+    fill="#f4f4f5"
     text-anchor="end">
     ${ordinal(collegeRank)}
   </text>
 
   <text x="300" y="50"
     font-family="system-ui, -apple-system, sans-serif"
-    font-size="10" fill="#9ca3af"
+    font-size="10" fill="#71717a"
     text-anchor="end" letter-spacing="0.06em">
     SOLVED
   </text>
@@ -150,23 +150,23 @@ function buildCard(opts: {
   <text x="300" y="70"
     font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
     font-size="15" font-weight="600"
-    fill="#111827"
+    fill="#f4f4f5"
     text-anchor="end">
     ${totalSolved}
   </text>
 
   <text x="420" y="86"
     font-family="system-ui, -apple-system, sans-serif"
-    font-size="9" fill="#d1d5db"
+    font-size="9" fill="#52525b"
     text-anchor="end">
     of ${totalUsers}
   </text>
 
   <text x="300" y="86"
     font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
-    font-size="9" fill="#d1d5db"
+    font-size="9"
     text-anchor="end">
-    ${easySolved} · ${mediumSolved} · ${hardSolved}
+    <tspan fill="#10b981">${easySolved}</tspan><tspan fill="#52525b"> · </tspan><tspan fill="#f59e0b">${mediumSolved}</tspan><tspan fill="#52525b"> · </tspan><tspan fill="#ef4444">${hardSolved}</tspan>
   </text>
 
 </svg>`;
