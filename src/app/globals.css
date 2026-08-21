@@ -5,16 +5,16 @@
 @tailwind utilities;
 
 :root {
-  --card: #ffffff;
-  --bg-2: #eef0f4;
+  --card: #f6f7f9;
+  --bg-2: #e6e8ed;
   --ink: #14141c;
   --ink-2: #3d3d4c;
   --sub: #71718a;
   --muted: #a6a6b8;
-  --line: #e7e8ee;
-  --line-2: #eff0f4;
+  --line: #dfe1e7;
+  --line-2: #e8eaef;
   --red: #1b2a4a;
-  --red-soft: #e9ecf3;
+  --red-soft: #e4e7ee;
   --gold: #e0a93b;
   --gold-soft: #fbf0d8;
   --silver: #98a2b3;
@@ -22,24 +22,24 @@
   --easy: #00a98f;
   --medium: #e0972b;
   --hard: #e24a47;
-  --track: #eaecf1;
+  --track: #e4e6eb;
   --shadow: 0 1px 2px rgba(20, 20, 28, .04), 0 8px 24px rgba(20, 20, 28, .06);
   --shadow-lg: 0 2px 6px rgba(20, 20, 28, .05), 0 20px 48px rgba(20, 20, 28, .12);
   --sans: "Inter", system-ui, sans-serif;
   --mono: "JetBrains Mono", "Fira Code", monospace;
   --bu-red: #1b2a4a;
   --bu-red-dim: rgba(27, 42, 74, 0.10);
-  --bu-dark: #f5f6f8;
-  --bu-card: #ffffff;
-  --bu-border: #e7e8ee;
+  --bu-dark: #eceef2;
+  --bu-card: #f6f7f9;
+  --bu-border: #dfe1e7;
   --bu-muted: #a6a6b8;
   --bu-text: #14141c;
   --bu-sub: #71718a;
 
-  --body-bg: #ffffff;
-  --body-grad-start: #e3e6ec;
-  --body-grad-mid: #eaedf1;
-  --body-grad-end: #f5f6f8;
+  --body-bg: #eceef2;
+  --body-grad-start: #dfe2e8;
+  --body-grad-mid: #e6e8ed;
+  --body-grad-end: #eceef2;
 
   /* submission heatmap */
   --heat-0: #eaecf1;
@@ -488,7 +488,7 @@ body {
   display: grid;
   place-items: center;
   clip-path: polygon(26% 4%, 74% 4%, 100% 50%, 74% 96%, 26% 96%, 0 50%);
-  background: #fff;
+  background: var(--card);
   filter: drop-shadow(0 4px 10px rgba(20, 20, 28, .14));
 }
 
