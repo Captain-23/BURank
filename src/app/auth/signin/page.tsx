@@ -96,7 +96,7 @@ export default function SignInPage() {
               Sign in
             </h1>
             <p style={{ fontSize: 13, color: "var(--sub)", margin: "0 0 24px" }}>
-              Enter your Personal email to receive a sign-in link. No password
+              Use your personal email to receive a sign-in link. No password
               needed.
             </p>
 
@@ -148,7 +148,7 @@ export default function SignInPage() {
                     {email.trim().toLowerCase()}
                   </strong>
                   <br />
-                  Open your Bennett Outlook and click the link.
+                  Open your inbox and click the link.
                 </p>
                 <p
                   style={{ fontSize: 11, color: "var(--muted)", margin: "16px 0 0" }}
@@ -170,7 +170,7 @@ export default function SignInPage() {
                     marginBottom: 8,
                   }}
                 >
-                  Bennett Email
+                  Personal Email
                 </label>
 
                 <input

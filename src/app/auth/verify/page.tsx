@@ -53,7 +53,7 @@ export default function VerifyPage() {
             margin: "0 0 10px",
           }}
         >
-          Check your Bennett inbox
+          Check your inbox
         </h1>
         <p
           style={{
@@ -65,8 +65,7 @@ export default function VerifyPage() {
         >
           A sign-in link has been sent to your
           <br />
-          <strong style={{ color: "var(--ink)" }}>@bennett.edu.in</strong> email
-          address.
+          personal email address.
         </p>
         <p
           style={{
@@ -76,7 +75,7 @@ export default function VerifyPage() {
             lineHeight: 1.7,
           }}
         >
-          Open your Outlook inbox and click the link
+          Open your inbox and click the link
           <br />
           to complete sign-in.
         </p>

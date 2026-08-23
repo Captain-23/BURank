@@ -100,6 +100,9 @@ export default async function UserProfilePage({ params }: Props) {
               <span className="pill rank">
                 Global Rank · #{user.ranking?.toLocaleString() ?? "—"}
               </span>
+              {enrollmentNo && (
+                <span className="pill year">Enrollment · {enrollmentNo}</span>
+              )}
               {yearStudying && <span className="pill year">Batch {yearStudying}</span>}
               <a
                 href={`https://leetcode.com/${user.username}`}
