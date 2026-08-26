@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { deleteUserFromSheet } from "@/lib/sheets";
 import { prisma } from "@/lib/prisma";
 import { verifyAdminToken } from "@/lib/admin-session";
+import { suppressUsername } from "@/lib/suppressed-users-store";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,20 +20,27 @@ export async function POST(req: NextRequest) {
       if (!body.username) {
         return NextResponse.json({ success: false, message: "Username required" }, { status: 400 });
       }
-      const username = String(body.username).toLowerCase();
+      const username = String(body.username).trim().toLowerCase();
       const sheetResult = await deleteUserFromSheet(username);
-      // Remove from the cache immediately so the leaderboard updates now.
-      const { count } = await prisma.userStat.deleteMany({ where: { username } });
-      revalidateTag("leaderboard");
+      const { count } = await prisma.userStat.deleteMany({
+        where: { username: { equals: username, mode: "insensitive" } },
+      });
 
       const removedFromCache = count > 0;
       const removedFromSheet = sheetResult.success;
 
       if (removedFromSheet || removedFromCache) {
+        // Block ingest/refresh from resurrecting this user if the published
+        // sheet CSV is still stale.
+        await suppressUsername(username);
+        revalidateTag("leaderboard");
+        revalidatePath("/");
+        revalidatePath("/admin");
+
         let message = "User deleted.";
         if (removedFromCache && !removedFromSheet) {
           message =
-            "User removed from leaderboard. Warning: could not remove from the roster sheet — they may reappear after the next refresh.";
+            "User removed from the leaderboard. Could not remove them from the roster sheet, but they will stay hidden until they register again.";
         } else if (removedFromSheet && !removedFromCache) {
           message = "User removed from roster sheet (was not in cache).";
         }

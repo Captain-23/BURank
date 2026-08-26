@@ -3,6 +3,8 @@ import { revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { computeStaleUsernames } from "@/lib/ingest-reconcile";
 import { normalizeEnrollmentNo, isPlausibleEnrollmentNo } from "@/lib/enrollment";
+import { excludeSuppressedUsers } from "@/lib/suppressed-users";
+import { getSuppressedUsernames } from "@/lib/suppressed-users-store";
 
 export const dynamic = "force-dynamic";
 
@@ -86,9 +88,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const users = Array.isArray(body.users) ? body.users : [];
-  if (users.length === 0) {
+  const incoming = Array.isArray(body.users) ? body.users : [];
+  if (incoming.length === 0) {
     return NextResponse.json({ error: "No users provided" }, { status: 400 });
+  }
+
+  const suppressed = await getSuppressedUsernames();
+  const users = excludeSuppressedUsers(incoming, suppressed);
+  if (users.length === 0) {
+    const existing = (
+      await prisma.userStat.findMany({ select: { username: true } })
+    ).map((r) => r.username);
+    const stale = computeStaleUsernames(existing, []);
+    if (stale.length > 0) {
+      await prisma.userStat.deleteMany({ where: { username: { in: stale } } });
+    }
+    revalidateTag("leaderboard");
+    return NextResponse.json({
+      ok: true,
+      upserted: 0,
+      deleted: stale.length,
+      suppressed: suppressed.length,
+    });
   }
 
   const now = new Date();

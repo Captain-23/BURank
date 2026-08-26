@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { normalizeEnrollmentNo } from "@/lib/enrollment";
 import {
@@ -8,18 +7,6 @@ import {
 } from "@/lib/enrollment-sync";
 import { getCachedRoster } from "@/lib/sheets";
 
-// Cached leaderboard rows; dropped on revalidateTag("leaderboard").
-const getRankedUsers = unstable_cache(
-  async () =>
-    prisma.userStat.findMany({
-      orderBy: { totalSolved: "desc" },
-    }),
-  ["card-ranked-users"],
-  { tags: ["leaderboard"], revalidate: 300 },
-);
-
-// Runs on-demand; the DB read is Data-Cached (unstable_cache above) and the SVG
-// is CDN-cached via the response's Cache-Control header below.
 export const dynamic = "force-dynamic";
 
 const COLLEGE = process.env.NEXT_PUBLIC_COLLEGE_NAME ?? "Bennett University";
@@ -190,7 +177,12 @@ export async function GET(
   }
 
   try {
-    const [rows, roster] = await Promise.all([getRankedUsers(), getCachedRoster()]);
+    const [rows, roster] = await Promise.all([
+      prisma.userStat.findMany({
+        orderBy: { totalSolved: "desc" },
+      }),
+      getCachedRoster(),
+    ]);
 
     const match = findRankedUserByEnrollment(rows, roster, enrollment);
 

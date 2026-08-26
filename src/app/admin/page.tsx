@@ -46,8 +46,8 @@ export default function AdminPage() {
   const fetchDashboardData = async () => {
     try {
       const [usersRes, qotwRes] = await Promise.all([
-        fetch("/api/leaderboard"),
-        fetch("/api/qotw")
+        fetch("/api/leaderboard", { cache: "no-store" }),
+        fetch("/api/qotw", { cache: "no-store" }),
       ]);
       const usersData = await usersRes.json();
       const qotwData = await qotwRes.json();
@@ -84,6 +84,7 @@ export default function AdminPage() {
         setUsers((prev) =>
           prev.filter((u) => u.username.toLowerCase() !== normalized),
         );
+        await fetchDashboardData();
         if (typeof data.message === "string" && data.message.includes("Warning")) {
           alert(data.message);
         }

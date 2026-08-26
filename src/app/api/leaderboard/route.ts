@@ -1,28 +1,20 @@
 import { NextResponse } from "next/server";
-import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { resolveEnrollmentNo } from "@/lib/enrollment";
 import { getCachedRoster } from "@/lib/sheets";
 import { LeetCodeUser } from "@/types";
 
-// Run on-demand (never prerendered at build), but the DB read below is served
-// from the Data Cache, so most requests don't touch Postgres.
+// Always read live UserStat rows. A 5-minute Data Cache here kept deleted
+// users on the dashboard until the next revalidate window.
 export const dynamic = "force-dynamic";
-
-// Cache the DB read and reuse it across requests. The cache is dropped whenever
-// data changes via revalidateTag("leaderboard") (cron ingest / register / delete),
-// with a 5-minute safety-net revalidate. Between refreshes this route serves
-// from the cache and never touches Postgres.
-const getLeaderboard = unstable_cache(
-  async () =>
-    prisma.userStat.findMany({ orderBy: { totalSolved: "desc" } }),
-  ["leaderboard-rows"],
-  { tags: ["leaderboard"], revalidate: 300 },
-);
+export const revalidate = 0;
 
 export async function GET() {
   try {
-    const [rows, roster] = await Promise.all([getLeaderboard(), getCachedRoster()]);
+    const [rows, roster] = await Promise.all([
+      prisma.userStat.findMany({ orderBy: { totalSolved: "desc" } }),
+      getCachedRoster(),
+    ]);
     const rosterByUser = new Map(roster.map((entry) => [entry.username, entry]));
 
     const users: LeetCodeUser[] = rows.map((r) => ({
@@ -49,7 +41,14 @@ export async function GET() {
       error: r.fetchError,
     }));
 
-    return NextResponse.json({ users });
+    return NextResponse.json(
+      { users },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      },
+    );
   } catch (err) {
     console.error("/api/leaderboard error:", err);
     return NextResponse.json(

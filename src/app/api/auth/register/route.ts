@@ -5,6 +5,7 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
 import { normalizeEnrollmentNo } from "@/lib/enrollment";
+import { unsuppressUsername } from "@/lib/suppressed-users-store";
 
 export async function POST(req: NextRequest) {
   try {
@@ -89,6 +90,7 @@ export async function POST(req: NextRequest) {
     //    so the user shows up without waiting for the next cron run.
     if (result.success) {
       try {
+        await unsuppressUsername(username);
         await prisma.userStat.upsert({
           where: { username },
           update: {
