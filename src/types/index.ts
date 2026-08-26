@@ -17,7 +17,11 @@ export interface LeetCodeUser {
   yearStudying?: string;
   enrollmentNo?: string;
   error?: boolean;
-  recentSubmissions?: { titleSlug: string; timestamp: string }[];
+  recentSubmissions?: {
+    title?: string;
+    titleSlug: string;
+    timestamp: string;
+  }[];
   firstBlood?: boolean;
 }
 

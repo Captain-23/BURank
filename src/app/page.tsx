@@ -7,7 +7,9 @@ import AddUserModal from "@/components/AddUserModal";
 import ChampionsPodium from "@/components/leaderboard/ChampionsPodium";
 import HighlightCards from "@/components/leaderboard/HighlightCards";
 import LeaderboardTable from "@/components/leaderboard/LeaderboardTable";
+import LiveFeed from "@/components/leaderboard/LiveFeed";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import type { ActivityPayload } from "@/lib/activity";
 
 type ViewMode = "individuals" | "batches";
 
@@ -29,6 +31,7 @@ export default function LeaderboardPage() {
   const [search, setSearch] = useState("");
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const [firstBlood, setFirstBlood] = useState("");
+  const [feed, setFeed] = useState<ActivityPayload[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("individuals");
   const { data: session } = useSession();
   const currentEmail = session?.user?.email ?? null;
@@ -43,16 +46,19 @@ export default function LeaderboardPage() {
     if (!isRetry) setLoading(true);
     setError(null);
     try {
-      const [res, qotwRes] = await Promise.all([
+      const [res, qotwRes, feedRes] = await Promise.all([
         fetch("/api/leaderboard", { cache: "no-store" }),
         fetch("/api/qotw", { cache: "no-store" }),
+        fetch("/api/feed", { cache: "no-store" }),
       ]);
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       const qotwData = await qotwRes.json();
+      const feedData = feedRes.ok ? await feedRes.json() : { events: [] };
 
       setUsers(data.users ?? []);
       setFirstBlood(qotwData.first_blood || "");
+      setFeed(feedData.events ?? []);
       setLastRefreshed(new Date());
       setLoading(false);
     } catch {
@@ -194,6 +200,7 @@ export default function LeaderboardPage() {
           <section className="sheet">
             <div className="sheet-inner">
               <HighlightCards users={users} firstBlood={firstBlood} />
+              <LiveFeed events={feed} loading={loading} />
 
               <div className="board-head" style={{ marginTop: 28 }}>
                 <h2>All Coders · {registeredCount} registered</h2>

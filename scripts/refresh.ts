@@ -1,7 +1,14 @@
 import { parseRosterCsv } from "../src/lib/roster";
 import { computeFirstBlood } from "../src/lib/first-blood";
-import { fetchLeetCodeUser } from "../src/lib/leetcode";
+import { fetchLeetCodeUser, fetchQuestionMeta } from "../src/lib/leetcode";
 import { withCacheBust } from "../src/lib/csv-url";
+import {
+  ACTIVITY_RETENTION_MS,
+  buildActivityPayload,
+  collectRecentSlugs,
+  type ProblemMeta,
+  type RawSubmission,
+} from "../src/lib/activity";
 
 const SHEET_CSV_URL = process.env.NEXT_PUBLIC_SHEET_CSV_URL;
 const SITE_URL = process.env.SITE_URL;
@@ -91,10 +98,52 @@ async function main() {
     ) ||
     "";
 
-  // 4. POST to ingest (strip recentSubmissions — not stored)
+  // 4. Enrich recent ACs with question number + difficulty for the live feed.
+  const since = new Date(Date.now() - ACTIVITY_RETENTION_MS);
+  const problemMap: Record<string, ProblemMeta> = {};
+  try {
+    const problemRes = await fetch(`${SITE_URL}/api/problems`, {
+      cache: "no-store",
+    });
+    if (problemRes.ok) {
+      const data = (await problemRes.json()) as { problems?: ProblemMeta[] };
+      for (const problem of data.problems ?? []) {
+        if (problem?.titleSlug) problemMap[problem.titleSlug] = problem;
+      }
+    }
+  } catch (err) {
+    console.warn("Could not load cached problems:", err);
+  }
+
+  const feedUsers = users as Array<{
+    username: string;
+    realName?: string;
+    avatar?: string;
+    fetchError?: boolean;
+    recentSubmissions?: RawSubmission[];
+  }>;
+  const missing = collectRecentSlugs(feedUsers, since).filter(
+    (slug) => !problemMap[slug],
+  );
+  for (let i = 0; i < missing.length; i += CHUNK) {
+    const chunk = missing.slice(i, i + CHUNK);
+    const metas = await Promise.all(chunk.map((slug) => fetchQuestionMeta(slug)));
+    for (const meta of metas) {
+      if (meta) problemMap[meta.titleSlug] = meta;
+    }
+    if (i + CHUNK < missing.length) {
+      await new Promise((r) => setTimeout(r, DELAY_MS));
+    }
+  }
+
+  const activities = buildActivityPayload(feedUsers, problemMap, since);
+
+  // 5. POST to ingest (strip recentSubmissions — stored as ActivityEvent instead)
   const payload = {
     users: users.map(({ recentSubmissions, ...rest }) => rest),
     settings: { first_blood: firstBlood },
+    problems: Object.values(problemMap),
+    activities,
   };
 
   const res = await fetch(`${SITE_URL}/api/cron/ingest`, {
@@ -110,7 +159,7 @@ async function main() {
   }
 
   console.log(
-    `Refreshed ${users.length} users; first_blood=${firstBlood || "none"}`,
+    `Refreshed ${users.length} users; first_blood=${firstBlood || "none"}; activities=${activities.length}`,
   );
 }
 

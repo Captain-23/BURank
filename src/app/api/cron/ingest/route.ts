@@ -5,6 +5,12 @@ import { computeStaleUsernames } from "@/lib/ingest-reconcile";
 import { normalizeEnrollmentNo, isPlausibleEnrollmentNo } from "@/lib/enrollment";
 import { excludeSuppressedUsers } from "@/lib/suppressed-users";
 import { getSuppressedUsernames } from "@/lib/suppressed-users-store";
+import type { ActivityPayload, ProblemMeta } from "@/lib/activity";
+import {
+  persistActivities,
+  persistProblems,
+  pruneOldActivities,
+} from "@/lib/activity-store";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +37,8 @@ interface IngestUser {
 interface IngestBody {
   users: IngestUser[];
   settings?: Record<string, string | null | undefined>;
+  problems?: ProblemMeta[];
+  activities?: ActivityPayload[];
 }
 
 /** Only apply roster metadata when the incoming value is non-empty. */
@@ -59,6 +67,22 @@ function rosterMetadata(u: IngestUser) {
   if (u.addedAt?.trim()) meta.addedAt = u.addedAt.trim();
 
   return meta;
+}
+
+async function persistFeed(
+  problems: ProblemMeta[] | undefined,
+  activities: ActivityPayload[] | undefined,
+  suppressed: string[],
+) {
+  if (problems?.length) {
+    await persistProblems(problems);
+  }
+  const visible = excludeSuppressedUsers(activities ?? [], suppressed);
+  if (visible.length) {
+    await persistActivities(visible);
+  }
+  await pruneOldActivities();
+  return visible.length;
 }
 
 function createMetadata(u: IngestUser) {
@@ -102,13 +126,22 @@ export async function POST(req: NextRequest) {
     const stale = computeStaleUsernames(existing, []);
     if (stale.length > 0) {
       await prisma.userStat.deleteMany({ where: { username: { in: stale } } });
+      await prisma.activityEvent.deleteMany({
+        where: { username: { in: stale } },
+      });
     }
+    const activityCount = await persistFeed(
+      body.problems,
+      body.activities,
+      suppressed,
+    );
     revalidateTag("leaderboard");
     return NextResponse.json({
       ok: true,
       upserted: 0,
       deleted: stale.length,
       suppressed: suppressed.length,
+      activities: activityCount,
     });
   }
 
@@ -172,6 +205,9 @@ export async function POST(req: NextRequest) {
   );
   if (stale.length > 0) {
     await prisma.userStat.deleteMany({ where: { username: { in: stale } } });
+    await prisma.activityEvent.deleteMany({
+      where: { username: { in: stale } },
+    });
   }
 
   // Settings: upsert any provided non-empty keys in one transaction.
@@ -191,6 +227,12 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  const activityCount = await persistFeed(
+    body.problems,
+    body.activities,
+    suppressed,
+  );
+
   // Fresh data available — drop the cached reads.
   revalidateTag("leaderboard");
 
@@ -198,5 +240,6 @@ export async function POST(req: NextRequest) {
     ok: true,
     upserted: users.length,
     deleted: stale.length,
+    activities: activityCount,
   });
 }

@@ -1,3 +1,4 @@
+import { titleFromSlug, type ProblemMeta } from "@/lib/activity";
 import type { LeetCodeUser } from "@/types";
 
 const LEETCODE_API = "https://leetcode.com/graphql";
@@ -24,7 +25,8 @@ query getUserProfile($username: String!) {
     attendedContestsCount
     topPercentage
   }
-  recentAcSubmissionList(username: $username, limit: 15) {
+  recentAcSubmissionList(username: $username, limit: 20) {
+    title
     titleSlug
     timestamp
   }
@@ -50,7 +52,11 @@ interface GraphQLResponse {
       attendedContestsCount: number;
       topPercentage: number;
     };
-    recentAcSubmissionList?: Array<{ titleSlug: string; timestamp: string }>;
+    recentAcSubmissionList?: Array<{
+      title?: string;
+      titleSlug: string;
+      timestamp: string;
+    }>;
   };
   errors?: Array<{ message: string }>;
 }
@@ -142,6 +148,47 @@ export async function fetchLeetCodeCalendar(username: string): Promise<Record<st
     if (json.errors || !json.data?.matchedUser?.userCalendar?.submissionCalendar) return null;
 
     return JSON.parse(json.data.matchedUser.userCalendar.submissionCalendar);
+  } catch {
+    return null;
+  }
+}
+
+const QUESTION_QUERY = `
+query getQuestion($titleSlug: String!) {
+  question(titleSlug: $titleSlug) {
+    questionFrontendId
+    title
+    difficulty
+    titleSlug
+  }
+}
+`;
+
+export async function fetchQuestionMeta(
+  titleSlug: string,
+): Promise<ProblemMeta | null> {
+  try {
+    const res = await fetch(LEETCODE_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Referer: "https://leetcode.com",
+      },
+      body: JSON.stringify({
+        query: QUESTION_QUERY,
+        variables: { titleSlug },
+      }),
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    const question = json.data?.question;
+    if (!question?.titleSlug) return null;
+    return {
+      titleSlug: question.titleSlug,
+      title: question.title || titleFromSlug(question.titleSlug),
+      frontendId: String(question.questionFrontendId ?? ""),
+      difficulty: question.difficulty || "Unknown",
+    };
   } catch {
     return null;
   }

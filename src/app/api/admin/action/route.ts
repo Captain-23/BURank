@@ -33,6 +33,9 @@ export async function POST(req: NextRequest) {
         // Block ingest/refresh from resurrecting this user if the published
         // sheet CSV is still stale.
         await suppressUsername(username);
+        await prisma.activityEvent.deleteMany({
+          where: { username: { equals: username, mode: "insensitive" } },
+        });
         revalidateTag("leaderboard");
         revalidatePath("/");
         revalidatePath("/admin");

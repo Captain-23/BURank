@@ -90,3 +90,28 @@ model Setting {
   key   String @id
   value String
 }
+
+model Problem {
+  titleSlug  String   @id
+  title      String
+  frontendId String
+  difficulty String
+  updatedAt  DateTime @updatedAt
+}
+
+model ActivityEvent {
+  id         String   @id @default(cuid())
+  username   String
+  realName   String
+  avatar     String   @default("")
+  title      String
+  titleSlug  String
+  frontendId String   @default("")
+  difficulty String
+  solvedAt   DateTime
+  createdAt  DateTime @default(now())
+
+  @@unique([username, titleSlug, solvedAt])
+  @@index([solvedAt])
+  @@index([username])
+}
