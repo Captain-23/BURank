@@ -922,6 +922,108 @@ body {
   font-size: 12.5px;
 }
 
+/* live feed: entry animation */
+@keyframes live-slide-in {
+  0%   { opacity: 0; transform: translateY(-8px) scale(.98); }
+  100% { opacity: 1; transform: translateY(0)    scale(1);   }
+}
+
+.live-feed-item {
+  animation: live-slide-in .35s ease-out both;
+}
+
+/* stagger first 6 entries on mount */
+.live-feed-item:nth-child(1) { animation-delay: 0ms;   }
+.live-feed-item:nth-child(2) { animation-delay: 50ms;  }
+.live-feed-item:nth-child(3) { animation-delay: 100ms; }
+.live-feed-item:nth-child(4) { animation-delay: 150ms; }
+.live-feed-item:nth-child(5) { animation-delay: 200ms; }
+.live-feed-item:nth-child(6) { animation-delay: 250ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .live-feed-item { animation: none; }
+}
+
+/* "NEW" badge on very recent solves */
+.live-feed-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 5px;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--easy);
+  border-radius: 6px;
+  animation: badge-glow 2s ease-in-out infinite alternate;
+  vertical-align: middle;
+}
+
+@keyframes badge-glow {
+  0%   { box-shadow: 0 0 0 0 rgba(0, 169, 143, .45); }
+  100% { box-shadow: 0 0 8px 2px rgba(0, 169, 143, .25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-feed-new { animation: none; }
+}
+
+/* live event count chip next to header */
+.live-feed-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--easy);
+  background: rgba(0, 169, 143, .10);
+  border-radius: 10px;
+  margin-left: 6px;
+}
+
+/* expanded state — remove max-height */
+.live-feed-list.expanded {
+  max-height: none;
+}
+
+/* show-more / show-less toggle */
+.live-feed-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 8px 0 4px;
+  border: none;
+  background: none;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--sub);
+  cursor: pointer;
+  transition: color .15s;
+  gap: 4px;
+}
+
+.live-feed-toggle:hover {
+  color: var(--ink);
+}
+
+.live-feed-toggle svg {
+  width: 14px;
+  height: 14px;
+  transition: transform .2s ease;
+}
+
+.live-feed-toggle.expanded svg {
+  transform: rotate(180deg);
+}
+
 /* ── ranked list ─────────────────────────── */
 .board {
   margin-top: 44px;
