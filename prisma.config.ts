@@ -3,12 +3,21 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
+function pooledDatabaseUrl(): string {
+  const databaseUrl = process.env["DATABASE_URL"];
+  if (!databaseUrl) return "";
+
+  const url = new URL(databaseUrl);
+  url.searchParams.set("connection_limit", "1");
+  return url.toString();
+}
+
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"]!,
+    url: pooledDatabaseUrl(),
   },
 });

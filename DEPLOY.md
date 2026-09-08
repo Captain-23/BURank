@@ -13,7 +13,7 @@ See `.env.local.example` for the full annotated list.
 
 | Variable                    | Required      | What it is                                                                                                                      |
 | --------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL`              | ✅            | Postgres connection string (Prisma + NextAuth + cache). Prisma limits each serverless instance to one connection.               |
+| `DATABASE_URL`              | ✅            | Postgres connection string (Prisma + NextAuth + cache). Runtime and build-time Prisma operations use one connection.            |
 | `NEXTAUTH_SECRET`           | ✅            | `openssl rand -base64 32`                                                                                                       |
 | `NEXTAUTH_URL`              | ✅            | Deployed base URL, e.g. `https://burank.vercel.app`                                                                             |
 | `RESEND_API_KEY`            | ✅            | Resend key for magic-link email                                                                                                 |
