@@ -2,6 +2,11 @@
 
 import { useState } from "react";
 import { normalizeEnrollmentNo } from "@/lib/enrollment";
+import {
+  CARD_THEMES,
+  DEFAULT_CARD_THEME,
+  type CardTheme,
+} from "@/lib/card-themes";
 
 interface Props {
   username: string;
@@ -9,14 +14,19 @@ interface Props {
   siteOrigin: string;
 }
 
-export default function ProfileActions({ username, enrollmentNo, siteOrigin }: Props) {
+export default function ProfileActions({
+  username,
+  enrollmentNo,
+  siteOrigin,
+}: Props) {
   const [copied, setCopied] = useState<"readme" | "link" | null>(null);
+  const [theme, setTheme] = useState<CardTheme>(DEFAULT_CARD_THEME);
 
   const normalizedEnrollment = enrollmentNo
     ? normalizeEnrollmentNo(enrollmentNo)
     : "";
   const cardUrl = normalizedEnrollment
-    ? `${siteOrigin}/card/${encodeURIComponent(normalizedEnrollment)}`
+    ? `${siteOrigin}/card/${encodeURIComponent(normalizedEnrollment)}?theme=${theme}`
     : null;
 
   const readmeMarkdown = cardUrl
@@ -35,8 +45,22 @@ export default function ProfileActions({ username, enrollmentNo, siteOrigin }: P
         <div>
           <h2>GitHub README Card</h2>
           <p className="profile-readme-sub">
-            Copy the markdown below and paste it into your GitHub profile README to show your BURank stats.
+            Copy the markdown below and paste it into your GitHub profile README
+            to show your BURank stats.
           </p>
+          <label className="profile-readme-theme">
+            Card theme
+            <select
+              value={theme}
+              onChange={(event) => setTheme(event.target.value as CardTheme)}
+            >
+              {Object.entries(CARD_THEMES).map(([value, cardTheme]) => (
+                <option key={value} value={value}>
+                  {cardTheme.label}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </div>
 
@@ -66,7 +90,8 @@ export default function ProfileActions({ username, enrollmentNo, siteOrigin }: P
         </>
       ) : (
         <p className="profile-readme-unavailable">
-          Enrollment number not found — register via the leaderboard to generate your GitHub card.
+          Enrollment number not found — register via the leaderboard to generate
+          your GitHub card.
         </p>
       )}
     </div>

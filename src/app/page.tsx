@@ -38,9 +38,7 @@ export default function LeaderboardPage() {
 
   const isRegistered =
     !!currentEmail &&
-    users.some(
-      (u) => u.email?.toLowerCase() === currentEmail.toLowerCase(),
-    );
+    users.some((u) => u.email?.toLowerCase() === currentEmail.toLowerCase());
 
   const doFetch = useCallback(async (isRetry = false) => {
     if (!isRetry) setLoading(true);
@@ -104,26 +102,25 @@ export default function LeaderboardPage() {
 
   const batchStats = useMemo(() => {
     const batches: Record<string, BatchData> = {};
-    users
-      .forEach((u) => {
-        const year = u.yearStudying || "Unknown";
-        if (!batches[year]) {
-          batches[year] = {
-            year,
-            totalStudents: 0,
-            totalSolved: 0,
-            avgSolved: 0,
-            totalEasy: 0,
-            totalMedium: 0,
-            totalHard: 0,
-          };
-        }
-        batches[year].totalStudents++;
-        batches[year].totalSolved += u.totalSolved;
-        batches[year].totalEasy += u.easySolved;
-        batches[year].totalMedium += u.mediumSolved;
-        batches[year].totalHard += u.hardSolved;
-      });
+    users.forEach((u) => {
+      const year = u.yearStudying || "Unknown";
+      if (!batches[year]) {
+        batches[year] = {
+          year,
+          totalStudents: 0,
+          totalSolved: 0,
+          avgSolved: 0,
+          totalEasy: 0,
+          totalMedium: 0,
+          totalHard: 0,
+        };
+      }
+      batches[year].totalStudents++;
+      batches[year].totalSolved += u.totalSolved;
+      batches[year].totalEasy += u.easySolved;
+      batches[year].totalMedium += u.mediumSolved;
+      batches[year].totalHard += u.hardSolved;
+    });
 
     return Object.values(batches)
       .map((b) => {
@@ -148,17 +145,27 @@ export default function LeaderboardPage() {
         </div>
         <div className="nav-actions">
           <ThemeToggle />
-          <button className="chip-btn" onClick={fetchLeaderboard} disabled={loading}>
+          <button
+            className="chip-btn"
+            onClick={fetchLeaderboard}
+            disabled={loading}
+          >
             ↻ {loading ? "Loading…" : "Refresh"}
           </button>
           {session ? (
             <>
               {!isRegistered && (
-                <button className="chip-btn primary" onClick={() => setShowModal(true)}>
+                <button
+                  className="chip-btn primary"
+                  onClick={() => setShowModal(true)}
+                >
                   + Join Leaderboard
                 </button>
               )}
-              <button className="chip-btn" onClick={() => signOut({ callbackUrl: "/" })}>
+              <button
+                className="chip-btn"
+                onClick={() => signOut({ callbackUrl: "/" })}
+              >
                 Logout
               </button>
             </>
@@ -205,12 +212,17 @@ export default function LeaderboardPage() {
               <div className="board-head" style={{ marginTop: 28 }}>
                 <h2>All Coders · {registeredCount} registered</h2>
                 <div className="re">
-                  {lastRefreshed ? `↻ Refreshed ${lastRefreshed.toLocaleTimeString()}` : ""} · every 30 min
+                  {lastRefreshed
+                    ? `↻ Refreshed ${lastRefreshed.toLocaleTimeString()}`
+                    : ""}{" "}
+                  · every 15 min
                 </div>
               </div>
 
               {error && (
-                <div style={{ color: "var(--hard)", padding: "8px 6px" }}>{error}</div>
+                <div style={{ color: "var(--hard)", padding: "8px 6px" }}>
+                  {error}
+                </div>
               )}
 
               {loading ? (
@@ -231,8 +243,16 @@ export default function LeaderboardPage() {
                   </div>
                 </div>
               ) : processed.length === 0 ? (
-                <div style={{ padding: "48px 6px", textAlign: "center", color: "var(--sub)" }}>
-                  {search ? "No coders match your search." : "No coders on the leaderboard yet."}
+                <div
+                  style={{
+                    padding: "48px 6px",
+                    textAlign: "center",
+                    color: "var(--sub)",
+                  }}
+                >
+                  {search
+                    ? "No coders match your search."
+                    : "No coders on the leaderboard yet."}
                 </div>
               ) : (
                 <LeaderboardTable users={processed} />
@@ -245,13 +265,19 @@ export default function LeaderboardPage() {
           <div className="sheet-inner">
             <div
               className="highlights"
-              style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}
+              style={{
+                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              }}
             >
               {batchStats.map((batch) => (
                 <div key={batch.year} className="batch-card">
                   <div className="batch-year">
-                    <span>Batch {batch.year === "Unknown" ? "N/A" : batch.year}</span>
-                    <span className="batch-students">{batch.totalStudents} coders</span>
+                    <span>
+                      Batch {batch.year === "Unknown" ? "N/A" : batch.year}
+                    </span>
+                    <span className="batch-students">
+                      {batch.totalStudents} coders
+                    </span>
                   </div>
                   <div className="batch-avg-solved">
                     <div className="val">{batch.avgSolved}</div>
@@ -259,22 +285,34 @@ export default function LeaderboardPage() {
                   </div>
                   <div className="batch-emh">
                     <div>
-                      <span className="val" style={{ color: "var(--easy)" }}>{batch.totalEasy}</span>
+                      <span className="val" style={{ color: "var(--easy)" }}>
+                        {batch.totalEasy}
+                      </span>
                       <span className="lbl">Easy</span>
                     </div>
                     <div>
-                      <span className="val" style={{ color: "var(--medium)" }}>{batch.totalMedium}</span>
+                      <span className="val" style={{ color: "var(--medium)" }}>
+                        {batch.totalMedium}
+                      </span>
                       <span className="lbl">Medium</span>
                     </div>
                     <div>
-                      <span className="val" style={{ color: "var(--hard)" }}>{batch.totalHard}</span>
+                      <span className="val" style={{ color: "var(--hard)" }}>
+                        {batch.totalHard}
+                      </span>
                       <span className="lbl">Hard</span>
                     </div>
                   </div>
                 </div>
               ))}
               {batchStats.length === 0 && (
-                <div style={{ padding: "48px 6px", textAlign: "center", color: "var(--sub)" }}>
+                <div
+                  style={{
+                    padding: "48px 6px",
+                    textAlign: "center",
+                    color: "var(--sub)",
+                  }}
+                >
                   No batch data yet.
                 </div>
               )}
@@ -284,7 +322,10 @@ export default function LeaderboardPage() {
       )}
 
       {showModal && (
-        <AddUserModal onClose={() => setShowModal(false)} onSuccess={fetchLeaderboard} />
+        <AddUserModal
+          onClose={() => setShowModal(false)}
+          onSuccess={fetchLeaderboard}
+        />
       )}
     </div>
   );

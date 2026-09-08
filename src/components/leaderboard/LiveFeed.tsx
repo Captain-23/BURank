@@ -100,7 +100,7 @@ export default function LiveFeed({
         </div>
       ) : events.length === 0 ? (
         <p className="live-feed-empty">
-          No recent solves yet. The feed updates every 30 minutes with the
+          No recent solves yet. The feed updates every 15 minutes with the
           leaderboard refresh.
         </p>
       ) : (

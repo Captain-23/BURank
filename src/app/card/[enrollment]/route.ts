@@ -6,6 +6,12 @@ import {
   findRankedUserByEnrollment,
 } from "@/lib/enrollment-sync";
 import { getCachedRoster } from "@/lib/sheets";
+import {
+  CARD_THEMES,
+  DEFAULT_CARD_THEME,
+  isCardTheme,
+  type CardTheme,
+} from "@/lib/card-themes";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +57,7 @@ function buildCard(opts: {
   hardSolved: number;
   contestRating: number;
   totalUsers: number;
+  theme: CardTheme;
 }): string {
   const {
     username,
@@ -61,7 +68,9 @@ function buildCard(opts: {
     mediumSolved,
     hardSolved,
     totalUsers,
+    theme,
   } = opts;
+  const palette = CARD_THEMES[theme];
 
   const displayName = truncate(realName || username, 24);
   const displayUsername = truncate(username, 22);
@@ -84,17 +93,18 @@ function buildCard(opts: {
     College rank: ${collegeRank} of ${totalUsers}. Total solved: ${totalSolved}.
   </desc>
 
-  <rect width="440" height="96" rx="6" fill="#18181b" stroke="#3f3f46" stroke-width="1"/>
+  <rect width="440" height="96" rx="6" fill="${palette.background}" stroke="${palette.border}" stroke-width="1"/>
+  <rect width="4" height="96" rx="2" fill="${palette.accent}"/>
 
   <text x="20" y="24"
     font-family="system-ui, -apple-system, sans-serif"
-    font-size="10" fill="#71717a" letter-spacing="0.1em">
+    font-size="10" fill="${palette.labelText}" letter-spacing="0.1em">
     BURANK
   </text>
 
   <text x="420" y="24"
     font-family="system-ui, -apple-system, sans-serif"
-    font-size="10" fill="#52525b"
+    font-size="10" fill="${palette.dim}"
     text-anchor="end">
     burank.app
   </text>
@@ -102,19 +112,19 @@ function buildCard(opts: {
   <text x="20" y="50"
     font-family="system-ui, -apple-system, sans-serif"
     font-size="15" font-weight="600"
-    fill="#f4f4f5">
+    fill="${palette.text}">
     ${escapeXml(displayName)}
   </text>
 
   <text x="20" y="70"
     font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
-    font-size="11" fill="#a1a1aa">
+    font-size="11" fill="${palette.muted}">
     @${escapeXml(displayUsername)}
   </text>
 
   <text x="420" y="50"
     font-family="system-ui, -apple-system, sans-serif"
-    font-size="10" fill="#71717a"
+    font-size="10" fill="${palette.labelText}"
     text-anchor="end" letter-spacing="0.06em">
     RANK
   </text>
@@ -122,14 +132,14 @@ function buildCard(opts: {
   <text x="420" y="70"
     font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
     font-size="15" font-weight="600"
-    fill="#f4f4f5"
+    fill="${palette.text}"
     text-anchor="end">
     ${ordinal(collegeRank)}
   </text>
 
   <text x="300" y="50"
     font-family="system-ui, -apple-system, sans-serif"
-    font-size="10" fill="#71717a"
+    font-size="10" fill="${palette.labelText}"
     text-anchor="end" letter-spacing="0.06em">
     SOLVED
   </text>
@@ -137,14 +147,14 @@ function buildCard(opts: {
   <text x="300" y="70"
     font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
     font-size="15" font-weight="600"
-    fill="#f4f4f5"
+    fill="${palette.text}"
     text-anchor="end">
     ${totalSolved}
   </text>
 
   <text x="420" y="86"
     font-family="system-ui, -apple-system, sans-serif"
-    font-size="9" fill="#52525b"
+    font-size="9" fill="${palette.dim}"
     text-anchor="end">
     of ${totalUsers}
   </text>
@@ -218,6 +228,9 @@ export async function GET(
       hardSolved: me.hardSolved,
       contestRating: me.contestRating,
       totalUsers: rows.length,
+      theme: isCardTheme(_req.nextUrl.searchParams.get("theme") ?? "")
+        ? (_req.nextUrl.searchParams.get("theme") as CardTheme)
+        : DEFAULT_CARD_THEME,
     });
 
     return new NextResponse(svg, {
