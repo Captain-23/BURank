@@ -94,7 +94,6 @@ function buildCard(opts: {
   </desc>
 
   <rect width="440" height="96" rx="6" fill="${palette.background}" stroke="${palette.border}" stroke-width="1"/>
-  <rect width="4" height="96" rx="2" fill="${palette.accent}"/>
 
   <text x="20" y="24"
     font-family="system-ui, -apple-system, sans-serif"

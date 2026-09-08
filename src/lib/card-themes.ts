@@ -7,7 +7,6 @@ export const CARD_THEMES = {
     muted: "#a1a1aa",
     labelText: "#71717a",
     dim: "#52525b",
-    accent: "#c8102e",
   },
   "velvet-red": {
     label: "Velvet Red",
@@ -17,7 +16,6 @@ export const CARD_THEMES = {
     muted: "#f2a8b5",
     labelText: "#d77a8e",
     dim: "#9c4b5b",
-    accent: "#b83b55",
   },
   "sea-blue": {
     label: "Sea Blue",
@@ -27,7 +25,6 @@ export const CARD_THEMES = {
     muted: "#9dd6e8",
     labelText: "#68abc0",
     dim: "#417386",
-    accent: "#24a6c7",
   },
   evergreen: {
     label: "Evergreen",
@@ -37,7 +34,6 @@ export const CARD_THEMES = {
     muted: "#a7d7c0",
     labelText: "#76b695",
     dim: "#4e8068",
-    accent: "#34a873",
   },
   "sunset-gold": {
     label: "Sunset Gold",
@@ -47,7 +43,6 @@ export const CARD_THEMES = {
     muted: "#f2c18f",
     labelText: "#d99a5d",
     dim: "#99683e",
-    accent: "#e58d32",
   },
 } as const;
 
