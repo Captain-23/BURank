@@ -82,12 +82,12 @@ export default function LiveFeed({
       <div className="live-feed-head">
         <h2>
           <span className="live-dot" aria-hidden />
-          Live Feed
+          Recent Activity
           {!loading && events.length > 0 && (
             <span className="live-feed-count">{events.length}</span>
           )}
         </h2>
-        <span className="live-feed-sub">Recent accepted solves</span>
+        <span className="live-feed-sub">Recent submissions</span>
       </div>
 
       {loading ? (
