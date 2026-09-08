@@ -11,7 +11,7 @@ export async function GET() {
     const rows = await prisma.activityEvent.findMany({
       where: { solvedAt: { gte: since } },
       orderBy: { solvedAt: "desc" },
-      take: 40,
+      take: 10,
     });
 
     const usernames = [...new Set(rows.map((row) => row.username))];

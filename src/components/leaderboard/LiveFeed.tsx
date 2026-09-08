@@ -108,7 +108,10 @@ export default function LiveFeed({
           <ul className={`live-feed-list${expanded ? " expanded" : ""}`}>
             {visibleEvents.map((event) => {
               const name = event.realName || event.username;
-              const when = formatActivityWhen(new Date(event.solvedAt), new Date(tick));
+              const when = formatActivityWhen(
+                new Date(event.solvedAt),
+                new Date(tick),
+              );
               const problemHref = `https://leetcode.com/problems/${encodeURIComponent(event.titleSlug)}/`;
               const diffClass = difficultyClass(event.difficulty);
               const fresh = isNew(event.solvedAt, tick);
@@ -132,7 +135,10 @@ export default function LiveFeed({
                     </div>
                   )}
                   <p className="live-feed-copy">
-                    <Link href={`/user/${event.username}`} className="live-feed-user">
+                    <Link
+                      href={`/user/${event.username}`}
+                      className="live-feed-user"
+                    >
                       {name}
                     </Link>{" "}
                     solved{" "}
@@ -166,8 +172,14 @@ export default function LiveFeed({
               className={`live-feed-toggle${expanded ? " expanded" : ""}`}
               onClick={() => setExpanded((prev) => !prev)}
             >
-              {expanded ? "Show less" : `Show all ${events.length} solves`}
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              {expanded ? "Show less" : "Show more"}
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
                 <path d="M4 6l4 4 4-4" />
               </svg>
             </button>
