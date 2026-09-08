@@ -11,21 +11,21 @@ LeetCode or Google Sheets directly. Follow these steps once to go live.
 Set these on your host (e.g. Vercel → Project → Settings → Environment Variables).
 See `.env.local.example` for the full annotated list.
 
-| Variable | Required | What it is |
-|---|---|---|
-| `DATABASE_URL` | ✅ | Postgres connection string (Prisma + NextAuth + cache) |
-| `NEXTAUTH_SECRET` | ✅ | `openssl rand -base64 32` |
-| `NEXTAUTH_URL` | ✅ | Deployed base URL, e.g. `https://burank.vercel.app` |
-| `RESEND_API_KEY` | ✅ | Resend key for magic-link email |
-| `EMAIL_FROM` | ✅ | e.g. `BURank <noreply@yourdomain.com>` |
-| `ADMIN_PASSWORD` | ✅ | Admin dashboard password |
-| `ADMIN_SESSION_SECRET` | ▲ recommended | `openssl rand -base64 32` — signs the admin cookie. If unset, falls back to `ADMIN_PASSWORD`. Set a real one in prod. |
-| `NEXT_PUBLIC_SHEET_CSV_URL` | ✅ | Published Google Sheet CSV export URL (read-only, public) |
-| `SHEET_WRITE_URL` | ✅ | Apps Script web-app URL. **Renamed from `NEXT_PUBLIC_SHEET_WRITE_URL`** so it stays server-only. |
-| `SHEET_WRITE_SECRET` | ▲ recommended | `openssl rand -base64 32` — shared secret that locks the sheet-write endpoint. Must match the value in `google-apps-script.js`. |
-| `CRON_SECRET` | ✅ | `openssl rand -base64 32` — Bearer secret for `/api/cron/ingest` |
-| `SITE_URL` | ✅ | Same as `NEXTAUTH_URL`; the refresh runner POSTs here |
-| `NEXT_PUBLIC_COLLEGE_NAME` | optional | Display name, default "Bennett University" |
+| Variable                    | Required      | What it is                                                                                                                      |
+| --------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`              | ✅            | Postgres connection string (Prisma + NextAuth + cache). Prisma limits each serverless instance to one connection.               |
+| `NEXTAUTH_SECRET`           | ✅            | `openssl rand -base64 32`                                                                                                       |
+| `NEXTAUTH_URL`              | ✅            | Deployed base URL, e.g. `https://burank.vercel.app`                                                                             |
+| `RESEND_API_KEY`            | ✅            | Resend key for magic-link email                                                                                                 |
+| `EMAIL_FROM`                | ✅            | e.g. `BURank <noreply@yourdomain.com>`                                                                                          |
+| `ADMIN_PASSWORD`            | ✅            | Admin dashboard password                                                                                                        |
+| `ADMIN_SESSION_SECRET`      | ▲ recommended | `openssl rand -base64 32` — signs the admin cookie. If unset, falls back to `ADMIN_PASSWORD`. Set a real one in prod.           |
+| `NEXT_PUBLIC_SHEET_CSV_URL` | ✅            | Published Google Sheet CSV export URL (read-only, public)                                                                       |
+| `SHEET_WRITE_URL`           | ✅            | Apps Script web-app URL. **Renamed from `NEXT_PUBLIC_SHEET_WRITE_URL`** so it stays server-only.                                |
+| `SHEET_WRITE_SECRET`        | ▲ recommended | `openssl rand -base64 32` — shared secret that locks the sheet-write endpoint. Must match the value in `google-apps-script.js`. |
+| `CRON_SECRET`               | ✅            | `openssl rand -base64 32` — Bearer secret for `/api/cron/ingest`                                                                |
+| `SITE_URL`                  | ✅            | Same as `NEXTAUTH_URL`; the refresh runner POSTs here                                                                           |
+| `NEXT_PUBLIC_COLLEGE_NAME`  | optional      | Display name, default "Bennett University"                                                                                      |
 
 > **Migrating from an older deploy:** rename `NEXT_PUBLIC_SHEET_WRITE_URL` → `SHEET_WRITE_URL`.
 > (The code still reads the old name as a fallback, but renaming keeps the URL out of the browser bundle.)
