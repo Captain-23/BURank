@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 
-
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "sent" | "error">(
@@ -12,14 +11,18 @@ export default function SignInPage() {
   const [message, setMessage] = useState("");
   const callbackUrl = "/";
 
-  // Validate format client-side before sending
-  const isValidEmail = () => true;
+  const isBennettEmail = (value: string) =>
+    value.trim().toLowerCase().endsWith("@bennett.edu.in");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim().toLowerCase();
 
-    
+    if (!isBennettEmail(trimmed)) {
+      setStatus("error");
+      setMessage("Please use your Bennett University email address.");
+      return;
+    }
 
     setStatus("loading");
     setMessage("");
@@ -95,8 +98,10 @@ export default function SignInPage() {
             >
               Sign in
             </h1>
-            <p style={{ fontSize: 13, color: "var(--sub)", margin: "0 0 24px" }}>
-              Use your personal email to receive a sign-in link. No password
+            <p
+              style={{ fontSize: 13, color: "var(--sub)", margin: "0 0 24px" }}
+            >
+              Use your student email to receive a sign-in link. No password
               needed.
             </p>
 
@@ -144,14 +149,20 @@ export default function SignInPage() {
                 >
                   We sent a sign-in link to
                   <br />
-                  <strong style={{ color: "var(--ink)", fontFamily: "monospace" }}>
+                  <strong
+                    style={{ color: "var(--ink)", fontFamily: "monospace" }}
+                  >
                     {email.trim().toLowerCase()}
                   </strong>
                   <br />
                   Open your inbox and click the link.
                 </p>
                 <p
-                  style={{ fontSize: 11, color: "var(--muted)", margin: "16px 0 0" }}
+                  style={{
+                    fontSize: 11,
+                    color: "var(--muted)",
+                    margin: "16px 0 0",
+                  }}
                 >
                   Link expires in 15 minutes · one-time use only
                 </p>
@@ -170,12 +181,13 @@ export default function SignInPage() {
                     marginBottom: 8,
                   }}
                 >
-                  Personal Email
+                  Student Email
                 </label>
 
                 <input
                   type="email"
                   value={email}
+                  required
                   onChange={(e) => {
                     setEmail(e.target.value);
                     setStatus("idle");
@@ -231,7 +243,7 @@ export default function SignInPage() {
                       margin: "6px 0 0",
                     }}
                   >
-                    Do not use @bennett.edu.in
+                    Use your @bennett.edu.in email address.
                   </p>
                 )}
 

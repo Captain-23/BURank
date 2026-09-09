@@ -153,6 +153,7 @@ export default function AddUserModal({ onClose, onSuccess }: Props) {
             <input
               type="text"
               value={enrollmentNo}
+              required
               onChange={(e) => {
                 setEnrollmentNo(e.target.value.toUpperCase());
                 setStatus("idle");
@@ -179,6 +180,7 @@ export default function AddUserModal({ onClose, onSuccess }: Props) {
 
             <select
               value={yearStudying}
+              required
               onChange={(e) => {
                 setYearStudying(e.target.value);
                 setStatus("idle");
@@ -208,8 +210,8 @@ export default function AddUserModal({ onClose, onSuccess }: Props) {
                   status === "success"
                     ? "#00b8a3"
                     : status === "error"
-                    ? "var(--hard)"
-                    : "var(--bu-sub)",
+                      ? "var(--hard)"
+                      : "var(--bu-sub)",
               }}
             >
               {message}
@@ -227,18 +229,15 @@ export default function AddUserModal({ onClose, onSuccess }: Props) {
             }
             className="w-full py-3 rounded-xl font-semibold transition-all disabled:opacity-40"
             style={{
-              background:
-                status === "success"
-                  ? "#00b8a3"
-                  : "var(--bu-red)",
+              background: status === "success" ? "#00b8a3" : "var(--bu-red)",
               color: "#fff",
             }}
           >
             {status === "loading"
               ? "Joining..."
               : status === "success"
-              ? "Joined! ✓"
-              : "Join Leaderboard"}
+                ? "Joined! ✓"
+                : "Join Leaderboard"}
           </button>
         </form>
 

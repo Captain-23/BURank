@@ -4,7 +4,10 @@ import { addUsernameToSheet, fetchUsernamesFromSheet } from "@/lib/sheets";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
-import { normalizeEnrollmentNo } from "@/lib/enrollment";
+import {
+  isPlausibleEnrollmentNo,
+  normalizeEnrollmentNo,
+} from "@/lib/enrollment";
 import { unsuppressUsername } from "@/lib/suppressed-users-store";
 
 export async function POST(req: NextRequest) {
@@ -39,9 +42,9 @@ export async function POST(req: NextRequest) {
         { status: 400 },
       );
     }
-    if (!enrollmentNo) {
+    if (!isPlausibleEnrollmentNo(enrollmentNo)) {
       return NextResponse.json(
-        { success: false, message: "Enrollment number is required." },
+        { success: false, message: "A valid enrollment number is required." },
         { status: 400 },
       );
     }
