@@ -1,260 +1,448 @@
-<div align="center">
+# BURank
 
-## 🤝 Looking for Contributors
+BURank is a LeetCode leaderboard for Bennett University. It turns individual problem-solving activity into a clear, continuously refreshed view of student rankings, batch performance, achievements, and recent submissions.
 
-We're actively looking for contributors to improve BURank.
+The project is designed for university coding communities that want a focused competitive programming dashboard without building a large data platform from scratch.
 
-### Current Priorities
+Live application: [burank.app](https://www.burank.app)
 
-- 🎨 Complete UI/UX Redesign
-- 📱 Mobile Responsiveness
-- ⚡ Performance Improvements
+## Contents
 
-👉 **Check the [Issues](https://github.com/Captain-23/BURank/issues) tab if you'd like to contribute.**
+- [What BURank Provides](#what-burank-provides)
+- [Screenshots](#screenshots)
+- [How the Data Pipeline Works](#how-the-data-pipeline-works)
+- [Technology](#technology)
+- [Repository Structure](#repository-structure)
+- [Run Locally](#run-locally)
+- [Configuration](#configuration)
+- [Database and Migrations](#database-and-migrations)
+- [Google Sheets Roster](#google-sheets-roster)
+- [Scheduled Refresh](#scheduled-refresh)
+- [Deployment](#deployment)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
 
+## What BURank Provides
 
-# 🏆 BUrank
+### Individual leaderboard
 
-### The modern LeetCode leaderboard platform for universities.
+The main leaderboard ranks registered students by total LeetCode problems solved. Each row includes:
 
-Track competitive programming progress, compare batches, discover top performers, and foster healthy coding competition — all in one place.
+- Student name and LeetCode username
+- Badge highlights
+- Academic batch
+- Total solved count
+- Easy, Medium, and Hard totals
+- Contest rating and attended contest count
+- Global LeetCode rank
+- A link to the student's BURank profile
 
-[Live Demo](https://www.burank.app) • [Report Bug](https://github.com/Captain-23/burank/issues) • [Request Feature](https://github.com/Captain-23/burank/issues)
+The leaderboard supports name and username search, manual refresh, loading states, retry behavior, responsive layouts, and light or dark themes.
 
-</div>
+### Champions podium and highlights
 
----
+The homepage surfaces the current top three students and summarizes notable results, including:
 
-## Overview
-
-BUrank is a production-ready platform that enables universities to build an engaging LeetCode leaderboard for their students.
-
-It automatically aggregates LeetCode statistics, provides department-wide rankings, tracks contest performance, and offers administrators an intuitive interface for managing users and weekly challenges.
-
-Built with a modern full-stack architecture, BUrank is fast, responsive, scalable, and completely free to deploy.
-
----
-
-## ✨ Features
-
-### Live Leaderboard
-
-- Real-time LeetCode rankings
-- Easy / Medium / Hard problem breakdown
-- Contest rating and global ranking
-- Dynamic sorting and filtering
+- Most solved problems
+- Highest contest rating
+- Most Hard problems solved
+- First Blood for the current Question of the Week
 
 ### Batch Wars
 
-- Compare academic batches
-- Average solved problems
-- Competitive batch rankings
-- Encourage healthy peer competition
+Batch Wars groups registered students by their year of study and compares:
 
-### Student Profiles
+- Number of coders in each batch
+- Average problems solved
+- Total Easy problems solved
+- Total Medium problems solved
+- Total Hard problems solved
 
-- Individual coding statistics
-- Contribution heatmaps
-- Contest history
-- Achievement overview
+### Recent Activity
 
-### Passwordless Authentication
+The activity feed shows recently recorded accepted submissions with:
 
-- Secure email magic links
-- University email verification
-- Persistent authenticated sessions
+- Student identity and avatar
+- Problem number and title
+- Difficulty
+- Relative submission time
+- A `NEW` indicator for recent activity
+- Direct links to the student's profile and the LeetCode problem
 
-### Admin Dashboard
+The feed polls periodically in the browser and can be expanded to show more activity.
 
-- Student management
+### Question of the Week
+
+Administrators can publish a LeetCode problem as the current Question of the Week. The homepage can use that setting to identify the challenge and calculate the first student to solve it during the active period.
+
+### Passwordless student access
+
+Students sign in through a passwordless email link powered by NextAuth and Resend. The application validates Bennett University email addresses on both the client and server. Sessions use signed JWT cookies and remain valid for 30 days.
+
+After signing in, a student can join the leaderboard by providing:
+
+- LeetCode username
+- Enrollment number
+- Year of study
+
+Registration validates the LeetCode account, rejects duplicate usernames, enrollment numbers, and email addresses, writes the roster entry, and places the initial statistics in the cache immediately.
+
+### Student profiles
+
+Each student profile includes:
+
+- Name, username, avatar, batch, and enrollment number
+- Global LeetCode rank
+- Contest rating and contests attended
+- Total solved count
+- Easy, Medium, and Hard breakdown
+- Submission activity heatmap for the past 12 months
+- Earned badges and next-badge progress
+- Link to the student's LeetCode profile
+
+### Badges
+
+Badges are computed from current LeetCode statistics. Available milestones include:
+
+- Rookie, Century, Grinder, and Legend for total problems solved
+- Brave, Savage, and Hard Enjoyer for Hard problems solved
+- Contestant, Rated, Expert, and Master for contest participation and rating
+- Balanced for Medium problems solved
+
+### GitHub README cards
+
+Profiles can generate a dynamic SVG rank card for use in a GitHub profile README. Students can:
+
+- Preview their card
+- Choose from multiple card themes
+- Copy the image URL
+- Copy ready-to-paste Markdown
+
+Available themes include Classic, Velvet Red, Sea Blue, Evergreen, and Sunset Gold.
+
+### Administrator dashboard
+
+The `/admin` dashboard is protected by a dedicated password and signed HTTP-only session cookie. It provides:
+
+- Registered user count and roster inspection
+- User deletion from the roster and statistics cache
+- Suppression of deleted users so stale refresh data cannot immediately restore them
 - Question of the Week management
-- Secure administrator access
-- Moderation tools
+- Cache refresh and dashboard data reload controls
 
-### Modern User Experience
+## Screenshots
 
-- Fully responsive
-- Dark theme
-- Smooth animations
-- Skeleton loading states
-- Optimized performance
+Add screenshots manually in the placeholders below. Replace each placeholder with an image link or HTML image element when the final assets are ready.
 
----
+### Homepage and individual leaderboard
 
-# Tech Stack
+<!-- Add screenshot here: homepage / individual leaderboard -->
 
-| Category | Technology |
-|-----------|------------|
-| Framework | Next.js 14 |
-| Language | TypeScript |
-| Styling | Tailwind CSS |
-| Authentication | NextAuth.js + Resend |
-| ORM | Prisma |
-| Database | Google Sheets |
-| Backend | Google Apps Script |
-| Deployment | Vercel |
+`[Screenshot placeholder]`
 
----
+### Batch Wars
 
-# Screenshots
+<!-- Add screenshot here: Batch Wars view -->
 
-## Leaderboard
+`[Screenshot placeholder]`
 
-<p align="center">
+### Student profile
 
-  <img src="./assets/screenshots/Dashboard.png" width="900">
+<!-- Add screenshot here: student profile with badges and activity heatmap -->
 
-</p>
+`[Screenshot placeholder]`
 
----
+### GitHub README card generator
 
-## Student Profile
+<!-- Add screenshot here: profile card preview and Markdown controls -->
 
-<p align="center">
+`[Screenshot placeholder]`
 
-  <img src="./assets/screenshots/Profile.png" width="900">
+### Admin dashboard
 
-</p>
+<!-- Add screenshot here: administrator dashboard -->
 
----
+`[Screenshot placeholder]`
 
-## Batch Wars
+### Sign-in and registration
 
-<p align="center">
+<!-- Add screenshot here: passwordless sign-in or Join Leaderboard modal -->
 
-  <img src="./assets/screenshots/BatchWars.png" width="900">
+`[Screenshot placeholder]`
 
-</p>
+## How the Data Pipeline Works
 
----
-
-## Admin Dashboard
-
-<p align="center">
-
-  <img src="./assets/screenshots/Admin.png" width="900">
-
-</p>
-
----
-
-## Personal Card
-
-<p align="center">
-
-  <img src="./assets/screenshots/UserCard.png" width="900">
-
-</p>
-
----
-
-# Roadmap
-
-## Completed
-
-- [x] Live Leaderboard
-- [x] Student Registration
-- [x] Magic Link Authentication
-- [x] Admin Dashboard
-- [x] Question of the Week
-- [x] Student Profiles
-- [x] Batch Rankings
-- [x] Responsive Design
-
-## In Progress
-
-- 🚧 Complete UI Redesign (v2)
-- 🚧 Performance Optimizations
-- 🚧 Better Mobile Experience
-
-## Planned
-
-- Achievement System
-- University Analytics
-- Organization Accounts
-- Custom Themes
-- Advanced Search
-- Student Badges
-
----
-
-# Project Status
-
-> 🚧 **BUrank v2 is currently under active development.**
-
-The current release is stable and production-ready.
-
-The next major milestone focuses on delivering a complete UI/UX redesign, improved performance, and a richer user experience.
-
-Feedback, ideas, and contributions are always welcome.
-
----
-
-# Contributing
-
-Contributions are welcome.
-
-Whether you'd like to fix bugs, improve the UI, optimize performance, or suggest new features, we'd love your help.
-
-1. Fork the repository
-2. Create a feature branch
-
-```bash
-git checkout -b feature/amazing-feature
-```
-
-3. Commit your changes
-
-```bash
-git commit -m "Add amazing feature"
-```
-
-4. Push your branch
-
-```bash
-git push origin feature/amazing-feature
-```
-
-5. Open a Pull Request
-
-For significant changes, please open an Issue first so we can discuss the proposed direction.
-
----
-
-# Architecture
+BURank separates the public read path from the external data refresh path.
 
 ```text
-                 LeetCode GraphQL
-                        │
-                        ▼
-              Next.js API Routes
-                        │
-        ┌───────────────┼───────────────┐
-        ▼                               ▼
- Google Sheets                    Authentication
- (Student Data)              NextAuth + Resend
-        │                               │
-        └───────────────┬───────────────┘
-                        ▼
-                 BUrank Frontend
-                  (Next.js + React)
-                        │
-                        ▼
-                     Vercel
+Google Sheet roster
+        |
+        | published CSV
+        v
+GitHub Actions scheduled refresh
+        |
+        | fetch and throttle LeetCode statistics
+        v
+scripts/refresh.ts
+        |
+        | authenticated POST using CRON_SECRET
+        v
+/api/cron/ingest
+        |
+        | transactional upserts and reconciliation
+        v
+PostgreSQL cache via Prisma
+        |
+        v
+Public Next.js routes and pages
 ```
 
----
+The refresh process also enriches recent submissions with problem metadata, computes First Blood for the current Question of the Week, stores activity events, removes stale roster entries, and invalidates relevant Next.js caches.
 
-# License
+Browser-facing leaderboard, activity, Question of the Week, and card routes read from PostgreSQL. They do not call LeetCode or Google Sheets directly.
 
-Distributed under the MIT License.
+## Technology
 
----
+| Area                 | Technology                               |
+| -------------------- | ---------------------------------------- |
+| Application          | Next.js 14 App Router                    |
+| Language             | TypeScript                               |
+| UI                   | React 18, Tailwind CSS, custom CSS       |
+| Authentication       | NextAuth.js email provider, JWT sessions |
+| Email delivery       | Resend                                   |
+| Database             | PostgreSQL                               |
+| ORM                  | Prisma                                   |
+| Roster management    | Google Sheets published CSV              |
+| Roster writes        | Google Apps Script Web App               |
+| External statistics  | LeetCode GraphQL API                     |
+| Scheduled operations | GitHub Actions                           |
+| Hosting target       | Vercel                                   |
+| Tests                | Vitest                                   |
 
-<div align="center">
+## Repository Structure
 
-Made with ❤️ for the competitive programming community.
+```text
+.
+|-- src/app/                 Next.js pages and API route handlers
+|-- src/components/          Shared UI, leaderboard, and profile components
+|-- src/lib/                 Authentication, LeetCode, roster, cache, badges, and activity logic
+|-- src/types/               Shared TypeScript types
+|-- prisma/                  Prisma schema and database migrations
+|-- scripts/                 Scheduled refresh and maintenance scripts
+|-- assets/screenshots/      Screenshot assets
+|-- docs/                    Product plans, specifications, and design references
+|-- google-apps-script.js    Google Sheets write endpoint
+|-- DEPLOY.md                Detailed production deployment runbook
+`-- PRD.md                   Product requirements and architecture background
+```
 
-If you found this project useful, consider giving it a ⭐.
+Important routes include:
 
-</div>
+| Route                | Purpose                                                         |
+| -------------------- | --------------------------------------------------------------- |
+| `/`                  | Public leaderboard, Batch Wars, highlights, and recent activity |
+| `/auth/signin`       | Passwordless email sign-in                                      |
+| `/auth/verify`       | Magic-link verification state                                   |
+| `/user/[username]`   | Student profile                                                 |
+| `/card/[enrollment]` | Dynamic SVG rank card                                           |
+| `/admin`             | Protected administration dashboard                              |
+| `/api/leaderboard`   | Current leaderboard data                                        |
+| `/api/feed`          | Recent activity events                                          |
+| `/api/qotw`          | Question of the Week settings                                   |
+| `/api/problems`      | Cached problem metadata                                         |
+| `/api/auth/register` | Authenticated student registration                              |
+| `/api/cron/ingest`   | Authenticated cache ingestion endpoint                          |
+
+## Run Locally
+
+### Prerequisites
+
+- Node.js 20 or newer
+- npm
+- A PostgreSQL database
+- A Resend account and verified sender address for magic-link email
+- A published Google Sheet CSV URL for roster data
+
+### Installation
+
+```bash
+git clone https://github.com/Captain-23/BURank.git
+cd BURank
+npm install
+```
+
+Create the local environment file:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Fill in the required values described in [Configuration](#configuration), then apply the Prisma schema:
+
+```bash
+npx prisma migrate deploy
+npx prisma generate
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Configuration
+
+The complete annotated template is available in `.env.local.example`.
+
+### Required application variables
+
+| Variable                    | Purpose                                                              |
+| --------------------------- | -------------------------------------------------------------------- |
+| `DATABASE_URL`              | PostgreSQL connection string used by Prisma, NextAuth, and the cache |
+| `NEXTAUTH_SECRET`           | Secret used to sign NextAuth tokens                                  |
+| `NEXTAUTH_URL`              | Application base URL                                                 |
+| `RESEND_API_KEY`            | Resend API key for magic-link delivery                               |
+| `EMAIL_FROM`                | Verified sender address, for example `BURank <noreply@example.com>`  |
+| `ADMIN_PASSWORD`            | Password for `/admin`                                                |
+| `NEXT_PUBLIC_SHEET_CSV_URL` | Published, read-only Google Sheet CSV export URL                     |
+| `SHEET_WRITE_URL`           | Server-only Google Apps Script write endpoint                        |
+| `SHEET_WRITE_SECRET`        | Shared secret for protecting Apps Script writes                      |
+| `CRON_SECRET`               | Bearer secret for `/api/cron/ingest`                                 |
+| `SITE_URL`                  | Deployed URL used by the refresh script                              |
+
+### Optional variables
+
+| Variable                   | Purpose                                                               |
+| -------------------------- | --------------------------------------------------------------------- |
+| `ADMIN_SESSION_SECRET`     | Dedicated signing key for the admin cookie; recommended in production |
+| `NEXT_PUBLIC_COLLEGE_NAME` | Card branding and college name; defaults to `Bennett University`      |
+
+Generate secrets with:
+
+```bash
+openssl rand -base64 32
+```
+
+Keep `SHEET_WRITE_URL`, `SHEET_WRITE_SECRET`, `ADMIN_PASSWORD`, and all signing secrets server-side. Do not expose them through `NEXT_PUBLIC_` variables.
+
+## Database and Migrations
+
+Prisma uses PostgreSQL for authentication, cached user statistics, settings, problem metadata, and activity events.
+
+The schema contains:
+
+- `User`, `Account`, `Session`, and `VerificationToken` for authentication
+- `UserStat` for the refreshed leaderboard cache
+- `Setting` for Question of the Week and First Blood state
+- `Problem` for cached problem metadata
+- `ActivityEvent` for recent accepted submissions
+
+Apply committed migrations with:
+
+```bash
+npx prisma migrate deploy
+```
+
+For local schema work, use the normal Prisma workflow and commit the generated migration. Do not use `prisma db push` as a substitute for production migrations.
+
+## Google Sheets Roster
+
+Google Sheets remains the editable roster source, while PostgreSQL serves the application cache.
+
+The `users` sheet uses these columns:
+
+```text
+username | email | addedAt | yearStudying | enrollmentNo | password
+```
+
+The `settings` sheet stores the Question of the Week URL, its timestamp, and First Blood state.
+
+To configure writes:
+
+1. Open the roster sheet and select Extensions, then Apps Script.
+2. Paste the contents of `google-apps-script.js`.
+3. Set `SHEET_WRITE_SECRET` in the script to the same value used by the application, or keep both disabled only for a controlled local setup.
+4. Deploy the script as a Web App executed as the owner and accessible to users who have the URL.
+5. Put the deployment URL in the server-only `SHEET_WRITE_URL` variable.
+
+For an existing sheet created with an older column layout, follow the migration notes in `DEPLOY.md` before deploying the updated script.
+
+## Scheduled Refresh
+
+The workflow in `.github/workflows/refresh.yml` runs every 15 minutes and can also be started manually from GitHub Actions.
+
+It requires these repository secrets:
+
+- `NEXT_PUBLIC_SHEET_CSV_URL`
+- `SITE_URL`
+- `CRON_SECRET`
+
+The refresh command can also be run locally:
+
+```bash
+npm run refresh
+```
+
+The command reads the roster CSV, fetches LeetCode data in throttled chunks, enriches recent activity, computes First Blood, and submits the result to the protected ingestion route.
+
+Until the first refresh completes, the PostgreSQL cache may be empty and the public leaderboard may contain no users.
+
+## Deployment
+
+The application is intended for deployment on Vercel with a managed PostgreSQL database.
+
+At minimum:
+
+1. Create the production PostgreSQL database.
+2. Configure the required environment variables in the hosting provider.
+3. Run `npx prisma migrate deploy` against the production database.
+4. Deploy the Next.js application.
+5. Configure the Google Apps Script Web App and published roster CSV.
+6. Add the GitHub Actions secrets for scheduled refreshes.
+7. Run the refresh workflow once manually and verify the leaderboard.
+
+The full production checklist, including Google Sheet migration details and verification steps, is in [DEPLOY.md](DEPLOY.md).
+
+## Testing
+
+Run the test suite with:
+
+```bash
+npm test
+```
+
+Run the linter with:
+
+```bash
+npm run lint
+```
+
+The tests cover roster parsing and reconciliation, enrollment handling, activity processing, badge logic, CSV URL handling, highlight calculations, and suppressed-user behavior.
+
+## Contributing
+
+Contributions are welcome. Before opening a pull request:
+
+1. Create a focused feature branch.
+2. Keep changes scoped to one problem or feature.
+3. Preserve the existing TypeScript and component patterns.
+4. Run the relevant tests and linter.
+5. Describe behavior changes and include screenshots for meaningful UI changes.
+
+```bash
+git checkout -b feature/your-change
+npm install
+npm test
+npm run lint
+```
+
+For larger changes, open an issue first so the implementation can be discussed before work begins.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the repository contribution workflow.
+
+## License
+
+This project is distributed under the license in [LICENSE](LICENSE).
