@@ -80,17 +80,17 @@
 
   --bu-red: #3b82f6;
   --bu-red-dim: rgba(59, 130, 246, 0.15);
-  --bu-dark: #2b2828;
+  --bu-dark: #1c1a1a;
   --bu-card: #18181b;
   --bu-border: #27272a;
   --bu-muted: #52525b;
   --bu-text: #f4f4f5;
   --bu-sub: #a1a1aa;
 
-  --body-bg: #2b2828;
-  --body-grad-start: #2b2828;
-  --body-grad-mid: #2b2828;
-  --body-grad-end: #2b2828;
+  --body-bg: #1c1a1a;
+  --body-grad-start: #1c1a1a;
+  --body-grad-mid: #1c1a1a;
+  --body-grad-end: #1c1a1a;
 
   /* submission heatmap — muted greens for dark backgrounds */
   --heat-0: #27272a;
