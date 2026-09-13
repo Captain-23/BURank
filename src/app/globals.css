@@ -414,6 +414,10 @@ body {
   line-height: 1;
 }
 
+[data-theme="dark"] .ghost {
+  color: #525252;
+}
+
 .podium {
   position: relative;
   z-index: 1;
