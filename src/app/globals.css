@@ -80,17 +80,17 @@
 
   --bu-red: #3b82f6;
   --bu-red-dim: rgba(59, 130, 246, 0.15);
-  --bu-dark: #09090b;
+  --bu-dark: #3f3f46;
   --bu-card: #18181b;
   --bu-border: #27272a;
   --bu-muted: #52525b;
   --bu-text: #f4f4f5;
   --bu-sub: #a1a1aa;
 
-  --body-bg: #09090b;
+  --body-bg: #3f3f46;
   --body-grad-start: #18181b;
-  --body-grad-mid: #09090b;
-  --body-grad-end: #09090b;
+  --body-grad-mid: #353539;
+  --body-grad-end: #3f3f46;
 
   /* submission heatmap — muted greens for dark backgrounds */
   --heat-0: #27272a;
@@ -138,6 +138,8 @@
   --bdg-contest-text: #60a5fa;
   --bdg-grind-bg: rgba(16, 185, 129, 0.18);
   --bdg-grind-text: #34d399;
+
+  --champions-text: #a1a1aa;
 }
 
 * {
@@ -412,6 +414,11 @@ body {
   user-select: none;
   z-index: 0;
   line-height: 1;
+}
+
+[data-theme="dark"] .ghost {
+  color: var(--champions-text);
+  opacity: 0.2;
 }
 
 .podium {
