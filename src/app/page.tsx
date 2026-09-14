@@ -30,6 +30,7 @@ export default function LeaderboardPage() {
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
+  const [qotwUrl, setQotwUrl] = useState("");
   const [firstBlood, setFirstBlood] = useState("");
   const [feed, setFeed] = useState<ActivityPayload[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("individuals");
@@ -55,6 +56,7 @@ export default function LeaderboardPage() {
       const feedData = feedRes.ok ? await feedRes.json() : { events: [] };
 
       setUsers(data.users ?? []);
+      setQotwUrl(qotwData.qotw_url || "");
       setFirstBlood(qotwData.first_blood || "");
       setFeed(feedData.events ?? []);
       setLastRefreshed(new Date());
@@ -206,6 +208,19 @@ export default function LeaderboardPage() {
 
           <section className="sheet">
             <div className="sheet-inner">
+              {qotwUrl && (
+                <a
+                  className="qotw-banner"
+                  href={qotwUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <span className="qotw-label">Question of the Week</span>
+                  <span className="qotw-link">
+                    Solve this week&apos;s challenge ↗
+                  </span>
+                </a>
+              )}
               <HighlightCards users={users} firstBlood={firstBlood} />
               <LiveFeed events={feed} loading={loading} />
 

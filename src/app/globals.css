@@ -744,6 +744,44 @@ body {
 }
 
 /* ── highlight cards ─────────────────────── */
+.qotw-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--red);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.qotw-banner:hover {
+  border-color: var(--red);
+  transform: translateY(-1px);
+}
+
+.qotw-label {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.qotw-link {
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .highlights {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
