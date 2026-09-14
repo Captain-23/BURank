@@ -752,7 +752,6 @@ body {
   margin-bottom: 16px;
   padding: 18px 20px;
   border: 1px solid var(--line);
-  border-left: 4px solid var(--red);
   border-radius: 12px;
   background: var(--card);
   color: var(--ink);
@@ -766,6 +765,10 @@ body {
 .qotw-banner:hover {
   border-color: var(--red);
   transform: translateY(-1px);
+}
+
+[data-theme="dark"] .qotw-banner:hover {
+  border-color: #fff;
 }
 
 .qotw-label {
