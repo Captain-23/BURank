@@ -9,9 +9,9 @@ import { prisma } from "@/lib/prisma";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ─── validate bennett email ───────────────────────────────────────────────────
-function isBennettEmail(email: string): boolean {
-  return email.trim().toLowerCase().endsWith("@bennett.edu.in");
+// ─── validate Gmail address ───────────────────────────────────────────────────
+function isGmailEmail(email: string): boolean {
+  return email.trim().toLowerCase().endsWith("@gmail.com");
 }
 
 // ─── NextAuth config ──────────────────────────────────────────────────────────
@@ -23,8 +23,8 @@ const authOptions: NextAuthOptions = {
       // instead of the default nodemailer transport
       sendVerificationRequest: async ({ identifier: email, url }) => {
         // Double-check server-side even if client already validated
-        if (!isBennettEmail(email)) {
-          throw new Error("Only @bennett.edu.in emails are allowed.");
+        if (!isGmailEmail(email)) {
+          throw new Error("Only @gmail.com emails are allowed.");
         }
 
         const { error } = await resend.emails.send({
@@ -64,9 +64,9 @@ const authOptions: NextAuthOptions = {
 
   // ─── callbacks ───────────────────────────────────────────────────────────
   callbacks: {
-    // Block anyone without a bennett email at the session level too
+    // Block anyone without a Gmail address at the session level too
     async signIn({ user }) {
-      if (!user.email || !isBennettEmail(user.email)) {
+      if (!user.email || !isGmailEmail(user.email)) {
         return false; // blocks the sign-in
       }
       return true;

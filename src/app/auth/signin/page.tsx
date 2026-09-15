@@ -11,16 +11,16 @@ export default function SignInPage() {
   const [message, setMessage] = useState("");
   const callbackUrl = "/";
 
-  const isBennettEmail = (value: string) =>
-    value.trim().toLowerCase().endsWith("@bennett.edu.in");
+  const isGmailEmail = (value: string) =>
+    value.trim().toLowerCase().endsWith("@gmail.com");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim().toLowerCase();
 
-    if (!isBennettEmail(trimmed)) {
+    if (!isGmailEmail(trimmed)) {
       setStatus("error");
-      setMessage("Please use your Bennett University email address.");
+      setMessage("Please use a personal Gmail address.");
       return;
     }
 
@@ -243,7 +243,7 @@ export default function SignInPage() {
                       margin: "6px 0 0",
                     }}
                   >
-                    Use your @bennett.edu.in email address.
+                    Use your personal @gmail.com address.
                   </p>
                 )}
 
@@ -281,7 +281,7 @@ export default function SignInPage() {
             marginTop: 20,
           }}
         >
-          Only Bennett University students can sign in.
+          Sign in with your personal Gmail address.
         </p>
       </div>
     </div>
